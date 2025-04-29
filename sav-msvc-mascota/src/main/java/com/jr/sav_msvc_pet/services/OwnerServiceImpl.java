@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.jr.sav_msvc_pet.models.Owner;
 import com.jr.sav_msvc_pet.repositories.OwnerRepository;
 
@@ -44,14 +43,14 @@ public class OwnerServiceImpl implements OwnerService{
 
     @Override
     @Transactional
-    public void updatephoneNumber(Long idOwner, Long phoneNumber){
-        ownerRepository.updatephoneNumber(idOwner, phoneNumber);
+    public void updatePhoneNumber(Long idOwner, Long phoneNumber){
+        ownerRepository.updatePhoneNumber(idOwner, phoneNumber);
     }
 
     @Override
     @Transactional
     public void updateEmail(Long idOwner, String email){
-        updateEmail(idOwner, email);
+        ownerRepository.updateEmail(idOwner, email);
     }
 
 

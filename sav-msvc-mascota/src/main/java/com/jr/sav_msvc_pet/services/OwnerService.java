@@ -15,7 +15,7 @@ public interface OwnerService {
 
     void deleteOwnerById(Long idOwner);
 
-    void updatephoneNumber(Long idOwner, Long phoneNumber);
+    void updatePhoneNumber(Long idOwner, Long phoneNumber);
     
     void updateEmail(Long idOwner, String email);
 }
