@@ -1,5 +1,6 @@
 package com.jr.sav_msvc_pet.controllers;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
@@ -60,6 +61,7 @@ public class OwnerController {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body("Propietario con la identificacion: "+owner.getDocumentNumber() + " ya existe en el sistema");
         }
+        owner.setDateOfRecording(LocalDate.now());
         return new ResponseEntity<>(ownerService.saveOwner(owner), HttpStatus.CREATED);
     }
 
