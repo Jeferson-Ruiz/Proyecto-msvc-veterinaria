@@ -16,25 +16,25 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Table(name = "medical_consultations")
-public class MedicalConsultation {
+public class Consultation {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_consultatio")
     private Long idConsultation;
 
-    @Column(name = "mcon_id_pet")
+    @Column(name = "con_id_pet")
     private Long idPet;
 
-    @Column(name = "mcon_date", nullable = false)
+    @Column(name = "con_date", nullable = false)
     private LocalDate date;
 
-    @Column(name = "mcon_reason", length = 20, nullable = false)
+    @Column(name = "con_reason", length = 20, nullable = false)
     private String reason;
 
-    @Column(name = "mcon_observatio", length = 30, nullable = false)
+    @Column(name = "con_observatio", length = 30, nullable = false)
     private String observations;
 
-    @Column(name = "mcon_veterinary_id", nullable = false)
+    @Column(name = "con_veterinary_id", nullable = false)
     private Long veterinaryId;
 }
