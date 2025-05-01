@@ -20,7 +20,7 @@ public class MedicalConsultation {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "mcon_id_consultatio")
+    @Column(name = "id_consultatio")
     private Long idConsultation;
 
     @Column(name = "mcon_id_pet")
@@ -35,6 +35,6 @@ public class MedicalConsultation {
     @Column(name = "mcon_observatio", length = 30, nullable = false)
     private String observations;
 
-    @Column(name = "mecon_veterinary_id", nullable = false)
+    @Column(name = "mcon_veterinary_id", nullable = false)
     private Long veterinaryId;
 }
