@@ -65,7 +65,7 @@ public class OwnerController {
         return new ResponseEntity<>(ownerService.saveOwner(owner), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("{idOwner}")
+    @DeleteMapping("/id/{idOwner}")
     public ResponseEntity<?> deleteInfoOwner(@PathVariable Long idOwner){
         if(ownerService.findOwnerById(idOwner).isPresent()){
             ownerService.deleteOwnerById(idOwner);
