@@ -3,7 +3,6 @@ package com.jr.sav_mvsc_medicalcontrol.services;
 import java.util.List;
 import java.util.Optional;
 import com.jr.sav_mvsc_medicalcontrol.models.Consultation;
-import org.springframework.web.bind.annotation.RestController;
 
 public interface ConsultationService {
 

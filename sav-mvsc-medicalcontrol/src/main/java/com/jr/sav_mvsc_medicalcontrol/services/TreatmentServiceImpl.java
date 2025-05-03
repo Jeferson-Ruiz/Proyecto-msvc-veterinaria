@@ -1,6 +1,5 @@
 package com.jr.sav_mvsc_medicalcontrol.services;
 
-import com.jr.sav_mvsc_medicalcontrol.models.Consultation;
 import com.jr.sav_mvsc_medicalcontrol.models.Treatment;
 import com.jr.sav_mvsc_medicalcontrol.repositories.TreatmentRespository;
 import org.springframework.stereotype.Service;
