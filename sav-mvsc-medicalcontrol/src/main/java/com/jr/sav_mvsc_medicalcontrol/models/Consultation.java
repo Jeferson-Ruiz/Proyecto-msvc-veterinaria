@@ -17,10 +17,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "medical_consultations")
 public class Consultation {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_consultatio")
+    @Column(name = "id_consultation")
     private Long idConsultation;
 
     @Column(name = "con_id_pet")
@@ -32,7 +32,7 @@ public class Consultation {
     @Column(name = "con_reason", length = 20, nullable = false)
     private String reason;
 
-    @Column(name = "con_observatio", length = 30, nullable = false)
+    @Column(name = "con_observation", length = 30, nullable = false)
     private String observations;
 
     @Column(name = "con_veterinary_id", nullable = false)

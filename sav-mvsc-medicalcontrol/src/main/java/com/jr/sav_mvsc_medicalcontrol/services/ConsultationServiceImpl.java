@@ -39,4 +39,8 @@ public class ConsultationServiceImpl implements ConsultationService{
     public void deleteConsultation(Long idConsultation){
         consultationRepository.deleteById(idConsultation);
     }
+
+
+
+
 }
