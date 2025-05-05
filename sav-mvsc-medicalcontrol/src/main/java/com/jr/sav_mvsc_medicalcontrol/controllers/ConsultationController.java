@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api-sav-consultation")
-public class ConsultationRepository {
+@RequestMapping("api/sav/consultation")
+public class ConsultationController {
 
     private final ConsultationService consultationService;
 
-    public ConsultationRepository(ConsultationService consultationService) {
+    public ConsultationController(ConsultationService consultationService) {
         this.consultationService = consultationService;
     }
 
@@ -44,7 +44,7 @@ public class ConsultationRepository {
 
     @PostMapping
     public ResponseEntity<Consultation> saveInfoConsultation(@RequestBody Consultation consultation){
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return new ResponseEntity<>(consultationService.saveConsultation(consultation), HttpStatus.CREATED);
     }
 
     @DeleteMapping("idconsultation/{idConsultation}")

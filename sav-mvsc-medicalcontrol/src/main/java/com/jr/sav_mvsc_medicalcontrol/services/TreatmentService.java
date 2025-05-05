@@ -6,7 +6,10 @@ import java.util.Optional;
 
 public interface TreatmentService {
     List<Treatment> findAlltreatments();
+
     Optional<Treatment> findTreatmentById(Long idTreatment);
+
     Treatment saveTreatment(Treatment treatment);
+    
     void deleteTreatment(Long idTreatment);
 }

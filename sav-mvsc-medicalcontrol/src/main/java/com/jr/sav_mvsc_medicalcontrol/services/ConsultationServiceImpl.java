@@ -9,11 +9,11 @@ import com.jr.sav_mvsc_medicalcontrol.repositories.ConsultationRepository;
 @Service
 public class ConsultationServiceImpl implements ConsultationService{
 
+    private final ConsultationRepository consultationRepository;
+
     public ConsultationServiceImpl(ConsultationRepository consultationRepository) {
         this.consultationRepository = consultationRepository;
     }
-
-    private final ConsultationRepository consultationRepository;
 
     @Override
     public List<Consultation> findAllConsultations() {
