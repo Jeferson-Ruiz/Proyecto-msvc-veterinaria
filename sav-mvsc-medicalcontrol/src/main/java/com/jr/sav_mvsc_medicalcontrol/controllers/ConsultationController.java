@@ -23,7 +23,7 @@ public class ConsultationController {
         return  ResponseEntity.ok(consultationService.findAllConsultations());
     }
 
-    @GetMapping("idconsultatio/{idConsultation}")
+    @GetMapping("id/{idConsultation}")
     public ResponseEntity<?> getConsultationBYId(@PathVariable Long idConsultation){
         Optional<Consultation> optConsultatio = consultationService.finConsultionById(idConsultation);
         if(optConsultatio.isPresent()){
@@ -47,7 +47,7 @@ public class ConsultationController {
         return new ResponseEntity<>(consultationService.saveConsultation(consultation), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("idconsultation/{idConsultation}")
+    @DeleteMapping("id/{idConsultation}")
     public ResponseEntity<?> deleteInfoConsultation(@PathVariable Long idConsultation){
         if(consultationService.finConsultionById(idConsultation).isPresent()){
             consultationService.deleteConsultation(idConsultation);
