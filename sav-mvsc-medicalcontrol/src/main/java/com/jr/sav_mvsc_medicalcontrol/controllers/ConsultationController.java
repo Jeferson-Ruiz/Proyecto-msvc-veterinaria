@@ -5,6 +5,7 @@ import com.jr.sav_mvsc_medicalcontrol.services.ConsultationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,11 +40,13 @@ public class ConsultationController {
         if(optConsultation.isPresent()){
             return ResponseEntity.ok(optConsultation.get());
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encuentra consulta para la mascota:" + idPet);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body("No se encuentra consulta para la mascota: " + idPet);
     }
 
     @PostMapping
     public ResponseEntity<Consultation> saveInfoConsultation(@RequestBody Consultation consultation){
+        consultation.setDate(LocalDate.now());
         return new ResponseEntity<>(consultationService.saveConsultation(consultation), HttpStatus.CREATED);
     }
 
@@ -54,6 +57,6 @@ public class ConsultationController {
             return  ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("El id: "+idConsultation +" no existe en el sistema");
+                .body("La consulta con el id: "+idConsultation +" no existe en el sistema");
     }
 }
