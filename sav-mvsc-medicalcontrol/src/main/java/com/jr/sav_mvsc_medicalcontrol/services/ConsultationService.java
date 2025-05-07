@@ -10,8 +10,6 @@ public interface ConsultationService {
 
     Optional<Consultation> finConsultionById(Long idConsultation);
 
-    Optional<Consultation> finConsultionByIdPet(Long idPet);
-
     Consultation saveConsultation(Consultation consultation);
 
     void deleteConsultation(Long idConsultation);

@@ -34,16 +34,6 @@ public class ConsultationController {
                 .body("La colsulta con el ID: "+idConsultation+" no se encuentra en el sistema");
     }
 
-    @GetMapping("idpet/{idPet}")
-    public ResponseEntity<?> getConsultionByIdPet(@PathVariable Long idPet){
-        Optional<Consultation> optConsultation = consultationService.finConsultionByIdPet(idPet);
-        if(optConsultation.isPresent()){
-            return ResponseEntity.ok(optConsultation.get());
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-            .body("No se encuentra consulta para la mascota: " + idPet);
-    }
-
     @PostMapping
     public ResponseEntity<Consultation> saveInfoConsultation(@RequestBody Consultation consultation){
         consultation.setDate(LocalDate.now());

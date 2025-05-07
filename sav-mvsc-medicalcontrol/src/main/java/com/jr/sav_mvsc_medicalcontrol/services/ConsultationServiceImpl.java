@@ -26,11 +26,6 @@ public class ConsultationServiceImpl implements ConsultationService{
     }
 
     @Override
-    public Optional<Consultation> finConsultionByIdPet(Long idPet) {
-        return consultationRepository.findByIdPet(idPet);
-    }
-
-    @Override
     public Consultation saveConsultation(Consultation consultation){
         return consultationRepository.save(consultation);
     }

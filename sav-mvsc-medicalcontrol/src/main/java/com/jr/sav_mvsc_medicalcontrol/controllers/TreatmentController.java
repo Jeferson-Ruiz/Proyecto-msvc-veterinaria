@@ -19,7 +19,7 @@ import com.jr.sav_mvsc_medicalcontrol.services.TreatmentService;
 public class TreatmentController {
 
     private final TreatmentService treatmentService;
-
+            
     public TreatmentController(TreatmentService treatmentService) {
         this.treatmentService = treatmentService;
     }
