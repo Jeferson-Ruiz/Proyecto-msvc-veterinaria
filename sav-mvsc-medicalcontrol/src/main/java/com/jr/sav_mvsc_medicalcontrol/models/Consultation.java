@@ -20,10 +20,10 @@ public class Consultation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_consultation")
+    @Column(name = "id_consultation", unique = true)
     private Long idConsultation;
 
-    @Column(name = "con_id_pet")
+    @Column(name = "con_id_pet", nullable = false)
     private Long idPet;
 
     @Column(name = "con_date", nullable = false)
