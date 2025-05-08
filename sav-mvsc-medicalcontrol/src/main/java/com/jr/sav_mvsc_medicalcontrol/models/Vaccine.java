@@ -20,7 +20,7 @@ public class Vaccine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_vaccine")
+    @Column(name = "id_vaccine", unique = true)
     private Long idVaccine;
 
     @Column(name = "vac_id_pet", nullable = false)
