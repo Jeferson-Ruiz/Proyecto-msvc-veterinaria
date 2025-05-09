@@ -1,5 +1,6 @@
 package com.jr.sav_mvsc_medicalcontrol.services;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class ConsultationServiceImpl implements ConsultationService{
     private final PetClient petClient;
     private final ConsultationRepository consultationRepository;
 
-   
+
     public ConsultationServiceImpl(PetClient petClient, ConsultationRepository consultationRepository) {
         this.petClient = petClient;
         this.consultationRepository = consultationRepository;
@@ -33,6 +34,7 @@ public class ConsultationServiceImpl implements ConsultationService{
 
     @Override
     public Consultation saveConsultation(Consultation consultation){
+        consultation.setDate(LocalDate.now());
         return consultationRepository.save(consultation);
     }
 

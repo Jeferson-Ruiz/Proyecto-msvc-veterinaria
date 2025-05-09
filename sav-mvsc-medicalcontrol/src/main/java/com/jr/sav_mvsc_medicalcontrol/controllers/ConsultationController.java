@@ -1,11 +1,11 @@
 package com.jr.sav_mvsc_medicalcontrol.controllers;
 
+import com.jr.sav_mvsc_medicalcontrol.dto.PetDto;
 import com.jr.sav_mvsc_medicalcontrol.models.Consultation;
 import com.jr.sav_mvsc_medicalcontrol.services.ConsultationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,9 +35,14 @@ public class ConsultationController {
     }
 
     @PostMapping
-    public ResponseEntity<Consultation> saveInfoConsultation(@RequestBody Consultation consultation){
-        consultation.setDate(LocalDate.now());
-        return new ResponseEntity<>(consultationService.saveConsultation(consultation), HttpStatus.CREATED);
+    public ResponseEntity<?> saveInfoConsultation(@RequestBody Consultation consultation){
+        Optional<PetDto> petOptional = consultationService.findConsultationByIdPet(consultation.getIdPet());
+
+        if(petOptional.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("La mascota: "+ consultation.getIdPet() + " no se encuentra registrada en el sistema");
+        }
+        return new ResponseEntity<>(consultationService.saveConsultation(consultation),HttpStatus.CREATED);
     }
 
     @DeleteMapping("id/{idConsultation}")
