@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@DiscriminatorValue("Administrative")
+@DiscriminatorValue("ADMINISTRATIVE")
 @Table(name = "administratives")
 public class Administrative extends Employee{
 

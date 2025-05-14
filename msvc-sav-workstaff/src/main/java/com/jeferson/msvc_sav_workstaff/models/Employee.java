@@ -5,6 +5,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -52,6 +54,10 @@ public abstract class Employee {
 
     @Column(name = "emp_contract_type", nullable = false, length = 20)
     private String contractType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "emp_job_position", nullable = false)
+    private JobPosition jobPosition;
 
     @Column(name = "emp_work_status", nullable = false)
     private Boolean workStatus;

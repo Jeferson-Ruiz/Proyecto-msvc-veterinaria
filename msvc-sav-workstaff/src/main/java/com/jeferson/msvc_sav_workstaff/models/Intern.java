@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "inters")
-@DiscriminatorValue("Inter")
+@DiscriminatorValue("INTERN")
 public class Intern extends Employee {
     
     @Column(name = "int_education_institute", nullable = false, length = 30)

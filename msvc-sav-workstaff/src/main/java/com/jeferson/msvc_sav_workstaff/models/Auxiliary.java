@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "auxiliaries")
-@DiscriminatorValue("Auxiliary")
+@DiscriminatorValue("AUXILIARY")
 public class Auxiliary extends Employee{
 
     @Column(name = "aux_work_area", nullable = false, length = 20)
