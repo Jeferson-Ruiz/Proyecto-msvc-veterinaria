@@ -53,4 +53,6 @@ public abstract class Employee {
     @Column(name = "emp_contract_type", nullable = false, length = 20)
     private String contractType;
 
+    @Column(name = "emp_work_status", nullable = false)
+    private Boolean workStatus;
 }
