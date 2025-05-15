@@ -29,7 +29,7 @@ public abstract class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "emp_id")
-    private Long id;
+    private Long idEmployee;
 
     @Column(name = "emp_name", length = 20, nullable = false)
     private String name;
