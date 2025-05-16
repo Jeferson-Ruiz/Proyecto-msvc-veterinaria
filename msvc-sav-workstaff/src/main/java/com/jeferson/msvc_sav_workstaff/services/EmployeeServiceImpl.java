@@ -1,5 +1,6 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
+import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.Employee;
 import com.jeferson.msvc_sav_workstaff.repositories.EmployeeRespository;
 import org.springframework.stereotype.Service;
@@ -55,7 +56,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public void updateContractType(Long idEmployee, String contractType){
+    public void updateContractType(Long idEmployee, ContractType contractType){
         employeeRespository.updateContractType(idEmployee, contractType);
     }
 }

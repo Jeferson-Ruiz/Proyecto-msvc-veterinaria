@@ -2,6 +2,7 @@ package com.jeferson.msvc_sav_workstaff.services;
 
 import java.util.List;
 import java.util.Optional;
+import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.Employee;
 
 public interface EmployeeService {
@@ -20,6 +21,6 @@ public interface EmployeeService {
 
     void updateNumberPhone(Long idEmployee, Long phoneNumber);
 
-    void updateContractType(Long idEmployee, String contractType);
+    void updateContractType(Long idEmployee, ContractType contractType);
 
 }

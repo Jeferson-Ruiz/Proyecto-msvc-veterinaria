@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "emp_job_position",discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "emp_job_position", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "employees")
 public abstract class Employee {
 
@@ -52,8 +52,9 @@ public abstract class Employee {
     @Column(name = "emp_phone_number", nullable = false)
     private Long phoneNumber;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "emp_contract_type", nullable = false, length = 20)
-    private String contractType;
+    private ContractType contractType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "emp_job_position", nullable = false)

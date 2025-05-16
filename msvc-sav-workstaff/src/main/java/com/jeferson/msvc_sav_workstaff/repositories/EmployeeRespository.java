@@ -3,6 +3,7 @@ package com.jeferson.msvc_sav_workstaff.repositories;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.Employee;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
@@ -20,5 +21,5 @@ public interface EmployeeRespository extends CrudRepository<Employee, Long> {
 
     @Modifying
     @Query("update Employee set contractType=:contractType where idEmployee=:idEmployee")
-    void updateContractType (@Param("idEmployee") Long idEmployee, @Param("contractType") String contractType);
+    void updateContractType (@Param("idEmployee") Long idEmployee, @Param("contractType") ContractType contractType);
 }
