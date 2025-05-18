@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 public abstract class Employee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "emp_id")
     private Long idEmployee;
 
@@ -57,7 +57,7 @@ public abstract class Employee {
     private ContractType contractType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "emp_job_position", nullable = false)
+    @Column(name = "emp_job_position", insertable = false, updatable = false)
     private JobPosition jobPosition;
 
     @Column(name = "emp_work_status", nullable = false)

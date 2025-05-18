@@ -3,7 +3,6 @@ package com.jeferson.msvc_sav_workstaff.models;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,6 @@ import lombok.Setter;
 @Setter
 @Entity
 @DiscriminatorValue("ADMINISTRATIVE")
-@Table(name = "administratives")
 public class Administrative extends Employee{
 
     @Column(name = "adm_academic_title", length = 30, nullable = false)
