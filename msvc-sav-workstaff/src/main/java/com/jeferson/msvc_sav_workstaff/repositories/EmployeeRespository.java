@@ -8,8 +8,12 @@ import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.Employee;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
+import java.util.Optional;
 
 public interface EmployeeRespository extends CrudRepository<Employee, Long> {
+
+    Optional<Employee> findByDocumentNumber(Long documentNumber);
+
     List<Employee> findByJobPosition(JobPosition jobPosition);
 
     @Modifying

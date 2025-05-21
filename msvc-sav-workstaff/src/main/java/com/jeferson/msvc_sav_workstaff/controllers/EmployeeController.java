@@ -40,7 +40,7 @@ public class EmployeeController {
 
     @GetMapping("id/{idEmployee}")
     public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long idEmployee) {
-        Optional<Employee> optEmployee = employeeService.findEmployeeById(idEmployee);
+        Optional<Employee> optEmployee = employeeService.findById(idEmployee);
 
         if (optEmployee.isPresent()) {
             Employee employee = optEmployee.get();
@@ -48,6 +48,18 @@ public class EmployeeController {
             return ResponseEntity.ok(employeeDto);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @GetMapping("document/{documentNumber}")
+    public ResponseEntity<EmployeeDto> getEmployeeByDocumentNumber(@PathVariable Long documentNumber) {
+        Optional<Employee> optoEmployee = employeeService.findByDocumentNumber(documentNumber);
+
+        if (optoEmployee.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        Employee employee = optoEmployee.get();
+        EmployeeDto employeeDto = employeeMapper.toDto(employee);
+        return ResponseEntity.ok(employeeDto);
     }
 
     @GetMapping("jobposition/{jobPosition}")
@@ -60,7 +72,7 @@ public class EmployeeController {
 
     @DeleteMapping("id/{idEmployee}")
     public ResponseEntity<?> deleteInfoEmployee(@PathVariable Long idEmployee) {
-        Optional<Employee> optEmployee = employeeService.findEmployeeById(idEmployee);
+        Optional<Employee> optEmployee = employeeService.findById(idEmployee);
 
         if (optEmployee.isPresent()) {
             employeeService.delete(idEmployee);
@@ -71,7 +83,7 @@ public class EmployeeController {
 
     @PatchMapping("update/email/{idEmployee}")
     public ResponseEntity<?> updateInfoEmailEmployee(@PathVariable Long idEmployee, @RequestBody String email) {
-        if (employeeService.findEmployeeById(idEmployee).isPresent()) {
+        if (employeeService.findById(idEmployee).isPresent()) {
             employeeService.updateEmail(idEmployee, email);
             return ResponseEntity.ok().build();
         }
@@ -83,7 +95,7 @@ public class EmployeeController {
     @PatchMapping("update/phonenumber/{idEmployee}")
     public ResponseEntity<?> updateInfoNumberPhoneEmployee(@PathVariable Long idEmployee,
             @RequestBody Long numberPhone) {
-        if (employeeService.findEmployeeById(idEmployee).isPresent()) {
+        if (employeeService.findById(idEmployee).isPresent()) {
             employeeService.updateNumberPhone(idEmployee, numberPhone);
             return ResponseEntity.ok().build();
         }
@@ -94,7 +106,7 @@ public class EmployeeController {
     @PatchMapping("update/contractype/{idEmployee}")
     public ResponseEntity<?> updateInfoContractType(@PathVariable Long idEmployee,
             @RequestBody ContractType contractType) {
-        if (employeeService.findEmployeeById(idEmployee).isPresent()) {
+        if (employeeService.findById(idEmployee).isPresent()) {
             employeeService.updateContractType(idEmployee, contractType);
             return ResponseEntity.ok().build();
         }

@@ -10,7 +10,9 @@ public interface EmployeeService {
 
     List<Employee> findAll();
 
-    Optional<Employee> findEmployeeById(Long idEmployee);
+    Optional<Employee> findById(Long idEmployee);
+
+    Optional<Employee> findByDocumentNumber(Long documentNumber);
 
     List<Employee> findAllByJobPosition(JobPosition jobPosition);
 

@@ -14,46 +14,49 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRespository employeeRespository;
 
-    public EmployeeServiceImpl(EmployeeRespository employeeRespository){
+    public EmployeeServiceImpl(EmployeeRespository employeeRespository) {
         this.employeeRespository = employeeRespository;
     }
 
     @Override
-    public List<Employee> findAll(){
+    public List<Employee> findAll() {
         return (List<Employee>) employeeRespository.findAll();
     }
 
     @Override
-    public Optional<Employee> findEmployeeById(Long idEmployee){
-        return  employeeRespository.findById(idEmployee);
+    public Optional<Employee> findById(Long idEmployee) {
+        return employeeRespository.findById(idEmployee);
+    }
+
+    public Optional<Employee> findByDocumentNumber(Long documentNumber) {
+        return employeeRespository.findByDocumentNumber(documentNumber);
     }
 
     @Override
-    public List<Employee> findAllByJobPosition(JobPosition jobPosition){
+    public List<Employee> findAllByJobPosition(JobPosition jobPosition) {
         return employeeRespository.findByJobPosition(jobPosition);
     }
 
-
     @Override
-    public void delete(Long idEmployee){
+    public void delete(Long idEmployee) {
         employeeRespository.deleteById(idEmployee);
     }
 
     @Override
     @Transactional
-    public void updateEmail(Long idEmployee, String email){
+    public void updateEmail(Long idEmployee, String email) {
         employeeRespository.updateEmail(idEmployee, email);
     }
 
     @Override
     @Transactional
-    public void updateNumberPhone(Long idEmployee, Long phoneNumber){
+    public void updateNumberPhone(Long idEmployee, Long phoneNumber) {
         employeeRespository.updatePhoneNumber(idEmployee, phoneNumber);
     }
 
     @Override
     @Transactional
-    public void updateContractType(Long idEmployee, ContractType contractType){
+    public void updateContractType(Long idEmployee, ContractType contractType) {
         employeeRespository.updateContractType(idEmployee, contractType);
     }
 }
