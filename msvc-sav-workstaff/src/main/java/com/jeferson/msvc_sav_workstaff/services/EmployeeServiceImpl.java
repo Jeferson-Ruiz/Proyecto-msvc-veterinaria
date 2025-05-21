@@ -2,6 +2,7 @@ package com.jeferson.msvc_sav_workstaff.services;
 
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.Employee;
+import com.jeferson.msvc_sav_workstaff.models.JobPosition;
 import com.jeferson.msvc_sav_workstaff.repositories.EmployeeRespository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> FindAllByJobPosition(String jobPosition){
+    public List<Employee> FindAllByJobPosition(JobPosition jobPosition){
         return employeeRespository.findByJobPosition(jobPosition);
     }
 

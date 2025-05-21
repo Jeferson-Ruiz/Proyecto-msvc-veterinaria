@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.Employee;
+import com.jeferson.msvc_sav_workstaff.models.JobPosition;
 
 public interface EmployeeService {
 
@@ -11,7 +12,7 @@ public interface EmployeeService {
 
     Optional<Employee> findEmployeeById(Long idEmployee);
 
-    List<Employee> FindAllByJobPosition(String jobPosition);
+    List<Employee> FindAllByJobPosition(JobPosition jobPosition);
 
     Employee saveEmployee(Employee employee);
 

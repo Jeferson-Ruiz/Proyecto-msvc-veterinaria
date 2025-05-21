@@ -1,5 +1,6 @@
 package com.jeferson.msvc_sav_workstaff.repositories;
 
+import com.jeferson.msvc_sav_workstaff.models.JobPosition;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -9,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface EmployeeRespository extends CrudRepository<Employee, Long> {
-    List<Employee> findByJobPosition(String jobPosition);
+    List<Employee> findByJobPosition(JobPosition jobPosition);
 
     @Modifying
     @Query("update Employee set email=:email where idEmployee=:idEmployee")
