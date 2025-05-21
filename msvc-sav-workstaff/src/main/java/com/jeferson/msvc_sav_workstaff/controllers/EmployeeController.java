@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.Employee;
+import com.jeferson.msvc_sav_workstaff.models.JobPosition;
 import com.jeferson.msvc_sav_workstaff.services.EmployeeService;
 
 @RestController
@@ -43,14 +43,10 @@ public class EmployeeController {
     }
 
     @GetMapping("jobposition/{jobPosition}")
-    public ResponseEntity<List<Employee>> getAllEmployeeByJonPosition(@PathVariable String jobPosition) {
+    public ResponseEntity<List<Employee>> getAllEmployeeByJonPosition(@PathVariable JobPosition jobPosition) {
         return ResponseEntity.ok(employeeService.FindAllByJobPosition(jobPosition));
     }
 
-    @PostMapping
-    public ResponseEntity<Employee> saveInfoEmployee(@RequestBody Employee employee) {
-        return new ResponseEntity<>(employeeService.saveEmployee(employee), HttpStatus.CREATED);
-    }
 
     @DeleteMapping("id/{idEmployee}")
     public ResponseEntity<?> deleteInfoEmployee(@PathVariable Long idEmployee) {

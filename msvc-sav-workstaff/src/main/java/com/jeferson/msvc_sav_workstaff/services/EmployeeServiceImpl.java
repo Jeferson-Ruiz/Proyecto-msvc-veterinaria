@@ -33,10 +33,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRespository.findByJobPosition(jobPosition);
     }
 
-    @Override
-    public Employee saveEmployee(Employee employee){
-        return employeeRespository.save(employee);
-    }
 
     @Override
     public void deleteEmployee(Long idEmployee){

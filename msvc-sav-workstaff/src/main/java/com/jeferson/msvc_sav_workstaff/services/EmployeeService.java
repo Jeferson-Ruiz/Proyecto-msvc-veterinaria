@@ -14,8 +14,6 @@ public interface EmployeeService {
 
     List<Employee> FindAllByJobPosition(JobPosition jobPosition);
 
-    Employee saveEmployee(Employee employee);
-
     void deleteEmployee(Long idEmployee);
 
     void updateEmail(Long idEmployee, String email);
