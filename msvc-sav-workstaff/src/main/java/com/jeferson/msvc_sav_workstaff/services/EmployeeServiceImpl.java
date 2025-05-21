@@ -19,8 +19,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> findAllEmployee(){
-        return (List<Employee>)  employeeRespository.findAll();
+    public List<Employee> findAll(){
+        return (List<Employee>) employeeRespository.findAll();
     }
 
     @Override
@@ -29,13 +29,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> FindAllByJobPosition(JobPosition jobPosition){
+    public List<Employee> findAllByJobPosition(JobPosition jobPosition){
         return employeeRespository.findByJobPosition(jobPosition);
     }
 
 
     @Override
-    public void deleteEmployee(Long idEmployee){
+    public void delete(Long idEmployee){
         employeeRespository.deleteById(idEmployee);
     }
 

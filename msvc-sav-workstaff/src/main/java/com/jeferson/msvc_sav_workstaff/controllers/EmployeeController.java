@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.jeferson.msvc_sav_workstaff.dto.EmployeeDto;
+import com.jeferson.msvc_sav_workstaff.mapper.EmployeeMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.Employee;
 import com.jeferson.msvc_sav_workstaff.models.JobPosition;
@@ -21,43 +23,50 @@ import com.jeferson.msvc_sav_workstaff.services.EmployeeService;
 public class EmployeeController {
 
     private final EmployeeService employeeService;
+    private final EmployeeMapper employeeMapper;
 
-    public EmployeeController(EmployeeService employeeService) {
+    public EmployeeController(EmployeeService employeeService, EmployeeMapper employeeMapper) {
         this.employeeService = employeeService;
+        this.employeeMapper = employeeMapper;
     }
 
     @GetMapping
-    public ResponseEntity<List<Employee>> getAllEmployee() {
-        return ResponseEntity.ok(employeeService.findAllEmployee());
+    public ResponseEntity<List<EmployeeDto>> getAllEmployee() {
+        List<EmployeeDto> employeesDto = employeeService.findAll().stream()
+                .map(employeeMapper::toDto)
+                .toList();
+        return ResponseEntity.ok(employeesDto);
     }
 
     @GetMapping("id/{idEmployee}")
-    public ResponseEntity<?> getEmployeeById(@PathVariable Long idEmployee) {
+    public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long idEmployee) {
         Optional<Employee> optEmployee = employeeService.findEmployeeById(idEmployee);
 
         if (optEmployee.isPresent()) {
-            return ResponseEntity.ok(optEmployee.get());
+            Employee employee = optEmployee.get();
+            EmployeeDto employeeDto = employeeMapper.toDto(employee);
+            return ResponseEntity.ok(employeeDto);
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("El empleado con el Id: " + idEmployee + " no se encuenta registrado en el sistema");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @GetMapping("jobposition/{jobPosition}")
-    public ResponseEntity<List<Employee>> getAllEmployeeByJonPosition(@PathVariable JobPosition jobPosition) {
-        return ResponseEntity.ok(employeeService.FindAllByJobPosition(jobPosition));
+    public ResponseEntity<List<EmployeeDto>> getAllEmployeeByJonPosition(@PathVariable JobPosition jobPosition) {
+        List<EmployeeDto> employeesDto = employeeService.findAllByJobPosition(jobPosition).stream()
+                .map(employeeMapper::toDto)
+                .toList();
+        return ResponseEntity.ok(employeesDto);
     }
-
 
     @DeleteMapping("id/{idEmployee}")
     public ResponseEntity<?> deleteInfoEmployee(@PathVariable Long idEmployee) {
         Optional<Employee> optEmployee = employeeService.findEmployeeById(idEmployee);
 
         if (optEmployee.isPresent()) {
-            employeeService.deleteEmployee(idEmployee);
+            employeeService.delete(idEmployee);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Eliminación no valida. El empleado con el Id: " + idEmployee + " no existe en el sistema");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PatchMapping("update/email/{idEmployee}")
@@ -82,7 +91,7 @@ public class EmployeeController {
                 .body("Actualización no valida. El empleado con el Id: " + idEmployee + " no existe en el sistema");
     }
 
-    @PatchMapping("ipdate/contractype/{idEmployee}")
+    @PatchMapping("update/contractype/{idEmployee}")
     public ResponseEntity<?> updateInfoContractType(@PathVariable Long idEmployee,
             @RequestBody ContractType contractType) {
         if (employeeService.findEmployeeById(idEmployee).isPresent()) {
