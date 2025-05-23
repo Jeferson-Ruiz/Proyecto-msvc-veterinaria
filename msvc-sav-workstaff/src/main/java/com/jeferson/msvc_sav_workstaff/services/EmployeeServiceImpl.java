@@ -3,7 +3,6 @@ package com.jeferson.msvc_sav_workstaff.services;
 import com.jeferson.msvc_sav_workstaff.dto.EmployeeDto;
 import com.jeferson.msvc_sav_workstaff.mapper.EmployeeMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
-import com.jeferson.msvc_sav_workstaff.models.Employee;
 import com.jeferson.msvc_sav_workstaff.models.JobPosition;
 import com.jeferson.msvc_sav_workstaff.repositories.EmployeeRespository;
 import org.springframework.stereotype.Service;

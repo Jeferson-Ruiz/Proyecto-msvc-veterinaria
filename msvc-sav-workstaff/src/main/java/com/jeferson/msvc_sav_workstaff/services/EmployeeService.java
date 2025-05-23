@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import com.jeferson.msvc_sav_workstaff.dto.EmployeeDto;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
-import com.jeferson.msvc_sav_workstaff.models.Employee;
 import com.jeferson.msvc_sav_workstaff.models.JobPosition;
 
 public interface EmployeeService {

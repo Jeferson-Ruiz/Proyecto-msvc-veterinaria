@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc_sav_workstaff.dto.EmployeeDto;
-import com.jeferson.msvc_sav_workstaff.mapper.EmployeeMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
-import com.jeferson.msvc_sav_workstaff.models.Employee;
 import com.jeferson.msvc_sav_workstaff.models.JobPosition;
 import com.jeferson.msvc_sav_workstaff.services.EmployeeService;
 
@@ -73,22 +71,22 @@ public class EmployeeController {
     }
 
     @PatchMapping("update/phonenumber/{idEmployee}")
-    public ResponseEntity<?> updateInfoNumberPhoneEmployee(@PathVariable Long idEmployee, @RequestBody Long numberPhone) {
+    public ResponseEntity<?> updateInfoNumberPhoneEmployee(@PathVariable Long idEmployee,
+            @RequestBody Long numberPhone) {
         if (employeeService.findById(idEmployee).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         employeeService.updateNumberPhone(idEmployee, numberPhone);
-        return  ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("update/contractype/{idEmployee}")
     public ResponseEntity<?> updateInfoContractType(@PathVariable Long idEmployee,
             @RequestBody ContractType contractType) {
-        if (employeeService.findById(idEmployee).isPresent()) {
-            employeeService.updateContractType(idEmployee, contractType);
-            return ResponseEntity.ok().build();
+        if (employeeService.findById(idEmployee).isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Actualización no valida. El empleado con el Id: " + idEmployee + " no existe en el sistema");
+        employeeService.updateContractType(idEmployee, contractType);
+        return ResponseEntity.noContent().build();
     }
 }
