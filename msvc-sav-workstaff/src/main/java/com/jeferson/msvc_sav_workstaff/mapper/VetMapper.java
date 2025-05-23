@@ -8,6 +8,7 @@ import com.jeferson.msvc_sav_workstaff.models.Vet;
 public interface VetMapper {
 
     Vet toEntity(VetDto dto);
+
     VetDto toDto(Vet entity);
 
 }
