@@ -1,16 +1,16 @@
 package com.jeferson.msvc_sav_workstaff.repositories;
 
 import com.jeferson.msvc_sav_workstaff.models.JobPosition;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.Employee;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface EmployeeRespository extends CrudRepository<Employee, Long> {
+public interface EmployeeRespository extends JpaRepository<Employee, Long> {
 
     Optional<Employee> findByDocumentNumber(Long documentNumber);
 

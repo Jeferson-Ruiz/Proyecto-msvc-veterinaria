@@ -1,5 +1,7 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
+import com.jeferson.msvc_sav_workstaff.dto.EmployeeDto;
+import com.jeferson.msvc_sav_workstaff.mapper.EmployeeMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.Employee;
 import com.jeferson.msvc_sav_workstaff.models.JobPosition;
@@ -13,28 +15,36 @@ import java.util.Optional;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRespository employeeRespository;
+    private  final EmployeeMapper employeeMapper;
 
-    public EmployeeServiceImpl(EmployeeRespository employeeRespository) {
+    public EmployeeServiceImpl(EmployeeRespository employeeRespository, EmployeeMapper employeeMapper) {
         this.employeeRespository = employeeRespository;
+        this.employeeMapper = employeeMapper;
     }
 
     @Override
-    public List<Employee> findAll() {
-        return (List<Employee>) employeeRespository.findAll();
+    public List<EmployeeDto> findAll() {
+        return employeeRespository.findAll().stream()
+                .map(employeeMapper::toDto).toList();
     }
 
     @Override
-    public Optional<Employee> findById(Long idEmployee) {
-        return employeeRespository.findById(idEmployee);
-    }
-
-    public Optional<Employee> findByDocumentNumber(Long documentNumber) {
-        return employeeRespository.findByDocumentNumber(documentNumber);
+    public Optional<EmployeeDto> findById(Long idEmployee) {
+        return employeeRespository.findById(idEmployee)
+                .map(employeeMapper::toDto);
     }
 
     @Override
-    public List<Employee> findAllByJobPosition(JobPosition jobPosition) {
-        return employeeRespository.findByJobPosition(jobPosition);
+    public Optional<EmployeeDto> findByDocumentNumber(Long documentNumber) {
+        return employeeRespository.findByDocumentNumber(documentNumber)
+                .map(employeeMapper::toDto);
+    }
+
+    @Override
+    public List<EmployeeDto> findAllByJobPosition(JobPosition jobPosition) {
+        return employeeRespository.findByJobPosition(jobPosition).stream()
+                .map(employeeMapper::toDto)
+                .toList();
     }
 
     @Override
