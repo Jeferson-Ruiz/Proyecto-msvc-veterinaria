@@ -9,5 +9,5 @@ public interface VetMapper {
 
     Vet toEntity(VetDto dto);
     VetDto toDto(Vet entity);
-    
+
 }

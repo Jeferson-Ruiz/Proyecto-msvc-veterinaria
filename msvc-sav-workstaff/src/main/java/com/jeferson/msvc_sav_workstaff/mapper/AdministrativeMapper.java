@@ -9,5 +9,5 @@ public interface AdministrativeMapper {
 
     Administrative toEntity(AdministrativeDto dto);
     AdministrativeDto toDto(Administrative entity);
-    
+
 }

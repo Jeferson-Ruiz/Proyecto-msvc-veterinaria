@@ -9,5 +9,5 @@ public interface AuxiliaryMapper {
 
     Auxiliary toEntiy(AuxiliaryDto dto);
     AuxiliaryDto toDto(Auxiliary entity);
-    
+
 }
