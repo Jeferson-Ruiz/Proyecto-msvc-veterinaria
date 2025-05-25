@@ -35,8 +35,10 @@ public class AdministrativeServiceImpl implements AdministrativeService {
 
     @Override
     @Transactional
-    public void updateAdministrativeWorkArea(Long idEmployee, String workArea) {
+    public void uptAdministrativeWorkArea(Long idEmployee, String workArea) {
+        if(employeeRespository.findById(idEmployee).isEmpty()){
+            Optional.empty();
+        }
         administrativeRepository.updateWorkArea(idEmployee, workArea);
     }
-
 }

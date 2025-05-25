@@ -6,8 +6,8 @@ import com.jeferson.msvc_sav_workstaff.models.Administrative;
 
 public interface AdministrativeService {
 
-    Optional<Administrative> saveAdministrative(AdministrativeDto administrativeDto);
+    Optional<Administrative> saveAdministrative(AdministrativeDto administrative);
 
-    void updateAdministrativeWorkArea(Long idEmployee, String workArea);
+    void uptAdministrativeWorkArea(Long idEmployee, String workArea);
 
 }
