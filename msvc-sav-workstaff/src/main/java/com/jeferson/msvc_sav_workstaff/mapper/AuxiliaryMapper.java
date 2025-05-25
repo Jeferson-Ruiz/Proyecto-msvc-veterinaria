@@ -7,7 +7,7 @@ import com.jeferson.msvc_sav_workstaff.models.Auxiliary;
 @Mapper(componentModel = "spring")
 public interface AuxiliaryMapper {
 
-    Auxiliary toEntiy(AuxiliaryDto dto);
+    Auxiliary toEntity(AuxiliaryDto dto);
     AuxiliaryDto toDto(Auxiliary entity);
 
 }

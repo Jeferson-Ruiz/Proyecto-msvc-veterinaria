@@ -16,9 +16,6 @@ import lombok.Setter;
 @DiscriminatorValue("AUXILIARY")
 public class Auxiliary extends Employee{
 
-    @Column(name = "aux_work_area", nullable = false, length = 20)
-    private String workArea;
-    
     @Column(name = "aux_academic_certificate", nullable = false, length = 20)
     private String academicCertificate;
 }
