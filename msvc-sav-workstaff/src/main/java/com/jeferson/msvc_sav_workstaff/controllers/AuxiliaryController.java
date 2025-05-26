@@ -13,7 +13,7 @@ import com.jeferson.msvc_sav_workstaff.models.Auxiliary;
 import com.jeferson.msvc_sav_workstaff.services.AuxiliaryService;
 
 @RestController
-@RequestMapping("api/sav/employee/aux")
+@RequestMapping("api/sav/employee/auxiliary")
 public class AuxiliaryController {
 
     private final AuxiliaryService auxService;
@@ -28,7 +28,7 @@ public class AuxiliaryController {
     public ResponseEntity<?> saveInfoAuxiliary(@RequestBody AuxiliaryDto auxiliaryDto) {
         Optional<Auxiliary> optAuxiliary = auxService.saveAuxiliary(auxiliaryDto);
 
-        if (optAuxiliary.isPresent()) {
+        if (optAuxiliary.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("El usuario ya existe en el sistema");
         }

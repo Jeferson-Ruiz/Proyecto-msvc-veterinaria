@@ -31,7 +31,7 @@ public class AdministrativeController {
     public ResponseEntity<?> saveInfoAdministrative(@RequestBody AdministrativeDto administrative) {
         Optional<Administrative> optAdministrative = administrativeService.saveAdministrative(administrative);
 
-        if (optAdministrative.isPresent()) {
+        if (optAdministrative.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Error usuario ya registrado en el sistema");
         }

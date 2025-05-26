@@ -28,7 +28,7 @@ public class VetController {
     public ResponseEntity<?> saveInfoVet(@RequestBody VetDto vetDto) {
         Optional<Vet> optVet = vetService.saveVet(vetDto);
 
-        if (optVet.isPresent()) {
+        if (optVet.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("usuario ya existe en el sistema");
         }

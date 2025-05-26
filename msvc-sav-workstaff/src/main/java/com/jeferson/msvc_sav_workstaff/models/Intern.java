@@ -15,11 +15,11 @@ import lombok.Setter;
 @Entity
 @DiscriminatorValue("INTERN")
 public class Intern extends Employee {
-    
-    @Column(name = "int_education_institute", nullable = false, length = 30)
+
+    @Column(name = "int_education_institute", nullable = true, length = 30)
     private String educationInstitute;
 
-    @Column(name = "int_level_academic", nullable = false, length = 20)
+    @Column(name = "int_level_academic", nullable = true, length = 20)
     private String levelAcademic;
-    
+
 }

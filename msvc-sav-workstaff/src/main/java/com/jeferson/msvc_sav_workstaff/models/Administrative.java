@@ -14,11 +14,11 @@ import lombok.Setter;
 @Setter
 @Entity
 @DiscriminatorValue("ADMINISTRATIVE")
-public class Administrative extends Employee{
+public class Administrative extends Employee {
 
-    @Column(name = "adm_academic_title", length = 30, nullable = false)
+    @Column(name = "adm_academic_title", length = 30, nullable = true)
     private String academicTitle;
 
-    @Column(name = "adm_work_area", nullable = false, length = 20)
+    @Column(name = "adm_work_area", nullable = true, length = 20)
     private String workArea;
 }

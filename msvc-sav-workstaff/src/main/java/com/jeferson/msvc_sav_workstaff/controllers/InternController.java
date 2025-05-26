@@ -25,7 +25,7 @@ public class InternController {
     public ResponseEntity<?> saveInfoIntern(InternDto internDto) {
         Optional<Intern> optInter = intService.saveIntern(internDto);
 
-        if (optInter.isPresent()) {
+        if (optInter.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Usario ya existe en el sistema");
         }
