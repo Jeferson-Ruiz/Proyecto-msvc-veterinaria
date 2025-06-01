@@ -46,7 +46,7 @@ public class AdministrativeController {
 
     @GetMapping("/{idEmployee}")
     public ResponseEntity<?> getAdministrative(@PathVariable Long idEmployee){
-        if (administrativeService.findByAdministrative(idEmployee).isPresent()) {
+        if (administrativeService.findByAdministrative(idEmployee).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(administrativeService.findByAdministrative(idEmployee));

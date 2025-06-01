@@ -33,6 +33,14 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
         return Optional.of(auxRepository.save(auxMapper.toEntity(auxiliaryDto)));
     }
 
+    public Optional<AuxiliaryDto> findById(Long idEmployee){
+        Optional<Auxiliary> optAuxiliary = auxRepository.findById(idEmployee);
+        if (optAuxiliary.isEmpty()) {
+            return Optional.empty();
+        }
+        return auxRepository.findById(idEmployee).map(auxMapper::toDto);
+    }
+
     @Override
     @Transactional
     public void updateEmail(Long idEmployee, String email){

@@ -9,6 +9,8 @@ public interface AuxiliaryService {
 
     Optional<Auxiliary> saveAuxiliary(AuxiliaryDto auxiliaryDto);
 
+    Optional<AuxiliaryDto> findById(Long idEmployee);
+
     void updateEmail(Long idEmployee, String email);
 
     void updatePhoneNumber(Long idEmployee, Long phoneNumber);
