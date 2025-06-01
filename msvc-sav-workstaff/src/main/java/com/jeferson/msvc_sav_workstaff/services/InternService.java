@@ -9,6 +9,8 @@ public interface InternService {
 
     Optional<Intern> saveIntern(InternDto internDto);
 
+    Optional<InternDto> findById(Long idEmployee);
+
     void updateEmail(Long idEmployee, String email);
 
     void updateNumberPhone(Long idEmployee, Long phoneNumber);

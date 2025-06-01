@@ -1,7 +1,6 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
 import java.util.Optional;
-
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -23,6 +22,15 @@ public class InternServiceImpl implements InternService {
         this.intRepository = intRepository;
         this.intMapper = intMapper;
         this.employeeService = employeeService;
+    }
+
+    @Override
+    public Optional<InternDto> findById(Long idEmployee){
+        Optional<Intern> optInter = intRepository.findById(idEmployee);
+        if (optInter.isEmpty()) {
+            return Optional.empty();
+        }
+        return intRepository.findById(idEmployee).map(intMapper::toDto);
     }
 
     @Override
