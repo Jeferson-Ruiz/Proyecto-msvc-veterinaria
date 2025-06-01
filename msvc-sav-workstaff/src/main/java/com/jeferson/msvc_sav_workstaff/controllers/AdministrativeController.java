@@ -45,7 +45,7 @@ public class AdministrativeController {
     }
 
     @GetMapping("/{idEmployee}")
-    public ResponseEntity<?> getAdministrative(@PathVariable Long idEmployee){
+    public ResponseEntity<?> getAdministrative(@PathVariable Long idEmployee) {
         if (administrativeService.findByAdministrative(idEmployee).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -70,22 +70,33 @@ public class AdministrativeController {
         }
     }
 
+    @PatchMapping("/update/number/{idEmployee}")
+    public ResponseEntity<?> updInfoNumberPhone(@PathVariable Long idEmployee, @RequestBody Long PhoneNumber) {
+        try {
+            administrativeService.updateNumberPhone(idEmployee, PhoneNumber);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PatchMapping("/update/contract/{idEmployee}")
-    public ResponseEntity<?> updInfoContractType(@PathVariable Long idEmployee, @RequestBody ContractType contractType){
-        try{
+    public ResponseEntity<?> updInfoContractType(@PathVariable Long idEmployee,
+            @RequestBody ContractType contractType) {
+        try {
             administrativeService.updateContractType(idEmployee, contractType);
             return ResponseEntity.noContent().build();
-        }catch(EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/delete/{idEmployee}")
-    public ResponseEntity<?> deleteAdministrative(@PathVariable Long idEmployee){
-        try{
+    public ResponseEntity<?> deleteAdministrative(@PathVariable Long idEmployee) {
+        try {
             administrativeService.delete(idEmployee);
             return ResponseEntity.noContent().build();
-        }catch(EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
