@@ -8,6 +8,8 @@ import com.jeferson.msvc_sav_workstaff.models.ContractType;
 public interface AdministrativeService {
 
     Optional<Administrative> saveAdministrative(AdministrativeDto administrative);
+    
+    Optional<AdministrativeDto> findByAdministrative (Long idEmployee);
 
     void uptAdministrativeWorkArea(Long idEmployee, String workArea);
 

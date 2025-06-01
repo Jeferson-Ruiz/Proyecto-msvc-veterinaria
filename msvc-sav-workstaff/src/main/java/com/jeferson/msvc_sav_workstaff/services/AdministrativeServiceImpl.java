@@ -1,7 +1,6 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
 import java.util.Optional;
-
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -32,6 +31,15 @@ public class AdministrativeServiceImpl implements AdministrativeService {
             return Optional.empty();
         }
         return Optional.of(administrativeRepository.save(administrativeMapper.toEntity(administrativeDto)));
+    }
+
+    @Override
+    public Optional<AdministrativeDto> findByAdministrative (Long idEmployee){
+        Optional<Administrative> optAdministrative = administrativeRepository.findById(idEmployee);
+        if (optAdministrative.isEmpty()) {
+            return Optional.empty();
+        }
+        return administrativeRepository.findById(idEmployee).map(administrativeMapper::toDto);
     }
 
     @Override
