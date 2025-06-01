@@ -8,7 +8,9 @@ import com.jeferson.msvc_sav_workstaff.models.Vet;
 public interface VetService {
     Optional<Vet> saveVet(VetDto vetDto);
 
-    void updateEmail (Long idEmployee, String email);
+    Optional<VetDto> findById(Long idEmployee);
+
+    void updateEmail(Long idEmployee, String email);
 
     void updateNumberPhone(Long idEmployee, Long phoneNumber);
 

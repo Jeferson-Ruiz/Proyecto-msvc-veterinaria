@@ -1,7 +1,6 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
 import java.util.Optional;
-
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -32,6 +31,14 @@ public class VetServiceImpl implements VetService {
         return Optional.of(vetRepository.save(vetMapper.toEntity(vetDto)));
     }
 
+    @Override
+    public Optional<VetDto> findById(Long idEmployee){
+        Optional<Vet> optVet = vetRepository.findById(idEmployee);
+        if (optVet.isEmpty()) {
+            return Optional.empty();
+        }
+        return vetRepository.findById(idEmployee).map(vetMapper::toDto);
+    }
 
     @Override
     @Transactional
