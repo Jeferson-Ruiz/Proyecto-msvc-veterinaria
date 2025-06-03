@@ -44,16 +44,16 @@ public class VetController {
     }
 
     @GetMapping("/{idEmployee}")
-    public ResponseEntity<?> getVet(@PathVariable Long idEmployee){
+    public ResponseEntity<?> getVet(@PathVariable Long idEmployee) {
         if (vetService.findById(idEmployee).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("No existe el id: "+ idEmployee +" en el sistema");
+                    .body("No existe el id: " + idEmployee + " en el sistema");
         }
         return ResponseEntity.ok(vetService.findById(idEmployee));
     }
 
     @PatchMapping("/update/email/{idEmployee}")
-    public ResponseEntity<?> updInfoEmail (@PathVariable Long idEmployee, @RequestBody String email){
+    public ResponseEntity<?> updInfoEmail(@PathVariable Long idEmployee, @RequestBody String email) {
         try {
             vetService.updateEmail(idEmployee, email);
             return ResponseEntity.noContent().build();
@@ -63,7 +63,7 @@ public class VetController {
     }
 
     @PatchMapping("/update/number/{idEmployee}")
-    public ResponseEntity<?> updInfoPhoneNumer(@PathVariable Long idEmployee, Long phoneNumber){
+    public ResponseEntity<?> updInfoPhoneNumer(@PathVariable Long idEmployee, Long phoneNumber) {
         try {
             vetService.updateNumberPhone(idEmployee, phoneNumber);
             return ResponseEntity.noContent().build();
@@ -73,7 +73,7 @@ public class VetController {
     }
 
     @PatchMapping("/update/contract/{idEmployee}")
-    public ResponseEntity<?> updInfoContractType(@PathVariable Long idEmployee, @RequestBody ContractType contract){
+    public ResponseEntity<?> updInfoContractType(@PathVariable Long idEmployee, @RequestBody ContractType contract) {
         try {
             vetService.updateContractType(idEmployee, contract);
             return ResponseEntity.noContent().build();
@@ -83,10 +83,10 @@ public class VetController {
     }
 
     @DeleteMapping("/{idEmployee}")
-    public ResponseEntity<?> deleteVet(@PathVariable Long idEmployee){
+    public ResponseEntity<?> deleteVet(@PathVariable Long idEmployee) {
         try {
             vetService.delete(idEmployee);
-            return ResponseEntity.noContent().build();            
+            return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }

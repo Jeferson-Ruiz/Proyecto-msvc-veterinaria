@@ -53,10 +53,13 @@ public class AdministrativeController {
     }
 
     @PatchMapping("/update/area/{idEmployee}")
-    public ResponseEntity<?> uptInfoAdministrativeWorkArea(@PathVariable Long idEmployee,
-            @RequestBody String workArea) {
-        administrativeService.uptAdministrativeWorkArea(idEmployee, workArea);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> uptInfoAdministrativeWorkArea(@PathVariable Long idEmployee, @RequestBody String workArea) {
+        try {
+            administrativeService.uptAdministrativeWorkArea(idEmployee, workArea);
+            return ResponseEntity.noContent().build();   
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }    
     }
 
     @PatchMapping("/update/email/{idEmployee}")
@@ -91,7 +94,7 @@ public class AdministrativeController {
         }
     }
 
-    @DeleteMapping("/delete/{idEmployee}")
+    @DeleteMapping("/{idEmployee}")
     public ResponseEntity<?> deleteAdministrative(@PathVariable Long idEmployee) {
         try {
             administrativeService.delete(idEmployee);

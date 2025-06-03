@@ -52,7 +52,7 @@ public class AuxiliaryController {
     }
 
     @PatchMapping("/update/email/{idEmployee}")
-    public ResponseEntity<?> uptInfoEmail(@PathVariable Long idEmployee, @RequestBody String email){
+    public ResponseEntity<?> uptInfoEmail(@PathVariable Long idEmployee, @RequestBody String email) {
         try {
             auxService.updateEmail(idEmployee, email);
             return ResponseEntity.noContent().build();
@@ -62,7 +62,7 @@ public class AuxiliaryController {
     }
 
     @PatchMapping("/update/number/{idEmployee}")
-    public ResponseEntity<?> uptInfoPhoneNumber(@PathVariable Long idEmployee, @RequestBody Long phoneNumber){
+    public ResponseEntity<?> uptInfoPhoneNumber(@PathVariable Long idEmployee, @RequestBody Long phoneNumber) {
         try {
             auxService.updatePhoneNumber(idEmployee, phoneNumber);
             return ResponseEntity.noContent().build();
@@ -72,17 +72,18 @@ public class AuxiliaryController {
     }
 
     @PatchMapping("/update/contract/{idEmployee}")
-    public ResponseEntity<?> updInfoContractType(@PathVariable Long idEmployee, @RequestBody ContractType contractType){
+    public ResponseEntity<?> updInfoContractType(@PathVariable Long idEmployee,
+            @RequestBody ContractType contractType) {
         try {
             auxService.updateContractType(idEmployee, contractType);
-            return ResponseEntity.noContent().build();            
+            return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/{idEmployee}")
-    public ResponseEntity<?> deleteAuxiliary(@PathVariable Long idEmployee){
+    public ResponseEntity<?> deleteAuxiliary(@PathVariable Long idEmployee) {
         try {
             auxService.delete(idEmployee);
             return ResponseEntity.noContent().build();

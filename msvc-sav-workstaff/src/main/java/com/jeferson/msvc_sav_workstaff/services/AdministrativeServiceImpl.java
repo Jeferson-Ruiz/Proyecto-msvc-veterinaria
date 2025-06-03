@@ -34,7 +34,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     }
 
     @Override
-    public Optional<AdministrativeDto> findByAdministrative (Long idEmployee){
+    public Optional<AdministrativeDto> findByAdministrative(Long idEmployee) {
         Optional<Administrative> optAdministrative = administrativeRepository.findById(idEmployee);
         if (optAdministrative.isEmpty()) {
             return Optional.empty();
@@ -45,42 +45,43 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     @Override
     @Transactional
     public void uptAdministrativeWorkArea(Long idEmployee, String workArea) {
-        if(employeeService.findById(idEmployee).isEmpty()){
-            Optional.empty();
+        if (employeeService.findById(idEmployee).isEmpty()) {
+            throw new EntityNotFoundException("El id: " + idEmployee + " no existe en el sistema");
         }
         administrativeRepository.updateWorkArea(idEmployee, workArea);
     }
 
     @Override
     @Transactional
-    public void updateEmail(Long idEmployee, String email){
-        if (employeeService.findById(idEmployee).isEmpty()){
-            throw new EntityNotFoundException("El id: "+ idEmployee +" no existe en el sistema");
+    public void updateEmail(Long idEmployee, String email) {
+        if (employeeService.findById(idEmployee).isEmpty()) {
+            throw new EntityNotFoundException("El id: " + idEmployee + " no existe en el sistema");
         }
         employeeService.updateEmail(idEmployee, email);
     }
 
     @Override
     @Transactional
-    public void updateNumberPhone(long idEmployee, Long phoneNumber){
-        if(employeeService.findById(idEmployee).isEmpty()){
-            throw new EntityNotFoundException("El id: "+ idEmployee +" no existe en el sistema");
+    public void updateNumberPhone(long idEmployee, Long phoneNumber) {
+        if (employeeService.findById(idEmployee).isEmpty()) {
+            throw new EntityNotFoundException("El id: " + idEmployee + " no existe en el sistema");
         }
         employeeService.updateNumberPhone(idEmployee, phoneNumber);
     }
+
     @Override
     @Transactional
-    public void updateContractType(Long idEmployee, ContractType contractType){
-        if (employeeService.findById(idEmployee).isEmpty()){
-            throw new EntityNotFoundException("El id: "+ idEmployee +" no existe en el sistema");
+    public void updateContractType(Long idEmployee, ContractType contractType) {
+        if (employeeService.findById(idEmployee).isEmpty()) {
+            throw new EntityNotFoundException("El id: " + idEmployee + " no existe en el sistema");
         }
         employeeService.updateContractType(idEmployee, contractType);
     }
 
     @Override
-    public void delete (Long idEmployee){
-        if (employeeService.findById(idEmployee).isEmpty()){
-            throw new EntityNotFoundException("El id: "+ idEmployee +" no existe en el sistema");
+    public void delete(Long idEmployee) {
+        if (employeeService.findById(idEmployee).isEmpty()) {
+            throw new EntityNotFoundException("El id: " + idEmployee + " no existe en el sistema");
         }
         employeeService.delete(idEmployee);
     }
