@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class InternDto extends EmployeeDto{
-    private String speciality;
-    private Long professionalCard;
+public class InternDto extends EmployeeDto {
+    private String educationInstitute;
+    private String levelAcademic;
 
 }

@@ -32,7 +32,8 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
         }
         return Optional.of(auxRepository.save(auxMapper.toEntity(auxiliaryDto)));
     }
-
+    
+    @Override
     public Optional<AuxiliaryDto> findById(Long idEmployee){
         Optional<Auxiliary> optAuxiliary = auxRepository.findById(idEmployee);
         if (optAuxiliary.isEmpty()) {
@@ -44,7 +45,7 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
     @Override
     @Transactional
     public void updateEmail(Long idEmployee, String email){
-        if (employeeService.findById(idEmployee).isEmpty()) {
+        if (auxRepository.findById(idEmployee).isEmpty()) {
             throw new EntityNotFoundException("El id: "+ idEmployee +" no existe en el sistema");
         }
         employeeService.updateEmail(idEmployee, email);
@@ -53,7 +54,7 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
     @Override
     @Transactional
     public void updatePhoneNumber(Long idEmployee, Long phoneNumber){
-        if(employeeService.findById(idEmployee).isEmpty()){
+        if(auxRepository.findById(idEmployee).isEmpty()){
             throw new EntityNotFoundException("El id: "+ idEmployee +" no existe en el sistema");
         }
         employeeService.updateNumberPhone(idEmployee, phoneNumber);
@@ -62,7 +63,7 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
     @Override
     @Transactional
     public void updateContractType(Long idEmployee, ContractType contractType){
-        if (employeeService.findById(idEmployee).isEmpty()) {
+        if (auxRepository.findById(idEmployee).isEmpty()) {
             throw new EntityNotFoundException("El id: "+ idEmployee +" no existe en el sistema");
         }
         employeeService.updateContractType(idEmployee, contractType);
@@ -70,7 +71,7 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
 
     @Override
     public void delete (Long idEmployee){
-        if (employeeService.findById(idEmployee).isEmpty()) {
+        if (auxRepository.findById(idEmployee).isEmpty()) {
             throw new EntityNotFoundException("El id: "+ idEmployee +" no existe en el sistema");
         }
         employeeService.delete(idEmployee);

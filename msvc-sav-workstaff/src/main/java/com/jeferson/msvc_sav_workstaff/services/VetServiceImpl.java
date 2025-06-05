@@ -43,7 +43,7 @@ public class VetServiceImpl implements VetService {
     @Override
     @Transactional
     public void updateEmail (Long idEmployee, String email){
-        if (employeeService.findById(idEmployee).isEmpty()){
+        if (vetRepository.findById(idEmployee).isEmpty()){
             throw new EntityNotFoundException("El id: "+ idEmployee +" no existe en el sistema");
         }
         employeeService.updateEmail(idEmployee, email);
@@ -52,7 +52,7 @@ public class VetServiceImpl implements VetService {
     @Override
     @Transactional
     public void updateNumberPhone(Long idEmployee, Long phoneNumber){
-        if (employeeService.findById(idEmployee).isEmpty()){
+        if (vetRepository.findById(idEmployee).isEmpty()){
             throw new EntityNotFoundException("El id: "+ idEmployee +" no existe en el sistema");
         }
         employeeService.updateNumberPhone(idEmployee, phoneNumber);
@@ -61,7 +61,7 @@ public class VetServiceImpl implements VetService {
     @Override
     @Transactional
     public void updateContractType(Long idEmployee, ContractType contractType){
-        if (employeeService.findById(idEmployee).isEmpty()){
+        if (vetRepository.findById(idEmployee).isEmpty()){
             throw new EntityNotFoundException("El id: "+ idEmployee +" no existe en el sistema");
         }
         employeeService.updateContractType(idEmployee, contractType);
@@ -69,7 +69,7 @@ public class VetServiceImpl implements VetService {
 
     @Override
     public void delete(Long idEmployee){
-        if (employeeService.findById(idEmployee).isEmpty()){
+        if (vetRepository.findById(idEmployee).isEmpty()){
             throw new EntityNotFoundException("El id: "+ idEmployee +" no existe en el sistema");
         }
         employeeService.delete(idEmployee);

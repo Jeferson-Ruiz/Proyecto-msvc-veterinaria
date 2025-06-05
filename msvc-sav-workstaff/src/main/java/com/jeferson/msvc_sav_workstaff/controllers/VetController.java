@@ -63,7 +63,7 @@ public class VetController {
     }
 
     @PatchMapping("/update/number/{idEmployee}")
-    public ResponseEntity<?> updInfoPhoneNumer(@PathVariable Long idEmployee, Long phoneNumber) {
+    public ResponseEntity<?> updInfoPhoneNumer(@PathVariable Long idEmployee, @RequestBody Long phoneNumber) {
         try {
             vetService.updateNumberPhone(idEmployee, phoneNumber);
             return ResponseEntity.noContent().build();

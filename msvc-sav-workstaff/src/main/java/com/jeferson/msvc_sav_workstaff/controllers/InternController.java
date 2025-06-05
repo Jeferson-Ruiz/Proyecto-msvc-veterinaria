@@ -31,7 +31,7 @@ public class InternController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveInfoIntern(InternDto internDto) {
+    public ResponseEntity<?> saveInfoIntern(@RequestBody InternDto internDto) {
         Optional<Intern> optInter = intService.saveIntern(internDto);
 
         if (optInter.isEmpty()) {
@@ -44,17 +44,16 @@ public class InternController {
     }
 
     @GetMapping("/{idEmployee}")
-    public ResponseEntity<?> getIntern(@PathVariable Long idEmployee){
+    public ResponseEntity<?> getIntern(@PathVariable Long idEmployee) {
         if (intService.findById(idEmployee).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("El id: "+idEmployee+" no existe en el sistema");
+                    .body("El id: " + idEmployee + " no existe en el sistema");
         }
         return ResponseEntity.ok(intService.findById(idEmployee));
     }
 
-
     @PatchMapping("/update/email/{idEmployee}")
-    public ResponseEntity<?> updInfoEmail(@PathVariable Long idEmployee, String email) {
+    public ResponseEntity<?> updInfoEmail(@PathVariable Long idEmployee, @RequestBody String email) {
         try {
             intService.updateEmail(idEmployee, email);
             return ResponseEntity.noContent().build();
