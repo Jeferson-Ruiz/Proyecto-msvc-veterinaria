@@ -68,4 +68,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void updateContractType(Long idEmployee, ContractType contractType) {
         employeeRespository.updateContractType(idEmployee, contractType);
     }
+
+    @Override
+    @Transactional
+    public void updateWorkStatus(Long idEmployee, Boolean workStatus){
+        employeeRespository.updateWorkStatus(idEmployee, workStatus);
+    }
 }

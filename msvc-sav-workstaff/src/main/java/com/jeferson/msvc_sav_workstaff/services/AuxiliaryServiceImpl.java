@@ -70,6 +70,15 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
     }
 
     @Override
+    @Transactional
+    public void updateWorkStatus(Long idEmployee, Boolean workStatus){
+        if (auxRepository.findById(idEmployee).isEmpty()) {
+            throw new EntityNotFoundException("El id: "+ idEmployee +" no existe en el sistema");
+        }
+        employeeService.updateWorkStatus(idEmployee, workStatus);
+    }
+
+    @Override
     public void delete (Long idEmployee){
         if (auxRepository.findById(idEmployee).isEmpty()) {
             throw new EntityNotFoundException("El id: "+ idEmployee +" no existe en el sistema");

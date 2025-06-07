@@ -27,4 +27,8 @@ public interface EmployeeRespository extends JpaRepository<Employee, Long> {
     @Modifying
     @Query("update Employee set contractType=:contractType where idEmployee=:idEmployee")
     void updateContractType (@Param("idEmployee") Long idEmployee, @Param("contractType") ContractType contractType);
+
+    @Modifying
+    @Query("update Employee set workStatus=:workStatus where idEmployee=:idEmployee")
+    void updateWorkStatus(@Param("idEmployee") Long idEmployee, @Param("workStatus") Boolean workStatus);
 }

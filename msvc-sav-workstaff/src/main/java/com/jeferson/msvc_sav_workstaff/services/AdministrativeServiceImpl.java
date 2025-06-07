@@ -79,6 +79,15 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     }
 
     @Override
+    @Transactional
+    public void updateWorkStatus(Long idEmployee, Boolean workStratus){
+        if(administrativeRepository.findById(idEmployee).isEmpty()){
+            throw new EntityNotFoundException("El id: " + idEmployee + " no existe en el sistema");
+        }
+        employeeService.updateWorkStatus(idEmployee, workStratus);
+    }
+
+    @Override
     public void delete(Long idEmployee) {
         if (administrativeRepository.findById(idEmployee).isEmpty()) {
             throw new EntityNotFoundException("El id: " + idEmployee + " no existe en el sistema");

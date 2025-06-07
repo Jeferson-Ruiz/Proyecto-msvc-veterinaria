@@ -23,5 +23,6 @@ public interface EmployeeService {
     void updateNumberPhone(Long idEmployee, Long phoneNumber);
 
     void updateContractType(Long idEmployee, ContractType contractType);
-
+    
+    void updateWorkStatus(Long idEmployee, Boolean workStatus);
 }

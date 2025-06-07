@@ -17,6 +17,8 @@ public interface AuxiliaryService {
 
     void updateContractType(Long idEmployee, ContractType contractType);
 
+    void updateWorkStatus(Long idEmployee, Boolean workStatus);
+
     void delete (Long idEmployee);
 
 }

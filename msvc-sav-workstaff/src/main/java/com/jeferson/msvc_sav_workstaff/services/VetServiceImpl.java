@@ -68,6 +68,15 @@ public class VetServiceImpl implements VetService {
     }
 
     @Override
+    @Transactional
+    public void updateWorkStatus(Long idEmployee, Boolean workStatus){
+        if (vetRepository.findById(idEmployee).isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+        employeeService.updateWorkStatus(idEmployee, workStatus);
+    }
+
+    @Override
     public void delete(Long idEmployee){
         if (vetRepository.findById(idEmployee).isEmpty()){
             throw new EntityNotFoundException("El id: "+ idEmployee +" no existe en el sistema");
