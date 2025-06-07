@@ -36,7 +36,7 @@ public class InternController {
 
         if (optInter.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Usario ya existe en el sistema");
+                    .body("Error de registr\nusuario ya existe en el sistema");
         }
         Intern internResgister = optInter.get();
         InternDto internResponse = intMapper.toDto(internResgister);
@@ -47,7 +47,7 @@ public class InternController {
     public ResponseEntity<?> getIntern(@PathVariable Long idEmployee) {
         if (intService.findById(idEmployee).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("El id: " + idEmployee + " no existe en el sistema");
+                    .body("No existe praticante con el id: " + idEmployee + " en el sistema");
         }
         return ResponseEntity.ok(intService.findById(idEmployee));
     }
@@ -58,7 +58,8 @@ public class InternController {
             intService.updateEmail(idEmployee, email);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe praticante con el id: " + idEmployee);
         }
     }
 
@@ -68,7 +69,8 @@ public class InternController {
             intService.updateNumberPhone(idEmployee, numberPhone);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe praticante con el id: " + idEmployee);
         }
     }
 
@@ -78,7 +80,19 @@ public class InternController {
             intService.updateContractType(idEmployee, contract);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe praticante con el id: " + idEmployee);
+        }
+    }
+
+    @PatchMapping("/update/status/{idEmployee}")
+    public ResponseEntity<?> updateInfoWorkStatus(@PathVariable Long idEmployee, @RequestBody Boolean workStatus){
+        try {
+            intService.updateWorkStatus(idEmployee, workStatus);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe praticante con el id: " + idEmployee);
         }
     }
 
@@ -88,7 +102,8 @@ public class InternController {
             intService.delete(idEmployee);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe praticante con el id: " + idEmployee);
         }
     }
 }

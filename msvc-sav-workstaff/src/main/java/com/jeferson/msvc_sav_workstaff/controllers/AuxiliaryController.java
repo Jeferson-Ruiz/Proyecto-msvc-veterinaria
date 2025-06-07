@@ -36,7 +36,7 @@ public class AuxiliaryController {
 
         if (optAuxiliary.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("El usuario ya existe en el sistema");
+                    .body("Error de registr\nusuario ya existe en el sistema");
         }
         Auxiliary auxiRegist = optAuxiliary.get();
         AuxiliaryDto auxResponse = auxMapper.toDto(auxiRegist);
@@ -46,7 +46,8 @@ public class AuxiliaryController {
     @GetMapping("/{idEmployee}")
     public ResponseEntity<?> getAuxiliary(@PathVariable Long idEmployee) {
         if (auxService.findById(idEmployee).isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No existe auxiliar con el id: " + idEmployee + " en el sistema");
         }
         return ResponseEntity.ok(auxService.findById(idEmployee));
     }
@@ -57,7 +58,8 @@ public class AuxiliaryController {
             auxService.updateEmail(idEmployee, email);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe auxiliar con el id: " + idEmployee);
         }
     }
 
@@ -67,7 +69,8 @@ public class AuxiliaryController {
             auxService.updatePhoneNumber(idEmployee, phoneNumber);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe auxiliar con el id: " + idEmployee);
         }
     }
 
@@ -78,7 +81,19 @@ public class AuxiliaryController {
             auxService.updateContractType(idEmployee, contractType);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe auxiliar con el id: " + idEmployee);
+        }
+    }
+
+    @PatchMapping("/update/status/{idEmployee}")
+    public ResponseEntity<?> updateInfoWorkStatus(@PathVariable Long idEmployee, @RequestBody Boolean workStatus) {
+        try {
+            auxService.updateWorkStatus(idEmployee, workStatus);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe auxiliar con el id: " + idEmployee);
         }
     }
 
@@ -88,7 +103,8 @@ public class AuxiliaryController {
             auxService.delete(idEmployee);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe administrativo con el id: " + idEmployee);
         }
     }
 }

@@ -36,7 +36,7 @@ public class VetController {
 
         if (optVet.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("usuario ya existe en el sistema");
+                    .body("Error de registr\nusuario ya existe en el sistema");
         }
         Vet vetRegist = optVet.get();
         VetDto vetResponse = vetMapper.toDto(vetRegist);
@@ -47,7 +47,7 @@ public class VetController {
     public ResponseEntity<?> getVet(@PathVariable Long idEmployee) {
         if (vetService.findById(idEmployee).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No existe el id: " + idEmployee + " en el sistema");
+                    .body("No existe veterinario con el id: " + idEmployee + " en el sistema");
         }
         return ResponseEntity.ok(vetService.findById(idEmployee));
     }
@@ -58,7 +58,8 @@ public class VetController {
             vetService.updateEmail(idEmployee, email);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe veterinario con el id: " + idEmployee);
         }
     }
 
@@ -68,7 +69,8 @@ public class VetController {
             vetService.updateNumberPhone(idEmployee, phoneNumber);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe veterinario con el id: " + idEmployee);
         }
     }
 
@@ -78,7 +80,19 @@ public class VetController {
             vetService.updateContractType(idEmployee, contract);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe veterinario con el id: " + idEmployee);
+        }
+    }
+
+    @PatchMapping("/update/status/{idEmployee}")
+    public ResponseEntity<?> updateInfoWorkStatus(@PathVariable Long idEmployee, @RequestBody Boolean workStatus) {
+        try {
+            vetService.updateWorkStatus(idEmployee, workStatus);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe veterinario con el id: " + idEmployee);
         }
     }
 
@@ -88,7 +102,8 @@ public class VetController {
             vetService.delete(idEmployee);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe veterinario con el id: " + idEmployee);
         }
 
     }

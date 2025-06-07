@@ -37,7 +37,7 @@ public class AdministrativeController {
 
         if (optAdministrative.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Error usuario ya registrado en el sistema");
+                    .body("Error de registro\nusuario ya existe en el sistema");
         }
         Administrative adminRegist = optAdministrative.get();
         AdministrativeDto adminRespo = administrativeMapper.toDto(adminRegist);
@@ -47,19 +47,22 @@ public class AdministrativeController {
     @GetMapping("/{idEmployee}")
     public ResponseEntity<?> getAdministrative(@PathVariable Long idEmployee) {
         if (administrativeService.findByAdministrative(idEmployee).isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No existe administrativo con el id: " + idEmployee + " en el sistema");
         }
         return ResponseEntity.ok(administrativeService.findByAdministrative(idEmployee));
     }
 
     @PatchMapping("/update/area/{idEmployee}")
-    public ResponseEntity<?> uptInfoAdministrativeWorkArea(@PathVariable Long idEmployee, @RequestBody String workArea) {
+    public ResponseEntity<?> uptInfoAdministrativeWorkArea(@PathVariable Long idEmployee,
+            @RequestBody String workArea) {
         try {
             administrativeService.uptAdministrativeWorkArea(idEmployee, workArea);
-            return ResponseEntity.noContent().build();   
+            return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }    
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe administrativo con el id: " + idEmployee);
+        }
     }
 
     @PatchMapping("/update/email/{idEmployee}")
@@ -69,7 +72,8 @@ public class AdministrativeController {
             return ResponseEntity.noContent().build();
 
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe administrativo con el id: " + idEmployee);
         }
     }
 
@@ -79,7 +83,8 @@ public class AdministrativeController {
             administrativeService.updateNumberPhone(idEmployee, PhoneNumber);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe administrativo con el id: " + idEmployee);
         }
     }
 
@@ -90,7 +95,19 @@ public class AdministrativeController {
             administrativeService.updateContractType(idEmployee, contractType);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe administrativo con el id: " + idEmployee);
+        }
+    }
+
+    @PatchMapping("/update/status/{idEmployee}")
+    public ResponseEntity<?> updateInfoWorkStatus(@PathVariable Long idEmployee, @RequestBody Boolean workStatus) {
+        try {
+            administrativeService.updateWorkStatus(idEmployee, workStatus);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error de actualizacion\nNo existe administrativo con el id: " + idEmployee);
         }
     }
 
@@ -100,7 +117,8 @@ public class AdministrativeController {
             administrativeService.delete(idEmployee);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No existe administrativo con el id: " + idEmployee + " en el sistema");
         }
     }
 }
