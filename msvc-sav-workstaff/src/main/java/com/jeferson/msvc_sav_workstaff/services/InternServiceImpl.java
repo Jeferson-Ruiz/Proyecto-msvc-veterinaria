@@ -45,7 +45,7 @@ public class InternServiceImpl implements InternService {
     @Transactional
     public void updateEmail(Long idEmployee, String email){
         if (intRepository.findById(idEmployee).isEmpty()){
-            throw new EntityNotFoundException("El id: "+ idEmployee + " no existe en el sistema de practicantes");
+            throw new EntityNotFoundException();
         }
         employeeService.updateEmail(idEmployee, email);
     }
@@ -55,7 +55,7 @@ public class InternServiceImpl implements InternService {
     public void updateNumberPhone(Long idEmployee, Long phoneNumber){
 
         if (intRepository.findById(idEmployee).isEmpty()){
-            throw new EntityNotFoundException("El id: "+ idEmployee + " no existe en el sistema de practicantes");
+            throw new EntityNotFoundException();
         }
         employeeService.updateNumberPhone(idEmployee, phoneNumber);
     }
@@ -64,7 +64,7 @@ public class InternServiceImpl implements InternService {
     @Transactional
     public void updateContractType(Long idEmployee, ContractType contractType){
         if (intRepository.findById(idEmployee).isEmpty()){
-            throw new EntityNotFoundException("El id: "+ idEmployee + " no existe en el sistema de practicantes");
+            throw new EntityNotFoundException();
         }
         employeeService.updateContractType(idEmployee, contractType);
     }
@@ -81,7 +81,7 @@ public class InternServiceImpl implements InternService {
     @Override
     public void delete (Long idEmployee){
         if (intRepository.findById(idEmployee).isEmpty()){
-            throw new EntityNotFoundException("El id: "+ idEmployee + " no existe en el sistema de practicantes");
+            throw new EntityNotFoundException();
         }
         employeeService.delete(idEmployee);
     }

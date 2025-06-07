@@ -46,7 +46,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     @Transactional
     public void uptAdministrativeWorkArea(Long idEmployee, String workArea) {
         if (administrativeRepository.findById(idEmployee).isEmpty()) {
-            throw new EntityNotFoundException("El id: " + idEmployee + " no existe en el sistema");
+            throw new EntityNotFoundException();
         }
         administrativeRepository.updateWorkArea(idEmployee, workArea);
     }
@@ -55,7 +55,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     @Transactional
     public void updateEmail(Long idEmployee, String email) {
         if (administrativeRepository.findById(idEmployee).isEmpty()) {
-            throw new EntityNotFoundException("El id: " + idEmployee + " no existe en el sistema");
+            throw new EntityNotFoundException();
         }
         employeeService.updateEmail(idEmployee, email);
     }
@@ -64,7 +64,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     @Transactional
     public void updateNumberPhone(long idEmployee, Long phoneNumber) {
         if (administrativeRepository.findById(idEmployee).isEmpty()) {
-            throw new EntityNotFoundException("El id: " + idEmployee + " no existe en el sistema");
+            throw new EntityNotFoundException();
         }
         employeeService.updateNumberPhone(idEmployee, phoneNumber);
     }
@@ -73,7 +73,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     @Transactional
     public void updateContractType(Long idEmployee, ContractType contractType) {
         if (administrativeRepository.findById(idEmployee).isEmpty()) {
-            throw new EntityNotFoundException("El id: " + idEmployee + " no existe en el sistema");
+            throw new EntityNotFoundException();
         }
         employeeService.updateContractType(idEmployee, contractType);
     }
@@ -82,7 +82,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     @Transactional
     public void updateWorkStatus(Long idEmployee, Boolean workStratus){
         if(administrativeRepository.findById(idEmployee).isEmpty()){
-            throw new EntityNotFoundException("El id: " + idEmployee + " no existe en el sistema");
+            throw new EntityNotFoundException();
         }
         employeeService.updateWorkStatus(idEmployee, workStratus);
     }
@@ -90,7 +90,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     @Override
     public void delete(Long idEmployee) {
         if (administrativeRepository.findById(idEmployee).isEmpty()) {
-            throw new EntityNotFoundException("El id: " + idEmployee + " no existe en el sistema");
+            throw new EntityNotFoundException();
         }
         employeeService.delete(idEmployee);
     }
