@@ -36,7 +36,7 @@ public class InternController {
 
         if (optInter.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Error de registr\nusuario ya existe en el sistema");
+                    .body("Error de registro\nusuario ya existe en el sistema");
         }
         Intern internResgister = optInter.get();
         InternDto internResponse = intMapper.toDto(internResgister);

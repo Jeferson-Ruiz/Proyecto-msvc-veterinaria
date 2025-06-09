@@ -36,7 +36,7 @@ public class VetController {
 
         if (optVet.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Error de registr\nusuario ya existe en el sistema");
+                    .body("Error de registro\nusuario ya existe en el sistema");
         }
         Vet vetRegist = optVet.get();
         VetDto vetResponse = vetMapper.toDto(vetRegist);
