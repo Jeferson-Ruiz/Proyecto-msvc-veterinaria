@@ -1,4 +1,4 @@
-package com.jr.sav_msvc_pet.models;
+package com.jr.sav_msvc_patient_admission.models;
 
 import java.time.LocalDate;
 import jakarta.persistence.Column;

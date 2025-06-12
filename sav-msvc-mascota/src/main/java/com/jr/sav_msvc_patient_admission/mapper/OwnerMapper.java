@@ -1,8 +1,9 @@
-package com.jr.sav_msvc_pet.mapper;
+package com.jr.sav_msvc_patient_admission.mapper;
 
 import org.mapstruct.Mapper;
-import com.jr.sav_msvc_pet.dto.OwnerDto;
-import com.jr.sav_msvc_pet.models.Owner;
+
+import com.jr.sav_msvc_patient_admission.dto.OwnerDto;
+import com.jr.sav_msvc_patient_admission.models.Owner;
 
 @Mapper(componentModel="spring")
 public interface OwnerMapper {

@@ -1,4 +1,4 @@
-package com.jr.sav_msvc_pet.dto;
+package com.jr.sav_msvc_patient_admission.dto;
 
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;

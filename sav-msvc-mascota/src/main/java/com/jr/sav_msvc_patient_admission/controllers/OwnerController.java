@@ -1,4 +1,4 @@
-package com.jr.sav_msvc_pet.controllers;
+package com.jr.sav_msvc_patient_admission.controllers;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.jr.sav_msvc_pet.dto.OwnerDto;
-import com.jr.sav_msvc_pet.models.Owner;
-import com.jr.sav_msvc_pet.services.OwnerService;
+
+import com.jr.sav_msvc_patient_admission.dto.OwnerDto;
+import com.jr.sav_msvc_patient_admission.models.Owner;
+import com.jr.sav_msvc_patient_admission.services.OwnerService;
+
 import jakarta.persistence.EntityNotFoundException;
 
 @RestController

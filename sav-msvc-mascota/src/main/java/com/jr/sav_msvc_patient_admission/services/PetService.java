@@ -1,9 +1,10 @@
-package com.jr.sav_msvc_pet.services;
+package com.jr.sav_msvc_patient_admission.services;
 
 import java.util.List;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.RestController;
-import com.jr.sav_msvc_pet.models.Pet;
+
+import com.jr.sav_msvc_patient_admission.models.Pet;
 
 @RestController
 public interface PetService {

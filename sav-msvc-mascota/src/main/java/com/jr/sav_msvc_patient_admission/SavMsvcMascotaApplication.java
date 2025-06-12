@@ -1,4 +1,4 @@
-package com.jr.sav_msvc_pet;
+package com.jr.sav_msvc_patient_admission;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

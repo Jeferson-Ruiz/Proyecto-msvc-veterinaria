@@ -1,10 +1,11 @@
-package com.jr.sav_msvc_pet.services;
+package com.jr.sav_msvc_patient_admission.services;
 
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
-import com.jr.sav_msvc_pet.models.Pet;
-import com.jr.sav_msvc_pet.repositories.PetsRepository;
+
+import com.jr.sav_msvc_patient_admission.models.Pet;
+import com.jr.sav_msvc_patient_admission.repositories.PetsRepository;
 
 @Service
 public class PetServiceImpl implements PetService{

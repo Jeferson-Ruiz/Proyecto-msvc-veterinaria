@@ -1,4 +1,4 @@
-package com.jr.sav_msvc_pet.controllers;
+package com.jr.sav_msvc_patient_admission.controllers;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.jr.sav_msvc_pet.models.Pet;
-import com.jr.sav_msvc_pet.services.PetService;
+
+import com.jr.sav_msvc_patient_admission.models.Pet;
+import com.jr.sav_msvc_patient_admission.services.PetService;
 
 @RestController
 @RequestMapping("api/sav/pet")

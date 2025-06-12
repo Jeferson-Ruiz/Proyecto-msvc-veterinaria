@@ -1,4 +1,4 @@
-package com.jr.sav_msvc_pet.repositories;
+package com.jr.sav_msvc_patient_admission.repositories;
 
 import java.util.Optional;
 
@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import com.jr.sav_msvc_pet.models.Owner;
+
+import com.jr.sav_msvc_patient_admission.models.Owner;
 
 public interface OwnerRepository extends JpaRepository<Owner, Long> {
 

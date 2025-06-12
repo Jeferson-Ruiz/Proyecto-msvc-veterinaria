@@ -1,9 +1,10 @@
-package com.jr.sav_msvc_pet.services;
+package com.jr.sav_msvc_patient_admission.services;
 
 import java.util.List;
 import java.util.Optional;
-import com.jr.sav_msvc_pet.dto.OwnerDto;
-import com.jr.sav_msvc_pet.models.Owner;
+
+import com.jr.sav_msvc_patient_admission.dto.OwnerDto;
+import com.jr.sav_msvc_patient_admission.models.Owner;
 
 public interface OwnerService {
     List<OwnerDto> findAllOwners();
