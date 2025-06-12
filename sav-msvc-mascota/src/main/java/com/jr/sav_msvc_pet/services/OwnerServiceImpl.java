@@ -47,7 +47,7 @@ public class OwnerServiceImpl implements OwnerService{
 
     @Override
     public Optional<Owner> saveOwner(OwnerDto ownerDto){
-        if (ownerRepository.findById(ownerDto.getDocumentNumber()).isPresent()) {
+        if (ownerRepository.findByDocumentNumber(ownerDto.getDocumentNumber()).isPresent()) {
             return Optional.empty();
         }
         Owner entity = ownerMapper.toEntity(ownerDto);
