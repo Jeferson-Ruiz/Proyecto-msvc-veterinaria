@@ -2,16 +2,17 @@ package com.jr.sav_msvc_pet.services;
 
 import java.util.List;
 import java.util.Optional;
+import com.jr.sav_msvc_pet.dto.OwnerDto;
 import com.jr.sav_msvc_pet.models.Owner;
 
 public interface OwnerService {
-    List<Owner> findAllOwners();
+    List<OwnerDto> findAllOwners();
 
-    Optional<Owner> findOwnerById(Long idOwner);
+    Optional<OwnerDto> findOwnerById(Long idOwner);
 
-    Optional<Owner> findOwnerByDocumentNumber(Long documentNumber);
+    Optional<OwnerDto> findOwnerByDocumentNumber(Long documentNumber);
 
-    Owner saveOwner(Owner owner);
+    Optional<Owner> saveOwner(OwnerDto ownerDto);
 
     void deleteOwnerById(Long idOwner);
 
