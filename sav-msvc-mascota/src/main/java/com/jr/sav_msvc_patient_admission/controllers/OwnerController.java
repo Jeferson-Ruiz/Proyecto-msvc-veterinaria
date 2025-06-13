@@ -23,75 +23,76 @@ public class OwnerController {
 
     private final OwnerService ownerService;
 
-    public OwnerController(OwnerService ownerService){
+    public OwnerController(OwnerService ownerService) {
         this.ownerService = ownerService;
     }
 
     @GetMapping
-    public ResponseEntity<List<OwnerDto>> getAllOwners(){
+    public ResponseEntity<List<OwnerDto>> getAllOwners() {
         return ResponseEntity.ok(ownerService.findAllOwners());
     }
 
     @GetMapping("/id/{idOwner}")
-    public ResponseEntity<?> getOwnerById(@PathVariable Long idOwner){
+    public ResponseEntity<?> getOwnerById(@PathVariable Long idOwner) {
         Optional<OwnerDto> optOwner = ownerService.findOwnerById(idOwner);
         if (optOwner.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("El propietario con el documento "+ idOwner +" no existe en el sistema");        
+                    .body("El propietario con el documento " + idOwner + " no existe en el sistema");
         }
         return ResponseEntity.ok(optOwner.get());
     }
-    
+
     @GetMapping("/document/{documentNumber}")
-    public ResponseEntity<?> getOwnerByDocumentNumber(@PathVariable Long documentNumber){
-        Optional<OwnerDto> optOwner = ownerService.findOwnerById(documentNumber);
+    public ResponseEntity<?> getOwnerByDocumentNumber(@PathVariable Long documentNumber) {
+        Optional<OwnerDto> optOwner = ownerService.findOwnerByDocumentNumber(documentNumber);
         if (optOwner.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("El propietario con el documento "+ documentNumber +" no existe en el sistema");        
+                    .body("El propietario con el documento " + documentNumber + " no existe en el sistema");
         }
         return ResponseEntity.ok(optOwner.get());
     }
 
     @PostMapping
-    public ResponseEntity<?> saveInfoOwner(@RequestBody OwnerDto owner){
+    public ResponseEntity<?> saveInfoOwner(@RequestBody OwnerDto owner) {
         Optional<Owner> optOwner = ownerService.saveOwner(owner);
-        if(optOwner.isEmpty()){
+        if (optOwner.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body("Propietario con la identificacion: "+owner.getDocumentNumber() + " ya existe en el sistema");
+                    .body("Propietario con la identificacion: " + owner.getDocumentNumber()
+                            + " ya existe en el sistema");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(optOwner.get());
     }
 
     @DeleteMapping("/id/{idOwner}")
-    public ResponseEntity<?> deleteInfoOwner(@PathVariable Long idOwner){
+    public ResponseEntity<?> deleteInfoOwner(@PathVariable Long idOwner) {
         try {
             ownerService.deleteOwnerById(idOwner);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Propietario con el ID : "+ idOwner +" no existe en el sistema");
+                    .body("Propietario con el ID : " + idOwner + " no existe en el sistema");
         }
     }
 
     @PatchMapping("/updatePhone/{idOwner}")
-    public ResponseEntity<?> updateIntoPhoneNumber(@PathVariable Long idOwner, @RequestBody Long phoneNumber){
+    public ResponseEntity<?> updateIntoPhoneNumber(@PathVariable Long idOwner, @RequestBody Long phoneNumber) {
         try {
             ownerService.updatePhoneNumber(idOwner, phoneNumber);
-            return ResponseEntity.noContent().build();         
+            return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Propietario con el ID : "+ idOwner +" no se encuentra registrado en el sistema");    
-        }    
+                    .body("Propietario con el ID : " + idOwner + " no se encuentra registrado en el sistema");
+        }
     }
 
     @PatchMapping("/updateEmail/{idOwner}")
-    public ResponseEntity<?> updateInfoEmail(@PathVariable Long idOwner, @RequestBody String email){
+    public ResponseEntity<?> updateInfoEmail(@PathVariable Long idOwner, @RequestBody String email) {
         try {
             ownerService.updateEmail(idOwner, email);
-            return ResponseEntity.noContent().build();            
+            return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Propietario con el ID : "+ idOwner +" no se encuentra registrado en el sistema");
-        }   
+                    .body("Propietario con el ID : " + idOwner + " no se encuentra registrado en el sistema");
+        }
     }
 }
