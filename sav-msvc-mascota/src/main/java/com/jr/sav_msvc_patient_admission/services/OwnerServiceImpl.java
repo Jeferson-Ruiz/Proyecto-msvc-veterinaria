@@ -5,12 +5,10 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.jr.sav_msvc_patient_admission.dto.OwnerDto;
 import com.jr.sav_msvc_patient_admission.mapper.OwnerMapper;
 import com.jr.sav_msvc_patient_admission.models.Owner;
 import com.jr.sav_msvc_patient_admission.repositories.OwnerRepository;
-
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
@@ -36,15 +34,18 @@ public class OwnerServiceImpl implements OwnerService{
         if (optOwner.isEmpty()) {
             return Optional.empty();
         }
-        return ownerRepository.findById(idOwner).map(ownerMapper::toDto);
+        OwnerDto dto = ownerMapper.toDto(optOwner.get());
+        return Optional.of(dto);
     }
 
     @Override
     public Optional<OwnerDto> findOwnerByDocumentNumber(Long documentNumber){
-        if (ownerRepository.findByDocumentNumber(documentNumber).isEmpty()) {
+        Optional<Owner> optOwner = ownerRepository.findByDocumentNumber(documentNumber);
+        if (optOwner.isEmpty()) {
             return Optional.empty();
         }
-        return ownerRepository.findByDocumentNumber(documentNumber).map(ownerMapper::toDto);
+        OwnerDto dto = ownerMapper.toDto(optOwner.get());
+        return Optional.of(dto);
     }
 
     @Override

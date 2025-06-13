@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.jr.sav_msvc_patient_admission.dto.OwnerDto;
 import com.jr.sav_msvc_patient_admission.models.Owner;
 import com.jr.sav_msvc_patient_admission.services.OwnerService;
-
 import jakarta.persistence.EntityNotFoundException;
 
 @RestController
@@ -36,22 +34,22 @@ public class OwnerController {
 
     @GetMapping("/id/{idOwner}")
     public ResponseEntity<?> getOwnerById(@PathVariable Long idOwner){
-        try {
-            return ResponseEntity.ok(ownerService.findOwnerById(idOwner));
-        } catch (EntityNotFoundException e) {
+        Optional<OwnerDto> optOwner = ownerService.findOwnerById(idOwner);
+        if (optOwner.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("El propietario "+ idOwner +" no existe en el sistema");
+                .body("El propietario con el documento "+ idOwner +" no existe en el sistema");        
         }
+        return ResponseEntity.ok(optOwner.get());
     }
     
     @GetMapping("/document/{documentNumber}")
     public ResponseEntity<?> getOwnerByDocumentNumber(@PathVariable Long documentNumber){
-        try {
-            return ResponseEntity.ok(ownerService.findOwnerByDocumentNumber(documentNumber));
-        } catch (EntityNotFoundException e) {
+        Optional<OwnerDto> optOwner = ownerService.findOwnerById(documentNumber);
+        if (optOwner.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("El propietario con el documento "+ documentNumber +" no existe en el sistema");
+                .body("El propietario con el documento "+ documentNumber +" no existe en el sistema");        
         }
+        return ResponseEntity.ok(optOwner.get());
     }
 
     @PostMapping
