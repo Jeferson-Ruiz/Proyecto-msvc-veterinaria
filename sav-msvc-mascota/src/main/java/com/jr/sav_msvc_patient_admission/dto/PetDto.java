@@ -15,5 +15,5 @@ public class PetDto {
     private String sex;
     private LocalDate dateOfBrith;
     private LocalDate dateOfRecording;
-
+    private Long ownerNumber;
 }

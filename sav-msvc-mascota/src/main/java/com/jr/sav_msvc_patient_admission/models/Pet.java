@@ -43,5 +43,5 @@ public class Pet {
     private LocalDate dateOfRecording;
 
     @Column(name = "pet_ower_id", nullable = false)
-    private Long owerId;
+    private Long ownerNumber;
 }
