@@ -1,7 +1,7 @@
 package com.jr.sav_msvc_patient_admission.controllers;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.jr.sav_msvc_patient_admission.dto.PetDto;
 import com.jr.sav_msvc_patient_admission.models.Pet;
 import com.jr.sav_msvc_patient_admission.services.PetService;
+import jakarta.persistence.EntityNotFoundException;
 
 @RestController
 @RequestMapping("api/sav/pet")
@@ -26,36 +27,38 @@ public class PetController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Pet>> getAllPets(){
+    public ResponseEntity<List<PetDto>> getAllPets(){
         return ResponseEntity.ok(petService.findAllPets());
     }
 
     @PostMapping
-    public ResponseEntity<?> saveInfoPet(@RequestBody Pet pet){
-        if(petService.findByNameAndOwerId(pet.getName(), pet.getOwerId()).isPresent()){
+    public ResponseEntity<?> saveInfoPet(@RequestBody PetDto petDto){
+        Optional<Pet> optPet = petService.savePet(petDto);
+        if (optPet.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body("La mascota: "+ pet.getIdPet()+ " ya se encuentra registrada con el propietario "+ pet.getOwerId());
+                .body("Error, el paciente "+ petDto.getName() +" ya existe en el sistema");
         }
-        pet.setDateOfRecording(LocalDate.now());
-        return new ResponseEntity<>(petService.savePet(pet), HttpStatus.CREATED);
+        return ResponseEntity.ok(optPet);
     }
-
 
     @GetMapping("/{idPet}")
     public ResponseEntity<?> getPetById(@PathVariable Long idPet){
-        if(petService.findPetById(idPet).isPresent()){
-            return ResponseEntity.ok(petService.findPetById(idPet));
+        Optional<PetDto> optPet = petService.findPetById(idPet);
+        if (optPet.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Error, el paciente con el Id: "+ idPet +" no existe en el sistema");
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El ID: "+idPet + " No encontrado");
+        return ResponseEntity.ok(optPet);
     }
-
 
     @DeleteMapping("/{idPet}")
     public ResponseEntity<?> deleteInfoPet(@PathVariable Long idPet){
-        if (petService.findPetById(idPet).isPresent()) {
+        try {
             petService.deletePetById(idPet);
             return ResponseEntity.noContent().build();
-       }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El ID "+ idPet + " no fue encontrado");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El ID "+ idPet + " no fue encontrado");
+
+        }
     }
 } 
