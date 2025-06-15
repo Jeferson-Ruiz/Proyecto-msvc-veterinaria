@@ -38,7 +38,7 @@ public class PetController {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body("Error, el paciente "+ petDto.getName() +" ya existe en el sistema");
         }
-        return ResponseEntity.ok(optPet);
+        return ResponseEntity.status(HttpStatus.CREATED).body(optPet.get());
     }
 
     @GetMapping("/{idPet}")
@@ -47,6 +47,16 @@ public class PetController {
         if (optPet.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("Error, el paciente con el Id: "+ idPet +" no existe en el sistema");
+        }
+        return ResponseEntity.ok(optPet);
+    }
+
+    @GetMapping("owner/{ownerNumber}")
+    public ResponseEntity<?> getPetByOwnerDocumentNumber(@PathVariable Long ownerNumber, @RequestBody String name){
+        Optional<PetDto> optPet = petService.findByNameAndOwnerNumber(name, ownerNumber);
+        if (optPet.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Error, el paciente : "+ name +" no se encuentra vinculado con el propietario " + ownerNumber);
         }
         return ResponseEntity.ok(optPet);
     }

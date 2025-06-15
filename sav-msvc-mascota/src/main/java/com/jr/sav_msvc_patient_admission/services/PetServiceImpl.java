@@ -27,7 +27,7 @@ public class PetServiceImpl implements PetService{
             return Optional.empty();
         }
         Pet entity = petMapper.toEntity(petDto);
-        petDto.setDateOfRecording(LocalDate.now());
+        entity.setDateOfRecording(LocalDate.now());
         return Optional.of(petsRepository.save(entity));
     }
 

@@ -13,7 +13,7 @@ public class PetDto {
     private String specie;
     private String breed;
     private String sex;
-    private LocalDate dateOfBrith;
+    private LocalDate dateOfBirth;
     private LocalDate dateOfRecording;
     private Long ownerNumber;
 }

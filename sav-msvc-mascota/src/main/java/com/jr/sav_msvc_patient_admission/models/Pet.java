@@ -36,12 +36,12 @@ public class Pet {
     @Column(name = "pet_sex", length = 1, nullable = false)
     private String sex;
 
-    @Column(name = "pet_date_of_brith", nullable = false)
-    private LocalDate dateOfBrith;
+    @Column(name = "pet_date_of_birth", nullable = false)
+    private LocalDate dateOfBirth;
 
     @Column(name = "pet_date_of_recording", nullable = false)
     private LocalDate dateOfRecording;
 
-    @Column(name = "pet_ower_id", nullable = false)
+    @Column(name = "pet_owner_id", nullable = false)
     private Long ownerNumber;
 }
