@@ -22,13 +22,14 @@ public class PetServiceImpl implements PetService{
     }
 
     @Override
-    public Optional<Pet> savePet(PetDto petDto){
+    public Optional<PetDto> savePet(PetDto petDto){
         if (petsRepository.findByNameAndOwnerNumber(petDto.getName(), petDto.getOwnerNumber()).isPresent()) {
             return Optional.empty();
         }
         Pet entity = petMapper.toEntity(petDto);
         entity.setDateOfRecording(LocalDate.now());
-        return Optional.of(petsRepository.save(entity));
+        Pet savedPet = petsRepository.save(entity);
+        return Optional.of(petMapper.toDto(savedPet));
     }
 
     @Override

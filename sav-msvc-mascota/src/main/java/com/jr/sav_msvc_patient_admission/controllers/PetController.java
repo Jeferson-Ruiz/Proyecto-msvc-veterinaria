@@ -33,7 +33,7 @@ public class PetController {
 
     @PostMapping
     public ResponseEntity<?> saveInfoPet(@RequestBody PetDto petDto){
-        Optional<Pet> optPet = petService.savePet(petDto);
+        Optional<PetDto> optPet = petService.savePet(petDto);
         if (optPet.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body("Error, el paciente "+ petDto.getName() +" ya existe en el sistema");
