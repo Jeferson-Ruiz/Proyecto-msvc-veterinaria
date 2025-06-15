@@ -49,13 +49,14 @@ public class OwnerServiceImpl implements OwnerService{
     }
 
     @Override
-    public Optional<Owner> saveOwner(OwnerDto ownerDto){
+    public Optional<OwnerDto> saveOwner(OwnerDto ownerDto){
         if (ownerRepository.findByDocumentNumber(ownerDto.getDocumentNumber()).isPresent()) {
             return Optional.empty();
         }
         Owner entity = ownerMapper.toEntity(ownerDto);
         entity.setDateOfRecording(LocalDate.now());
-        return Optional.of(ownerRepository.save(entity));
+        Owner savedOwner = ownerRepository.save(entity);
+        return Optional.of(ownerMapper.toDto(savedOwner));
     }
 
     @Override

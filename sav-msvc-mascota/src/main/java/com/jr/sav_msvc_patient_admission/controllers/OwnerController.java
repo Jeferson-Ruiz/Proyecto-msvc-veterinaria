@@ -54,7 +54,7 @@ public class OwnerController {
 
     @PostMapping
     public ResponseEntity<?> saveInfoOwner(@RequestBody OwnerDto owner) {
-        Optional<Owner> optOwner = ownerService.saveOwner(owner);
+        Optional<OwnerDto> optOwner = ownerService.saveOwner(owner);
         if (optOwner.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Propietario con la identificacion: " + owner.getDocumentNumber()
