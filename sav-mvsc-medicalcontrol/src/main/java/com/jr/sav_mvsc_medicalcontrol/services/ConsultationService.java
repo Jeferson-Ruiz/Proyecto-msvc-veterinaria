@@ -2,19 +2,18 @@ package com.jr.sav_mvsc_medicalcontrol.services;
 
 import java.util.List;
 import java.util.Optional;
-import com.jr.sav_mvsc_medicalcontrol.dto.PetDto;
-import com.jr.sav_mvsc_medicalcontrol.models.Consultation;
+import com.jr.sav_mvsc_medicalcontrol.dto.ConsultationDto;
 
 public interface ConsultationService {
 
-    List<Consultation> findAllConsultations();
+    List<ConsultationDto> findAllConsultations();
 
-    Optional<Consultation> finConsultionById(Long idConsultation);
+    Optional<ConsultationDto> finConsultionById(Long idConsultation);
 
-    Consultation saveConsultation(Consultation consultation);
+    Optional<ConsultationDto> saveConsultation(ConsultationDto consultationDto);
 
     void deleteConsultation(Long idConsultation);
     
-    Optional<PetDto> findConsultationByIdPet(Long idPet);
+    Optional<ConsultationDto> findConsultationByIdPet(Long idPet);
 
 }

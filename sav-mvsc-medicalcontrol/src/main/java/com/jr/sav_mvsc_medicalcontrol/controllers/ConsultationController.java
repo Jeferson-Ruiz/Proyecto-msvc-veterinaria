@@ -1,5 +1,6 @@
 package com.jr.sav_mvsc_medicalcontrol.controllers;
 
+import com.jr.sav_mvsc_medicalcontrol.dto.ConsultationDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.PetDto;
 import com.jr.sav_mvsc_medicalcontrol.models.Consultation;
 import com.jr.sav_mvsc_medicalcontrol.services.ConsultationService;
@@ -20,38 +21,38 @@ public class ConsultationController {
     }
 
     @GetMapping
-    public ResponseEntity <List<Consultation>> getAllConsultation(){
-        return  ResponseEntity.ok(consultationService.findAllConsultations());
+    public ResponseEntity<List<ConsultationDto>> getAllConsultation() {
+        return ResponseEntity.ok(consultationService.findAllConsultations());
     }
 
     @GetMapping("id/{idConsultation}")
-    public ResponseEntity<?> getConsultationBYId(@PathVariable Long idConsultation){
+    public ResponseEntity<?> getConsultationBYId(@PathVariable Long idConsultation) {
         Optional<Consultation> optConsultatio = consultationService.finConsultionById(idConsultation);
-        if(optConsultatio.isPresent()){
-            return  ResponseEntity.ok(optConsultatio.get());
+        if (optConsultatio.isPresent()) {
+            return ResponseEntity.ok(optConsultatio.get());
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("La colsulta con el ID: "+idConsultation+" no se encuentra en el sistema");
+                .body("La colsulta con el ID: " + idConsultation + " no se encuentra en el sistema");
     }
 
     @PostMapping
-    public ResponseEntity<?> saveInfoConsultation(@RequestBody Consultation consultation){
+    public ResponseEntity<?> saveInfoConsultation(@RequestBody Consultation consultation) {
         Optional<PetDto> petOptional = consultationService.findConsultationByIdPet(consultation.getIdPet());
 
-        if(petOptional.isEmpty()){
+        if (petOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("La mascota: "+ consultation.getIdPet() + " no se encuentra registrada en el sistema");
+                    .body("La mascota: " + consultation.getIdPet() + " no se encuentra registrada en el sistema");
         }
-        return new ResponseEntity<>(consultationService.saveConsultation(consultation),HttpStatus.CREATED);
+        return new ResponseEntity<>(consultationService.saveConsultation(consultation), HttpStatus.CREATED);
     }
 
     @DeleteMapping("id/{idConsultation}")
-    public ResponseEntity<?> deleteInfoConsultation(@PathVariable Long idConsultation){
-        if(consultationService.finConsultionById(idConsultation).isPresent()){
+    public ResponseEntity<?> deleteInfoConsultation(@PathVariable Long idConsultation) {
+        if (consultationService.finConsultionById(idConsultation).isPresent()) {
             consultationService.deleteConsultation(idConsultation);
-            return  ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("La consulta con el id: "+idConsultation +" no existe en el sistema");
+                .body("La consulta con el id: " + idConsultation + " no existe en el sistema");
     }
 }

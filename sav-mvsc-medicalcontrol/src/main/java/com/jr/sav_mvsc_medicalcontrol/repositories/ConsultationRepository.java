@@ -1,7 +1,9 @@
 package com.jr.sav_mvsc_medicalcontrol.repositories;
 
-import org.springframework.data.repository.CrudRepository;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
 import com.jr.sav_mvsc_medicalcontrol.models.Consultation;
 
-public interface ConsultationRepository extends CrudRepository<Consultation, Long> {
+public interface ConsultationRepository extends JpaRepository<Consultation, Long> {
+    Optional<Consultation> findByIdPet(Long idPet);
 }
