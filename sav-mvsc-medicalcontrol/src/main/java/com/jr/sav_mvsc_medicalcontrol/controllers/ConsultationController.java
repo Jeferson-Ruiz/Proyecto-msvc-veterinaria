@@ -31,7 +31,7 @@ public class ConsultationController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("No existe resgistro de consulta con el ID: "+ idConsultation+ " en el sistema");
         }
-        return ResponseEntity.ok(optConsultatio);
+        return ResponseEntity.ok(optConsultatio.get());
     }
 
     @PostMapping("idpet/{idPet}")
@@ -41,7 +41,7 @@ public class ConsultationController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("No existe consulta asociada con el paciente: "+ idPet+ " en el sistema");    
         }
-        return ResponseEntity.ok(optConsultation);
+        return ResponseEntity.ok(optConsultation.get());
     }
 
     @PostMapping

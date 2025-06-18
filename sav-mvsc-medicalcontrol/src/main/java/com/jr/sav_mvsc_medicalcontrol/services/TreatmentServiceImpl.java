@@ -55,5 +55,5 @@ public class TreatmentServiceImpl implements TreatmentService {
         }
         treatmentRespository.deleteById(idTreatment);
     }
-
+    
 }
