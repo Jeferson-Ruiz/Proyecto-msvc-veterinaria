@@ -1,9 +1,8 @@
 package com.jr.sav_mvsc_medicalcontrol.controllers;
 
 import com.jr.sav_mvsc_medicalcontrol.dto.ConsultationDto;
-import com.jr.sav_mvsc_medicalcontrol.dto.PetDto;
-import com.jr.sav_mvsc_medicalcontrol.models.Consultation;
 import com.jr.sav_mvsc_medicalcontrol.services.ConsultationService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,32 +26,41 @@ public class ConsultationController {
 
     @GetMapping("id/{idConsultation}")
     public ResponseEntity<?> getConsultationBYId(@PathVariable Long idConsultation) {
-        Optional<Consultation> optConsultatio = consultationService.finConsultionById(idConsultation);
-        if (optConsultatio.isPresent()) {
-            return ResponseEntity.ok(optConsultatio.get());
+        Optional<ConsultationDto> optConsultatio = consultationService.finConsultionById(idConsultation);
+        if (optConsultatio.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("No existe resgistro de consulta con el ID: "+ idConsultation+ " en el sistema");
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("La colsulta con el ID: " + idConsultation + " no se encuentra en el sistema");
+        return ResponseEntity.ok(optConsultatio);
+    }
+
+    @PostMapping("idpet/{idPet}")
+    public ResponseEntity<?> getConsultationByIdPet(@PathVariable Long idPet){
+        Optional<ConsultationDto> optConsultation = consultationService.findConsultationByIdPet(idPet);
+        if(optConsultation.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("No existe consulta asociada con el paciente: "+ idPet+ " en el sistema");    
+        }
+        return ResponseEntity.ok(optConsultation);
     }
 
     @PostMapping
-    public ResponseEntity<?> saveInfoConsultation(@RequestBody Consultation consultation) {
-        Optional<PetDto> petOptional = consultationService.findConsultationByIdPet(consultation.getIdPet());
-
-        if (petOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("La mascota: " + consultation.getIdPet() + " no se encuentra registrada en el sistema");
+    public ResponseEntity<?> saveInfoConsultation(@RequestBody ConsultationDto consultationDto) {
+        Optional<ConsultationDto> consultationOpt = consultationService.saveConsultation(consultationDto);
+        if (consultationOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("Error, no se pueden registrar consulta porque el paciente "+ consultationDto.getIdPet() +" no existe en el sistema");
         }
-        return new ResponseEntity<>(consultationService.saveConsultation(consultation), HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(consultationOpt);
     }
 
     @DeleteMapping("id/{idConsultation}")
     public ResponseEntity<?> deleteInfoConsultation(@PathVariable Long idConsultation) {
-        if (consultationService.finConsultionById(idConsultation).isPresent()) {
+        try {
             consultationService.deleteConsultation(idConsultation);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("La consulta con el id: " + idConsultation + " no existe en el sistema");
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Error, no existe resgistro de consulta con el ID: "+ idConsultation+ " en el sistema");        }
     }
 }
