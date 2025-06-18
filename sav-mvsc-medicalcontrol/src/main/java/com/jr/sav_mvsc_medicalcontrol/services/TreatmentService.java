@@ -1,15 +1,16 @@
 package com.jr.sav_mvsc_medicalcontrol.services;
 
+import com.jr.sav_mvsc_medicalcontrol.dto.TreatmentDto;
 import com.jr.sav_mvsc_medicalcontrol.models.Treatment;
 import java.util.List;
 import java.util.Optional;
 
 public interface TreatmentService {
-    List<Treatment> findAlltreatments();
+    List<TreatmentDto> findAlltreatments();
 
-    Optional<Treatment> findTreatmentById(Long idTreatment);
+    Optional<TreatmentDto> findTreatmentById(Long idTreatment);
 
-    Treatment saveTreatment(Treatment treatment);
+    Optional<TreatmentDto> saveTreatment(TreatmentDto treatmentDto);
     
     void deleteTreatment(Long idTreatment);
 }
