@@ -2,15 +2,15 @@ package com.jr.sav_mvsc_medicalcontrol.services;
 
 import java.util.List;
 import java.util.Optional;
-import com.jr.sav_mvsc_medicalcontrol.models.Vaccine;
+import com.jr.sav_mvsc_medicalcontrol.dto.VaccineDto;
 
 public interface VaccineService {
 
-    List<Vaccine> findAllVaccines();
+    List<VaccineDto> findAllVaccines();
 
-    Vaccine saveVaccine(Vaccine vaccine);
+    Optional<VaccineDto> saveVaccine(VaccineDto vaccineDto);
 
-    Optional<Vaccine> findVaccineById(Long idVaccine);
+    Optional<VaccineDto> findVaccineById(Long idVaccine);
 
     void deleteVaccine(Long idVaccine);
 }

@@ -1,37 +1,59 @@
 package com.jr.sav_mvsc_medicalcontrol.services;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+import com.jr.sav_mvsc_medicalcontrol.client.PetClient;
+import com.jr.sav_mvsc_medicalcontrol.dto.VaccineDto;
+import com.jr.sav_mvsc_medicalcontrol.mapper.VaccineMapper;
 import com.jr.sav_mvsc_medicalcontrol.models.Vaccine;
 import com.jr.sav_mvsc_medicalcontrol.repositories.VaccineRepository;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class VaccineServiceImpl implements VaccineService {
 
     private final VaccineRepository vaccineRepository;
+    private final VaccineMapper vaccineMapper;
+    private final PetClient petClient;
 
-    public VaccineServiceImpl(VaccineRepository vaccineRepository) {
+    public VaccineServiceImpl(VaccineRepository vaccineRepository, VaccineMapper vaccineMapper, PetClient petClient) {
         this.vaccineRepository = vaccineRepository;
+        this.vaccineMapper = vaccineMapper;
+        this.petClient = petClient;
     }
 
     @Override
-    public List<Vaccine> findAllVaccines(){
-        return (List<Vaccine>) vaccineRepository.findAll();
+    public List<VaccineDto> findAllVaccines(){
+        return vaccineRepository.findAll().stream()
+            .map(vaccineMapper::toDto).toList();
     }
 
     @Override
-    public Vaccine saveVaccine(Vaccine vaccine){
-        return vaccineRepository.save(vaccine);
+    public Optional<VaccineDto> saveVaccine(VaccineDto vaccineDto){
+        if (petClient.getPetById(vaccineDto.getIdPet()) == null) {
+            return Optional.empty();
+        }
+        Vaccine entity = vaccineMapper.toEntity(vaccineDto);
+        entity.setApplicationData(LocalDate.now());
+        return Optional.of(vaccineMapper.toDto(vaccineRepository.save(entity)));
     }
     
     @Override
-    public Optional<Vaccine> findVaccineById(Long idVaccine){
-        return vaccineRepository.findById(idVaccine);
+    public Optional<VaccineDto> findVaccineById(Long idVaccine){
+        Optional<Vaccine> optVaccine = vaccineRepository.findById(idVaccine);
+        if (optVaccine.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(vaccineMapper.toDto(optVaccine.get()));
     }
 
     @Override
-    public void deleteVaccine(Long idVaccine){
+    public void deleteVaccine(Long idVaccine){        
+        if (vaccineRepository.findById(idVaccine).isEmpty()) {
+            throw new EntityNotFoundException();
+        }
         vaccineRepository.deleteById(idVaccine);
     }
 }
