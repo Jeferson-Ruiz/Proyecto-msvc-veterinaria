@@ -3,6 +3,8 @@ package com.jr.sav_mvsc_medicalcontrol.services;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import feign.FeignException;
 import org.springframework.stereotype.Service;
 import com.jr.sav_mvsc_medicalcontrol.client.PetClient;
 import com.jr.sav_mvsc_medicalcontrol.dto.ConsultationDto;
@@ -44,13 +46,14 @@ public class ConsultationServiceImpl implements ConsultationService {
 
     @Override
     public Optional<ConsultationDto> saveConsultation(ConsultationDto consultationDto) {
-        PetDto petDto = petClient.getPetById(consultationDto.getIdPet());
-        if (petDto == null) {
+        try {
+            PetDto petDto = petClient.getPetById(consultationDto.getIdPet());
+            Consultation entity = consultationMapper.toEntity(consultationDto);
+            entity.setDate(LocalDate.now());
+            return Optional.of(consultationMapper.toDto(consultationRepository.save(entity)));
+        } catch (FeignException.NotFound e){
             return Optional.empty();
         }
-        Consultation entity = consultationMapper.toEntity(consultationDto);
-        entity.setDate(LocalDate.now());
-        return Optional.of(consultationMapper.toDto(consultationRepository.save(entity)));
     }
 
     @Override
@@ -63,9 +66,10 @@ public class ConsultationServiceImpl implements ConsultationService {
 
     @Override
     public Optional<ConsultationDto> findConsultationByIdPet(Long idPet) {
-        PetDto petDto = petClient.getPetById(idPet);
-        if (petDto == null) {
-            return Optional.empty();
+        try {
+            petClient.getPetById(idPet);
+        }catch (FeignException.NotFound e){
+            return  Optional.empty();
         }
         return consultationRepository.findByIdPet(idPet)
                 .map(consultationMapper::toDto);

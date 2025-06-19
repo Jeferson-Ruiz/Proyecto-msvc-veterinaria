@@ -49,7 +49,8 @@ public class ConsultationController {
         Optional<ConsultationDto> consultationOpt = consultationService.saveConsultation(consultationDto);
         if (consultationOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body("Error, no se pueden registrar consulta porque el paciente "+ consultationDto.getIdPet() +" no existe en el sistema");
+                    .body("Error, no se pueden registrar consultas porque el paciente "
+                            + consultationDto.getIdPet() + " no existe en el sistema");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(consultationOpt);
     }
