@@ -68,10 +68,10 @@ public class ConsultationServiceImpl implements ConsultationService {
     public Optional<ConsultationDto> findConsultationByIdPet(Long idPet) {
         try {
             petClient.getPetById(idPet);
+            return consultationRepository.findByIdPet(idPet)
+                .map(consultationMapper::toDto);
         }catch (FeignException.NotFound e){
             return  Optional.empty();
         }
-        return consultationRepository.findByIdPet(idPet)
-                .map(consultationMapper::toDto);
     }
 }

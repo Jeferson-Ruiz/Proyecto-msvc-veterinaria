@@ -24,7 +24,7 @@ public class ConsultationController {
         return ResponseEntity.ok(consultationService.findAllConsultations());
     }
 
-    @GetMapping("id/{idConsultation}")
+    @GetMapping("/id/{idConsultation}")
     public ResponseEntity<?> getConsultationBYId(@PathVariable Long idConsultation) {
         Optional<ConsultationDto> optConsultatio = consultationService.finConsultionById(idConsultation);
         if (optConsultatio.isEmpty()) {
@@ -34,7 +34,7 @@ public class ConsultationController {
         return ResponseEntity.ok(optConsultatio.get());
     }
 
-    @PostMapping("idpet/{idPet}")
+    @GetMapping("/idpet/{idPet}")
     public ResponseEntity<?> getConsultationByIdPet(@PathVariable Long idPet){
         Optional<ConsultationDto> optConsultation = consultationService.findConsultationByIdPet(idPet);
         if(optConsultation.isEmpty()){
