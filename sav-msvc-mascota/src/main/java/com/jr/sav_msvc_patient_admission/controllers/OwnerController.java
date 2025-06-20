@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.jr.sav_msvc_patient_admission.dto.OwnerDto;
-import com.jr.sav_msvc_patient_admission.models.Owner;
 import com.jr.sav_msvc_patient_admission.services.OwnerService;
 import jakarta.persistence.EntityNotFoundException;
 
