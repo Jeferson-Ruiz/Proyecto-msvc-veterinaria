@@ -2,7 +2,6 @@ package com.jeferson.msvc_sav_workstaff.controllers;
 
 import com.jeferson.msvc_sav_workstaff.dto.AdministrativeDto;
 import com.jeferson.msvc_sav_workstaff.mapper.AdministrativeMapper;
-import com.jeferson.msvc_sav_workstaff.models.Administrative;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.services.AdministrativeService;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,25 +22,22 @@ import java.util.Optional;
 public class AdministrativeController {
 
     private final AdministrativeService administrativeService;
-    private final AdministrativeMapper administrativeMapper;
 
     public AdministrativeController(AdministrativeService administrativeService,
             AdministrativeMapper administrativeMapper) {
         this.administrativeService = administrativeService;
-        this.administrativeMapper = administrativeMapper;
     }
 
     @PostMapping
     public ResponseEntity<?> saveInfoAdministrative(@RequestBody AdministrativeDto administrative) {
-        Optional<Administrative> optAdministrative = administrativeService.saveAdministrative(administrative);
+        Optional<AdministrativeDto> optAdministrative = administrativeService.saveAdministrative(administrative);
 
         if (optAdministrative.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Error de registro\nusuario ya existe en el sistema");
         }
-        Administrative adminRegist = optAdministrative.get();
-        AdministrativeDto adminRespo = administrativeMapper.toDto(adminRegist);
-        return ResponseEntity.status(HttpStatus.CREATED).body(adminRespo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(optAdministrative.get());
+
     }
 
     @GetMapping("/{idEmployee}")

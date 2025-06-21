@@ -62,4 +62,7 @@ public abstract class Employee {
 
     @Column(name = "emp_work_status", nullable = false)
     private Boolean workStatus;
+
+    @Column(name = "emp_registration_date")
+    private LocalDate registrationDate;
 }

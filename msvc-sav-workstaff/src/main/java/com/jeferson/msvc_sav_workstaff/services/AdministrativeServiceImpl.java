@@ -1,5 +1,6 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,11 +27,13 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     }
 
     @Override
-    public Optional<Administrative> saveAdministrative(AdministrativeDto administrativeDto) {
+    public Optional<AdministrativeDto> saveAdministrative(AdministrativeDto administrativeDto) {
         if (employeeService.findByDocumentNumber(administrativeDto.getDocumentNumber()).isPresent()) {
             return Optional.empty();
         }
-        return Optional.of(administrativeRepository.save(administrativeMapper.toEntity(administrativeDto)));
+        Administrative entity = administrativeMapper.toEntity(administrativeDto);
+        entity.setRegistrationDate(LocalDate.now());
+        return Optional.of(administrativeMapper.toDto(administrativeRepository.save(entity)));
     }
 
     @Override
