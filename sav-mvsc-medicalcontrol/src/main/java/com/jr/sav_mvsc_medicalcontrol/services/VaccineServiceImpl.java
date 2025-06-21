@@ -9,6 +9,8 @@ import com.jr.sav_mvsc_medicalcontrol.dto.VaccineDto;
 import com.jr.sav_mvsc_medicalcontrol.mapper.VaccineMapper;
 import com.jr.sav_mvsc_medicalcontrol.models.Vaccine;
 import com.jr.sav_mvsc_medicalcontrol.repositories.VaccineRepository;
+
+import feign.FeignException;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
@@ -47,6 +49,21 @@ public class VaccineServiceImpl implements VaccineService {
             return Optional.empty();
         }
         return Optional.of(vaccineMapper.toDto(optVaccine.get()));
+    }
+
+    @Override
+    public Optional<List<VaccineDto>> findVaccinesIdPet(Long idPet){
+        try{
+        petClient.getPetById(idPet);
+        List<VaccineDto> vacunasDto = vaccineRepository
+            .findByIdPet(idPet)
+            .stream()
+            .map(vaccineMapper::toDto)
+            .toList(); 
+        return Optional.of(vacunasDto);
+        }catch(FeignException.NotFound e){
+            return Optional.empty();
+        }
     }
 
     @Override

@@ -12,5 +12,7 @@ public interface VaccineService {
 
     Optional<VaccineDto> findVaccineById(Long idVaccine);
 
+    Optional<List<VaccineDto>> findVaccinesIdPet(Long idPet);
+
     void deleteVaccine(Long idVaccine);
 }

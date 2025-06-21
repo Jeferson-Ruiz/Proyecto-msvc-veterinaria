@@ -40,7 +40,7 @@ public class VaccineController {
         return ResponseEntity.ok(optVaccine);
     }
 
-    @GetMapping("id/{idVaccine}")
+    @GetMapping("/id/{idVaccine}")
     public ResponseEntity<?> getVaccineById(@PathVariable Long idVaccine){
         Optional<VaccineDto> optVaccine = vaccineService.findVaccineById(idVaccine);
 
@@ -48,8 +48,19 @@ public class VaccineController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("No existen vacuna asociadas al ID: " + idVaccine +" en el sistema");    
         }
-        return ResponseEntity.of(vaccineService.findVaccineById(idVaccine));
+        return ResponseEntity.ok(optVaccine);
     } 
+
+    @GetMapping("/vaciness/idpet/{idPet}")
+    public ResponseEntity<?> getVaccinesIdPet(@PathVariable Long idPet){
+        Optional<List<VaccineDto>> optListVacciones = vaccineService.findVaccinesIdPet(idPet);
+
+        if (optListVacciones.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("No existen vacunas asociadas al paiciente");
+            }
+            return ResponseEntity.ok(optListVacciones);
+    }
 
     @DeleteMapping("id/{idVaccine}")
     public ResponseEntity<?> deleteInfoVaccine(@PathVariable Long idVaccine){
