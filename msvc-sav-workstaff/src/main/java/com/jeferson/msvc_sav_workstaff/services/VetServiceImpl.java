@@ -1,5 +1,6 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,11 +25,13 @@ public class VetServiceImpl implements VetService {
     }
 
     @Override
-    public Optional<Vet> saveVet(VetDto vetDto) {
+    public Optional<VetDto> saveVet(VetDto vetDto) {
         if (employeeService.findByDocumentNumber(vetDto.getDocumentNumber()).isPresent()) {
             return Optional.empty();
         }
-        return Optional.of(vetRepository.save(vetMapper.toEntity(vetDto)));
+        Vet entity = vetMapper.toEntity(vetDto);
+        entity.setRegistrationDate(LocalDate.now());
+        return Optional.of(vetMapper.toDto(vetRepository.save(entity)));
     }
 
     @Override

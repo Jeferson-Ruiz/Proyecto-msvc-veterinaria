@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc_sav_workstaff.dto.VetDto;
 import com.jeferson.msvc_sav_workstaff.mapper.VetMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
-import com.jeferson.msvc_sav_workstaff.models.Vet;
 import com.jeferson.msvc_sav_workstaff.services.VetService;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -23,24 +22,20 @@ import jakarta.persistence.EntityNotFoundException;
 public class VetController {
 
     private final VetService vetService;
-    private final VetMapper vetMapper;
 
     public VetController(VetService vetService, VetMapper vetMapper) {
         this.vetService = vetService;
-        this.vetMapper = vetMapper;
     }
 
     @PostMapping
     public ResponseEntity<?> saveInfoVet(@RequestBody VetDto vetDto) {
-        Optional<Vet> optVet = vetService.saveVet(vetDto);
+        Optional<VetDto> optVet = vetService.saveVet(vetDto);
 
         if (optVet.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Error de registro\nusuario ya existe en el sistema");
         }
-        Vet vetRegist = optVet.get();
-        VetDto vetResponse = vetMapper.toDto(vetRegist);
-        return ResponseEntity.status(HttpStatus.CREATED).body(vetResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(optVet.get());
     }
 
     @GetMapping("/{idEmployee}")
