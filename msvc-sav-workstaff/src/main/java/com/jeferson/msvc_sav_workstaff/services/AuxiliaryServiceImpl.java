@@ -1,5 +1,6 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryDto;
@@ -26,11 +27,13 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
     }
 
     @Override
-    public Optional<Auxiliary> saveAuxiliary(AuxiliaryDto auxiliaryDto) {
+    public Optional<AuxiliaryDto> saveAuxiliary(AuxiliaryDto auxiliaryDto) {
         if (employeeService.findByDocumentNumber(auxiliaryDto.getDocumentNumber()).isPresent()) {
             return Optional.empty();
         }
-        return Optional.of(auxRepository.save(auxMapper.toEntity(auxiliaryDto)));
+        Auxiliary entity = auxMapper.toEntity(auxiliaryDto);
+        entity.setRegistrationDate(LocalDate.now());
+        return Optional.of(auxMapper.toDto(auxRepository.save(entity)));
     }
     
     @Override

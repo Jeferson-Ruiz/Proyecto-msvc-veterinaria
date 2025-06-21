@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryDto;
 import com.jeferson.msvc_sav_workstaff.mapper.AuxiliaryMapper;
-import com.jeferson.msvc_sav_workstaff.models.Auxiliary;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.services.AuxiliaryService;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,24 +22,21 @@ import jakarta.persistence.EntityNotFoundException;
 public class AuxiliaryController {
 
     private final AuxiliaryService auxService;
-    private final AuxiliaryMapper auxMapper;
 
     public AuxiliaryController(AuxiliaryService auxService, AuxiliaryMapper auxMapper) {
         this.auxService = auxService;
-        this.auxMapper = auxMapper;
     }
 
     @PostMapping
     public ResponseEntity<?> saveInfoAuxiliary(@RequestBody AuxiliaryDto auxiliaryDto) {
-        Optional<Auxiliary> optAuxiliary = auxService.saveAuxiliary(auxiliaryDto);
+        Optional<AuxiliaryDto> optAuxiliary = auxService.saveAuxiliary(auxiliaryDto);
 
         if (optAuxiliary.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Error de registr\nusuario ya existe en el sistema");
         }
-        Auxiliary auxiRegist = optAuxiliary.get();
-        AuxiliaryDto auxResponse = auxMapper.toDto(auxiRegist);
-        return ResponseEntity.status(HttpStatus.CREATED).body(auxResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(optAuxiliary.get());
+
     }
 
     @GetMapping("/{idEmployee}")
