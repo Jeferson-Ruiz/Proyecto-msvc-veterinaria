@@ -42,8 +42,14 @@ public class VaccineController {
 
     @GetMapping("id/{idVaccine}")
     public ResponseEntity<?> getVaccineById(@PathVariable Long idVaccine){
+        Optional<VaccineDto> optVaccine = vaccineService.findVaccineById(idVaccine);
+
+        if (optVaccine.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("No existen vacuna asociadas al ID: " + idVaccine +" en el sistema");    
+        }
         return ResponseEntity.of(vaccineService.findVaccineById(idVaccine));
-    }
+    } 
 
     @DeleteMapping("id/{idVaccine}")
     public ResponseEntity<?> deleteInfoVaccine(@PathVariable Long idVaccine){
