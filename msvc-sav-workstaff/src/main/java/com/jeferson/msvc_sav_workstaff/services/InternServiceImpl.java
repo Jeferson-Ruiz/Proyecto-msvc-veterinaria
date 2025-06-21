@@ -1,5 +1,6 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import jakarta.persistence.EntityNotFoundException;
@@ -34,11 +35,13 @@ public class InternServiceImpl implements InternService {
     }
 
     @Override
-    public Optional<Intern> saveIntern(InternDto internDto) {
+    public Optional<InternDto> saveIntern(InternDto internDto) {
         if (employeeService.findByDocumentNumber(internDto.getDocumentNumber()).isPresent()) {
             return Optional.empty();
         }
-        return Optional.of(intRepository.save(intMapper.toEntity(internDto)));
+        Intern entity = intMapper.toEntity(internDto);
+        entity.setRegistrationDate(LocalDate.now());
+        return Optional.of(intMapper.toDto(intRepository.save(entity)));
     }
 
     @Override

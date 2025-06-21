@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc_sav_workstaff.dto.InternDto;
 import com.jeferson.msvc_sav_workstaff.mapper.InternMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
-import com.jeferson.msvc_sav_workstaff.models.Intern;
 import com.jeferson.msvc_sav_workstaff.services.InternService;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -23,24 +22,20 @@ import jakarta.persistence.EntityNotFoundException;
 public class InternController {
 
     private final InternService intService;
-    private final InternMapper intMapper;
 
     public InternController(InternService intService, InternMapper intMapper) {
         this.intService = intService;
-        this.intMapper = intMapper;
     }
 
     @PostMapping
     public ResponseEntity<?> saveInfoIntern(@RequestBody InternDto internDto) {
-        Optional<Intern> optInter = intService.saveIntern(internDto);
+        Optional<InternDto> optInter = intService.saveIntern(internDto);
 
         if (optInter.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Error de registro\nusuario ya existe en el sistema");
         }
-        Intern internResgister = optInter.get();
-        InternDto internResponse = intMapper.toDto(internResgister);
-        return ResponseEntity.status(HttpStatus.CREATED).body(internResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(optInter.get());
     }
 
     @GetMapping("/{idEmployee}")
