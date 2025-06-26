@@ -19,6 +19,6 @@ public class Vet extends Employee {
     @Column(name = "vet_speciality", nullable = true,  length = 20)
     private String speciality;
 
-    @Column(name = "vet_prof_card", nullable = true)
+    @Column(name = "vet_prof_card", nullable = false)
     private Long professionalCard;
 }

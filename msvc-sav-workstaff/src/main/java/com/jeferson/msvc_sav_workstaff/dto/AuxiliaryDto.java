@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuxiliaryDto extends EmployeeDto {
-    private String workArea;
     private String academicCertificate;
+    private String workArea;
 
 }

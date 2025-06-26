@@ -20,6 +20,5 @@ public class EmployeeDto {
     private String email;
     private Long phoneNumber;
     private ContractType contractType;
-    private JobPosition jobPosition;
     private Boolean workStatus;
 }

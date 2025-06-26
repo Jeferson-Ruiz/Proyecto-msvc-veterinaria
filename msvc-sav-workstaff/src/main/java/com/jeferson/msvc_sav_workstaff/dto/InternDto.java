@@ -12,5 +12,6 @@ import lombok.Setter;
 public class InternDto extends EmployeeDto {
     private String educationInstitute;
     private String levelAcademic;
+    private String trainingCareer;
 
 }

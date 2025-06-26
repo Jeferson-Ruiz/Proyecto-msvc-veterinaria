@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class AdministrativeDto extends EmployeeDto{
     private String academicTitle;
+    private Long professionalCard;
     private String workArea;
 
 }

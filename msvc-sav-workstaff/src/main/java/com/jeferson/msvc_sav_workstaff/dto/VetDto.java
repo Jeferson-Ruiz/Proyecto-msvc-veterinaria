@@ -12,5 +12,7 @@ import lombok.Setter;
 public class VetDto extends EmployeeDto {
     private String speciality;
     private Long professionalCard;
+    private String trainingCareer;
+
     
 }
