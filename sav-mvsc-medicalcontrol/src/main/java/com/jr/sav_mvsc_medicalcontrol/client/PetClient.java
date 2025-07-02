@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.jr.sav_mvsc_medicalcontrol.dto.PetDto;
 
-@FeignClient(name = "sav-msvc-mascota", url = "http://localhost:8080", path = "/api/sav/pet")
+@FeignClient(name = "sav-msvc-mascota", path = "/api/sav/pet")
 public interface PetClient {
 
     @GetMapping("{idPet}")
