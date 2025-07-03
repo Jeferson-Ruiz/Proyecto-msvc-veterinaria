@@ -1,4 +1,4 @@
-package com.jr.sav.msvc.warehouse.msvc_warehouse;
+package com.jr.sav.msvc.warehouse;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
