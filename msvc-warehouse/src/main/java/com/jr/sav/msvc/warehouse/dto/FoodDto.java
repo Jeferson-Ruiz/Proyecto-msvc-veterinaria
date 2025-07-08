@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FoodDto extends ProductDto {
-    private String tipoAnimal;
+    private String animalType;
     private double weight;
     private LocalDate expirationDate;
 }
