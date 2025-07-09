@@ -1,10 +1,12 @@
 package com.jr.sav.msvc.warehouse.mapper;
 
+import org.springframework.stereotype.Component;
 import com.jr.sav.msvc.warehouse.dto.SuppliceDto;
 import com.jr.sav.msvc.warehouse.entities.Supplie;
 
+@Component
 public class SuppliceMapper {
-    public static SuppliceDto toDto(Supplie entity){
+    public SuppliceDto toDto(Supplie entity){
         SuppliceDto dto = new SuppliceDto();
         dto.setCommercialName(entity.getCommercialName());
         dto.setMark(entity.getMark());

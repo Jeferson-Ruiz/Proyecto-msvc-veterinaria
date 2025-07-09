@@ -1,8 +1,10 @@
 package com.jr.sav.msvc.warehouse.mapper;
 
+import org.springframework.stereotype.Component;
 import com.jr.sav.msvc.warehouse.dto.MedicineDto;
 import com.jr.sav.msvc.warehouse.entities.Medicine;
 
+@Component
 public class MedicineMapper {
 
     public static MedicineDto toDto(Medicine entity){

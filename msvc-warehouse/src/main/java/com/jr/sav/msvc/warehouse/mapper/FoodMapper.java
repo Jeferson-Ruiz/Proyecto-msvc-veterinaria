@@ -1,10 +1,12 @@
 package com.jr.sav.msvc.warehouse.mapper;
 
+import org.springframework.stereotype.Component;
 import com.jr.sav.msvc.warehouse.dto.FoodDto;
 import com.jr.sav.msvc.warehouse.entities.Food;
 
+@Component
 public class FoodMapper {
-    public static FoodDto toDto(Food entity){
+    public FoodDto toDto(Food entity){
         FoodDto dto = new FoodDto();
         dto.setCommercialName(entity.getCommercialName());
         dto.setMark(entity.getMark());
