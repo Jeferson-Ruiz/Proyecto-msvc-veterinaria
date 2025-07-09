@@ -17,8 +17,8 @@ import lombok.Setter;
 public class Supplie extends Product {
 
     @Column(name = "sup_unit_measure",length = 10)
-    private String unidadMedida;
+    private String unitMeasure;
 
     @Column(name = "sup_unit_disposable")
-    private boolean desechable;
+    private boolean disposable;
 }
