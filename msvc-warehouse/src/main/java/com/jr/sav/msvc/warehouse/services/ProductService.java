@@ -13,6 +13,10 @@ public interface ProductService {
 
     void delete(Long id);
 
-    
+    void updateQuantityStock(Long id, Long quantityStock);
 
+    void updatePurchasePrice(Long id, Double purchasePrice);
+
+    void updateSalesPrice(long id, Double salesPrice);
+    
 }

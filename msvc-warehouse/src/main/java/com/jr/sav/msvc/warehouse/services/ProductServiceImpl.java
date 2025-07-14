@@ -57,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteById(id);
     }
 
-    
+    @Override    
     public void updateQuantityStock(Long id, Long quantityStock){
         if(productRepository.findById(id).isEmpty()) {
             throw new EntityNotFoundException();
@@ -65,6 +65,21 @@ public class ProductServiceImpl implements ProductService {
         productRepository.updateQuantityStock(id, quantityStock);
     }
 
+    @Override
+    public void updatePurchasePrice(Long id, Double purchasePrice){
+        if (productRepository.findById(id).isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+        productRepository.updatePurchasePrice(id, purchasePrice);
+    }
+
+    @Override
+    public void updateSalesPrice(long id, Double salesPrice){
+        if (productRepository.findById(id).isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+        productRepository.updateSalesPrice(id, salesPrice);
+    }
 
     
 
