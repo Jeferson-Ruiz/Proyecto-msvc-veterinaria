@@ -30,29 +30,24 @@ public class OwnerServiceImpl implements OwnerService{
 
     @Override
     public Optional<OwnerDto> findOwnerById(Long idOwner){
-        Optional<Owner> optOwner = ownerRepository.findById(idOwner);
-        if (optOwner.isEmpty()) {
-            return Optional.empty();
-        }
-        OwnerDto dto = ownerMapper.toDto(optOwner.get());
-        return Optional.of(dto);
+        Owner owner = ownerRepository.findById(idOwner).orElseThrow(() -> new EntityNotFoundException("El propietario con ID " + idOwner + " no fue encontrado"));
+        return Optional.of(ownerMapper.toDto(owner));
     }
 
     @Override
     public Optional<OwnerDto> findOwnerByDocumentNumber(Long documentNumber){
-        Optional<Owner> optOwner = ownerRepository.findByDocumentNumber(documentNumber);
-        if (optOwner.isEmpty()) {
-            return Optional.empty();
-        }
-        OwnerDto dto = ownerMapper.toDto(optOwner.get());
-        return Optional.of(dto);
+        Owner owner = ownerRepository.findByDocumentNumber(documentNumber)
+            .orElseThrow(() -> new EntityNotFoundException("El propietario con el N° documento " + documentNumber + " no fue encontrado"));
+        
+        return Optional.of(ownerMapper.toDto(owner));
     }
 
     @Override
     public Optional<OwnerDto> saveOwner(OwnerDto ownerDto){
         if (ownerRepository.findByDocumentNumber(ownerDto.getDocumentNumber()).isPresent()) {
-            return Optional.empty();
+            throw new IllegalArgumentException("Ya existe un propietario con el número de documento " + ownerDto.getDocumentNumber());
         }
+
         Owner entity = ownerMapper.toEntity(ownerDto);
         entity.setDateOfRecording(LocalDate.now());
         Owner savedOwner = ownerRepository.save(entity);
@@ -61,17 +56,17 @@ public class OwnerServiceImpl implements OwnerService{
 
     @Override
     public void deleteOwnerById(Long idOwner){
-        if (ownerRepository.findById(idOwner).isEmpty()) {
-            throw new EntityNotFoundException();
-        }
-        ownerRepository.deleteById(idOwner);
+        Owner owner = ownerRepository.findById(idOwner)
+            .orElseThrow(() -> new EntityNotFoundException("El propietario con ID " + idOwner + " no fue encontrado"));
+        
+        ownerRepository.delete(owner);
     }
 
     @Override
     @Transactional
     public void updatePhoneNumber(Long idOwner, Long phoneNumber){
         if (ownerRepository.findById(idOwner).isEmpty()) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException("No se puede actualizar. Propietario con ID " + idOwner + " no existe.");
         }
         ownerRepository.updatePhoneNumber(idOwner, phoneNumber);        
     }
@@ -80,7 +75,7 @@ public class OwnerServiceImpl implements OwnerService{
     @Transactional
     public void updateEmail(Long idOwner, String email){
         if (ownerRepository.findById(idOwner).isEmpty()) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException("No se puede actualizar. Propietario con ID " + idOwner + " no existe.");
         }
         ownerRepository.updateEmail(idOwner, email);
     }
