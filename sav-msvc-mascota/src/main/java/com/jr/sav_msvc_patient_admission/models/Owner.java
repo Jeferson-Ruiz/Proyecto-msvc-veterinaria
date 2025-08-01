@@ -1,11 +1,14 @@
 package com.jr.sav_msvc_patient_admission.models;
 
 import java.time.LocalDate;
+import java.util.List;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,4 +46,8 @@ public class Owner {
 
     @Column(name = "owne_data_of_recording", nullable = false)
     private LocalDate dateOfRecording;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private List<Pet> pets;
+
 }
