@@ -30,7 +30,8 @@ public class OwnerServiceImpl implements OwnerService{
 
     @Override
     public Optional<OwnerDto> findOwnerById(Long idOwner){
-        Owner owner = ownerRepository.findById(idOwner).orElseThrow(() -> new EntityNotFoundException("El propietario con ID " + idOwner + " no fue encontrado"));
+        Owner owner = ownerRepository.findById(idOwner)
+            .orElseThrow(() -> new EntityNotFoundException("El propietario con ID " + idOwner + " no fue encontrado"));
         return Optional.of(ownerMapper.toDto(owner));
     }
 

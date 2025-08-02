@@ -2,7 +2,6 @@ package com.jr.sav_msvc_patient_admission.models;
 
 import java.time.LocalDate;
 import java.util.List;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -47,7 +46,7 @@ public class Owner {
     @Column(name = "owne_data_of_recording", nullable = false)
     private LocalDate dateOfRecording;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "owner")
     private List<Pet> pets;
 
 }
