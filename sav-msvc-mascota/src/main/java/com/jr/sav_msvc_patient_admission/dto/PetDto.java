@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PetDto {
+    private Long idPet;
     private String name;
     private String specie;
     private String breed;
     private String sex;
     private LocalDate dateOfBirth;
-    private LocalDate dateOfRecording;
-    private Long ownerNumber;
+    private Long documentNumber;
 }
