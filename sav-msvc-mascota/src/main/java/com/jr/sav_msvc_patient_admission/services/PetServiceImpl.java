@@ -2,11 +2,16 @@ package com.jr.sav_msvc_patient_admission.services;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.jr.sav_msvc_patient_admission.dto.PetDto;
+import com.jr.sav_msvc_patient_admission.dto.PetOwnerResponseDto;
+import com.jr.sav_msvc_patient_admission.dto.PetResponseDto;
 import com.jr.sav_msvc_patient_admission.mapper.PetMapper;
+import com.jr.sav_msvc_patient_admission.models.Owner;
 import com.jr.sav_msvc_patient_admission.models.Pet;
+import com.jr.sav_msvc_patient_admission.repositories.OwnerRepository;
 import com.jr.sav_msvc_patient_admission.repositories.PetsRepository;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -15,54 +20,62 @@ public class PetServiceImpl implements PetService{
 
     private final PetsRepository petsRepository;
     private final PetMapper petMapper;
+    private final OwnerRepository ownerRepository;
 
-    public PetServiceImpl(PetsRepository petsRepository, PetMapper petMapper) {
+    public PetServiceImpl(PetsRepository petsRepository, PetMapper petMapper, OwnerRepository ownerRepository) {
         this.petsRepository = petsRepository;
         this.petMapper = petMapper;
+        this.ownerRepository = ownerRepository;
     }
 
     @Override
-    public Optional<PetDto> savePet(PetDto petDto){
-        if (petsRepository.findByNameAndOwnerNumber(petDto.getName(), petDto.getOwnerNumber()).isPresent()) {
-            return Optional.empty();
-        }
+    public PetOwnerResponseDto savePet(PetDto petDto){
+
+        Owner owner = ownerRepository.findByDocumentNumber(petDto.getDocumentNumber())
+        .orElseThrow(() -> new EntityNotFoundException("No se puede registrar la mascota por que no se encontró el propietario con el N° identificacion " + petDto.getDocumentNumber()));
+
         Pet entity = petMapper.toEntity(petDto);
+        entity.setOwner(owner);
         entity.setDateOfRecording(LocalDate.now());
+
         Pet savedPet = petsRepository.save(entity);
-        return Optional.of(petMapper.toDto(savedPet));
+        return petMapper.toResponseDto(savedPet);
     }
 
     @Override
-    public List<PetDto> findAllPets(){
-        return petsRepository.findAll().stream()
-            .map(petMapper::toDto).toList();
+    public List<PetResponseDto> findAllPets(){
+        List<Pet> pets = petsRepository.findAll();
+        return pets.stream().map(petMapper::toResponsePetDto)
+            .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<PetDto> findPetById(Long idPet){
-        Optional<Pet> optPet = petsRepository.findById(idPet);
-        if (optPet.isEmpty()) {
-            return Optional.empty();
-        }
-        PetDto dto = petMapper.toDto(optPet.get());
-        return Optional.of(dto);
+    public List<PetOwnerResponseDto> findAllPetsWithOwners(){
+        List<Pet> pets = petsRepository.findAll();
+        return pets.stream().map(petMapper::toResponseDto)
+            .collect(Collectors.toList());
     }
 
-    @Override 
-    public Optional<PetDto> findByNameAndOwnerNumber(String name, Long ownerNumber){
-        Optional<Pet> optPet = petsRepository.findByNameAndOwnerNumber(name, ownerNumber);
-        if (optPet.isEmpty()) {
-            return Optional.empty();
-        }
-        PetDto dto = petMapper.toDto(optPet.get());
-        return Optional.of(dto);
+    @Override
+    public PetResponseDto findPetById(Long idPet){
+        Pet pet = petsRepository.findById(idPet)
+            .orElseThrow(() -> new EntityNotFoundException("La mascota con ID " + idPet + " no fue encontrado"));
+        return petMapper.toResponsePetDto(pet);
+    }
+
+    @Override
+    @Transactional
+    public PetOwnerResponseDto findByNameAndOwnerNumber(String name, Long ownerNumber){
+        Pet pet = petsRepository.findByNameAndOwnerNumber(name, ownerNumber)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro la mascota " + name + " asociado al propipeatio "+ ownerNumber));
+        
+        return (petMapper.toResponseDto(pet));
     }
 
     @Override
     public void deletePetById(Long idPet){
-        if (petsRepository.findById(idPet).isEmpty()) {
-            throw new EntityNotFoundException();
-        }
-        petsRepository.deleteById(idPet);
+        Pet pet = petsRepository.findById(idPet)
+            .orElseThrow(() -> new EntityNotFoundException("El propietario con ID " + idPet + " no fue encontrado"));
+        petsRepository.delete(pet);
     }
 }

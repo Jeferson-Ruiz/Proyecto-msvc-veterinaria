@@ -43,10 +43,7 @@ public class Pet {
     @Column(name = "pet_date_of_recording", nullable = false)
     private LocalDate dateOfRecording;
 
-    @Column(name = "pet_owner_id", nullable = false)
-    private Long ownerNumber;
-
     @ManyToOne
-    @JoinColumn(name = "propietario_id", nullable = false)
+    @JoinColumn(name = "owner_id", nullable = false)
     private Owner owner;
 }
