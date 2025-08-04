@@ -18,6 +18,8 @@ public interface PetService {
     PetResponseDto findPetById(Long idPet);
 
     PetOwnerResponseDto findByNameAndOwnerNumber(String name, Long ownerNumber);
+
+    List<PetResponseDto> findPetsByOwner(Long documentNumber);
     
     void deletePetById(Long idPet);
 

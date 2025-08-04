@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.jr.sav_msvc_patient_admission.dto.PetDto;
 import com.jr.sav_msvc_patient_admission.dto.PetOwnerResponseDto;
 import com.jr.sav_msvc_patient_admission.dto.PetResponseDto;
@@ -64,12 +63,20 @@ public class PetServiceImpl implements PetService{
     }
 
     @Override
-    @Transactional
     public PetOwnerResponseDto findByNameAndOwnerNumber(String name, Long ownerNumber){
         Pet pet = petsRepository.findByNameAndOwnerNumber(name, ownerNumber)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro la mascota " + name + " asociado al propipeatio "+ ownerNumber));
         
         return (petMapper.toResponseDto(pet));
+    }
+
+    @Override
+    public List<PetResponseDto> findPetsByOwner(Long documentNumber){
+        List<Pet> pets = petsRepository.findPetsByOwnerDocument(documentNumber);
+        if (pets.isEmpty()) {
+            throw new EntityNotFoundException("No existen mascotas registradas al propietario "+ documentNumber); 
+        }
+        return pets.stream().map(petMapper::toResponsePetDto).toList();
     }
 
     @Override

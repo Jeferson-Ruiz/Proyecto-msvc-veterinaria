@@ -25,39 +25,47 @@ public class PetController {
     public PetController(PetService petService) {
         this.petService = petService;
     }
+    
+    @PostMapping
+    public ResponseEntity<?> saveInfoPet(@RequestBody PetDto petDto) {
+        PetOwnerResponseDto petCreated = petService.savePet(petDto);
 
+        return ResponseEntity.status(HttpStatus.CREATED).body(petCreated);
+    }
+    
     @GetMapping
-    public ResponseEntity<List<PetResponseDto>> getAllPets(){
+    public ResponseEntity<List<PetResponseDto>> getAllPets() {
         return ResponseEntity.ok(petService.findAllPets());
     }
 
     @GetMapping("/owners")
-    public ResponseEntity<List<PetOwnerResponseDto>> getAllPetsWithOwners(){
+    public ResponseEntity<List<PetOwnerResponseDto>> getAllPetsWithOwners() {
         return ResponseEntity.ok(petService.findAllPetsWithOwners());
     }
 
-    @PostMapping
-    public ResponseEntity<?> saveInfoPet(@RequestBody PetDto petDto){
-        PetOwnerResponseDto petCreated = petService.savePet(petDto);
-        
-        return ResponseEntity.status(HttpStatus.CREATED).body(petCreated);
-    }
 
     @GetMapping("/id/{idPet}")
-    public ResponseEntity<?> getPetById(@PathVariable Long idPet){
+    public ResponseEntity<?> getPetById(@PathVariable Long idPet) {
         PetResponseDto pet = petService.findPetById(idPet);
         return ResponseEntity.ok(pet);
     }
 
-    @GetMapping("owner/{ownerNumber}")
-    public ResponseEntity<?> getPetAndOwnerByNameAndDocument(@PathVariable Long ownerNumber, @RequestParam String name){
+    @GetMapping("/owner/{ownerNumber}")
+    public ResponseEntity<?> getPetAndOwnerByNameAndDocument(@PathVariable Long ownerNumber,
+            @RequestParam String name) {
         PetOwnerResponseDto petDto = petService.findByNameAndOwnerNumber(name, ownerNumber);
         return ResponseEntity.ok(petDto);
     }
 
+    @GetMapping("/owner/document/{documentNumber}")
+    public ResponseEntity<?> getPetsByOwnerDocument(@PathVariable Long documentNumber) {
+        List<PetResponseDto> petDto = petService.findPetsByOwner(documentNumber);
+        return ResponseEntity.ok(petDto);
+    }
+
     @DeleteMapping("/{idPet}")
-    public ResponseEntity<?> deleteInfoPet(@PathVariable Long idPet){
+    public ResponseEntity<?> deleteInfoPet(@PathVariable Long idPet) {
         petService.deletePetById(idPet);
         return ResponseEntity.noContent().build();
     }
-} 
+}
