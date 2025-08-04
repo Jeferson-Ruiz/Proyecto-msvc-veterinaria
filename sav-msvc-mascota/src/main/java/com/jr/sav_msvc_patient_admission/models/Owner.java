@@ -22,28 +22,28 @@ public class Owner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "owne_id")
+    @Column(name = "owner_id")
     private Long idOwner;
 
-    @Column(name = "owne_name", nullable = false)
+    @Column(name = "owner_name", nullable = false)
     private String name;
 
-    @Column(name = "owne_last_name", nullable = false, length = 20)
+    @Column(name = "owner_last_name", nullable = false, length = 20)
     private String lastName;
 
-    @Column(name = "owne_documt_type", nullable = false, length = 15)
+    @Column(name = "owner_documt_type", nullable = false, length = 15)
     private String documentType;
 
-    @Column(name = "owne_documt_number", nullable = false)
+    @Column(name = "owner_documt_number", nullable = false)
     private Long documentNumber;
 
-    @Column(name = "owne_email", nullable = false, length = 50)
+    @Column(name = "owner_email", nullable = false, length = 50)
     private String email;
 
-    @Column(name = "owne_phone_number", nullable = false)
+    @Column(name = "owner_phone_number", nullable = false)
     private Long phoneNumber;
 
-    @Column(name = "owne_data_of_recording", nullable = false)
+    @Column(name = "owner_data_of_recording", nullable = false)
     private LocalDate dateOfRecording;
 
     @OneToMany(mappedBy = "owner")
