@@ -1,11 +1,17 @@
 package com.jr.sav_mvsc_medicalcontrol.models;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,21 +26,29 @@ public class Consultation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_consultation", unique = true)
+    @Column(name = "", unique = true)
     private Long idConsultation;
 
     @Column(name = "con_id_pet", nullable = false)
     private Long idPet;
 
     @Column(name = "con_date", nullable = false)
-    private LocalDate date;
+    private LocalDateTime registrationDate;
 
     @Column(name = "con_reason", length = 20, nullable = false)
-    private String reason;
+    private String citationDate;
 
     @Column(name = "con_observation", length = 30, nullable = false)
     private String observations;
 
     @Column(name = "con_veterinary_id", nullable = false)
     private Long veterinaryId;
+
+    @OneToMany(mappedBy = "consultation", cascade = CascadeType.ALL)
+    private List<Treatment> treatments;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_pet", nullable = false)
+    private Pet pet;
+
 }

@@ -1,29 +1,26 @@
 package com.jr.sav_mvsc_medicalcontrol.services;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-
-import feign.FeignException;
 import org.springframework.stereotype.Service;
-import com.jr.sav_mvsc_medicalcontrol.client.PetClient;
 import com.jr.sav_mvsc_medicalcontrol.dto.ConsultationDto;
-import com.jr.sav_mvsc_medicalcontrol.dto.PetDto;
 import com.jr.sav_mvsc_medicalcontrol.mapper.ConsultationMapper;
 import com.jr.sav_mvsc_medicalcontrol.models.Consultation;
+import com.jr.sav_mvsc_medicalcontrol.models.Pet;
 import com.jr.sav_mvsc_medicalcontrol.repositories.ConsultationRepository;
+import com.jr.sav_mvsc_medicalcontrol.repositories.PetRepository;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ConsultationServiceImpl implements ConsultationService {
 
-    private final PetClient petClient;
+    private final PetRepository petRepository;
     private final ConsultationRepository consultationRepository;
     private final ConsultationMapper consultationMapper;
 
-    public ConsultationServiceImpl(PetClient petClient, ConsultationRepository consultationRepository,
+    public ConsultationServiceImpl(PetRepository petRepository, ConsultationRepository consultationRepository,
             ConsultationMapper consultationMapper) {
-        this.petClient = petClient;
+        this.petRepository = petRepository;
         this.consultationRepository = consultationRepository;
         this.consultationMapper = consultationMapper;
     }
@@ -35,43 +32,37 @@ public class ConsultationServiceImpl implements ConsultationService {
     }
 
     @Override
-    public Optional<ConsultationDto> finConsultionById(Long idConsultation) {
-        Optional<Consultation> optConsultation = consultationRepository.findById(idConsultation);
-        if (optConsultation.isEmpty()) {
-            return Optional.empty();
-        }
-        ConsultationDto dto = consultationMapper.toDto(optConsultation.get());
-        return Optional.of(dto);
+    public ConsultationDto findConsultionById(Long idConsultation) {
+        Consultation consultation = consultationRepository.findById(idConsultation)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "No se encontro consulta asociada al paciente " + idConsultation));
+        return consultationMapper.toDto(consultation);
     }
 
     @Override
-    public Optional<ConsultationDto> saveConsultation(ConsultationDto consultationDto) {
-        try {
-            PetDto petDto = petClient.getPetById(consultationDto.getIdPet());
-            Consultation entity = consultationMapper.toEntity(consultationDto);
-            entity.setDate(LocalDate.now());
-            return Optional.of(consultationMapper.toDto(consultationRepository.save(entity)));
-        } catch (FeignException.NotFound e){
-            return Optional.empty();
-        }
+    public ConsultationDto saveConsultation(ConsultationDto consultationDto) {
+        Pet pet = petRepository.findById(consultationDto.getIdPet())
+            .orElseThrow(() -> new RuntimeException("No se puede generar una consulta para la mascota "+ consultationDto.getIdPet()));
+
+        Consultation consultation = consultationMapper.toEntity(consultationDto);
+        consultation.setRegistrationDate(LocalDateTime.now());
+        Consultation savedConsultation = consultationRepository.save(consultation);
+        return consultationMapper.toDto(savedConsultation);
     }
 
     @Override
     public void deleteConsultation(Long idConsultation) {
-        if (consultationRepository.findById(idConsultation).isEmpty()) {
-            throw new EntityNotFoundException();
-        }
-        consultationRepository.deleteById(idConsultation);
+        Consultation consultation = consultationRepository.findById(idConsultation)
+                .orElseThrow(() -> new EntityNotFoundException("No existe consulta asociada al Id " + idConsultation));
+        consultationRepository.delete(consultation);
     }
 
     @Override
-    public Optional<ConsultationDto> findConsultationByIdPet(Long idPet) {
-        try {
-            petClient.getPetById(idPet);
-            return consultationRepository.findByIdPet(idPet)
-                .map(consultationMapper::toDto);
-        }catch (FeignException.NotFound e){
-            return  Optional.empty();
-        }
+    public ConsultationDto findConsultationByIdPet(Long idPet) {
+        Consultation consultatio = consultationRepository.findByIdPet(idPet)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "No existe consulta asociada al paciente con el Id: " + idPet +" en el sistema"));
+
+        return consultationMapper.toDto(consultatio);
     }
 }

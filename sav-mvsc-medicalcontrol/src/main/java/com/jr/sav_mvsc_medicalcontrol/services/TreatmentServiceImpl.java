@@ -2,25 +2,26 @@ package com.jr.sav_mvsc_medicalcontrol.services;
 
 import com.jr.sav_mvsc_medicalcontrol.dto.TreatmentDto;
 import com.jr.sav_mvsc_medicalcontrol.mapper.TreatmentMapper;
+import com.jr.sav_mvsc_medicalcontrol.models.Consultation;
 import com.jr.sav_mvsc_medicalcontrol.models.Treatment;
+import com.jr.sav_mvsc_medicalcontrol.repositories.ConsultationRepository;
 import com.jr.sav_mvsc_medicalcontrol.repositories.TreatmentRespository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TreatmentServiceImpl implements TreatmentService {
 
     private final TreatmentRespository treatmentRespository;
-    private final ConsultationService consultationService;
+    private final ConsultationRepository consultationRepository;
     private final TreatmentMapper treatmentMapper;
 
 
-    public TreatmentServiceImpl(TreatmentRespository treatmentRespository, TreatmentMapper treatmentMapper, ConsultationService consultationService) {
+    public TreatmentServiceImpl(TreatmentRespository treatmentRespository, TreatmentMapper treatmentMapper, ConsultationRepository consultationRepository) {
         this.treatmentRespository = treatmentRespository;
         this.treatmentMapper = treatmentMapper;
-        this.consultationService = consultationService;
+        this.consultationRepository = consultationRepository;
     }
 
     @Override
@@ -30,30 +31,27 @@ public class TreatmentServiceImpl implements TreatmentService {
     }
 
     @Override
-    public Optional<TreatmentDto> findTreatmentById(Long idTreatment){
-        Optional<Treatment> optTreatment = treatmentRespository.findById(idTreatment);
-        if (optTreatment.isEmpty()){
-            return Optional.empty();
-        }
-        TreatmentDto dto = treatmentMapper.toDto(optTreatment.get());
-        return  Optional.of(dto);
+    public TreatmentDto findTreatmentById(Long idTreatment){
+        Treatment treatment = treatmentRespository.findById(idTreatment)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro un tratamiento asociado al id:" + idTreatment));
+        return treatmentMapper.toDto(treatment);
     }
 
     @Override
-    public Optional<TreatmentDto> saveTreatment(TreatmentDto treatmentDto){
-        if (consultationService.finConsultionById(treatmentDto.getIdConsultation()).isEmpty()){
-            return Optional.empty();
-        }
+    public TreatmentDto saveTreatment(TreatmentDto treatmentDto){
+        Consultation consultation = consultationRepository.findById(treatmentDto.getIdConsultation())
+            .orElseThrow(() -> new EntityNotFoundException("No se puede registrar un tratamiento sin previa consulta"));
         Treatment entity = treatmentMapper.toEntiry(treatmentDto);
-        return Optional.of(treatmentMapper.toDto(treatmentRespository.save(entity)));
+        Treatment save = treatmentRespository.save(entity);
+        return treatmentMapper.toDto(save);
+        
     }
 
     @Override
-    public void deleteTreatment(Long idTreatment){
-        if (treatmentRespository.findById(idTreatment).isEmpty()){
-            throw new EntityNotFoundException();
-        }
-        treatmentRespository.deleteById(idTreatment);
+    public List<TreatmentDto> findTreatmentByIdPet(Long idPet) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findTreatmentByIdPet'");
     }
+
     
 }

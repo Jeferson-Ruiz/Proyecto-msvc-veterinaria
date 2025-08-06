@@ -6,6 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,10 +37,11 @@ public class Vaccine {
     @Column(name = "vac_nex_application_date")
     private LocalDate nextApplicationDate;
 
-    @Column(name = "vac_lot", nullable = false, length = 20)
-    private String lot;
-
     @Column(name = "vac_observation", length = 20)
     private String observations;
+
+    @ManyToOne
+    @JoinColumn(name = "pet_id", nullable = false)
+    private Pet pet;
 
 }
