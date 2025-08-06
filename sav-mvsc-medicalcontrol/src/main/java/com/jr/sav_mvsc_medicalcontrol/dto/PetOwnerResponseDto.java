@@ -5,15 +5,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-public class PetDto {
+public class PetOwnerResponseDto {
     private Long idPet;
     private String name;
     private String specie;
     private String breed;
     private String sex;
     private LocalDate dateOfBirth;
-    private Long documentNumber;
+    private String ownerName;
+    private Long ownerPhone;
 }
