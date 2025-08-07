@@ -65,4 +65,13 @@ public class ConsultationServiceImpl implements ConsultationService {
 
         return consultationMapper.toDto(consultatio);
     }
+
+    @Override
+    public List<ConsultationDto> findAllConsultationById(Long idPet){
+        List<Consultation> consultations = consultationRepository.findAllByIdPet(idPet);
+        if (consultations.isEmpty()) {
+            throw new EntityNotFoundException("No se encontraron consultas asociadas al paciente "+ idPet);
+        }
+        return consultations.stream().map(consultationMapper::toDto).toList();
+    }
 }

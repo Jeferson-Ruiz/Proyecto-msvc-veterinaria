@@ -34,6 +34,12 @@ public class ConsultationController {
         return ResponseEntity.ok(consultation);
     }
 
+    @GetMapping("/all/pet/{idPet}")
+    public ResponseEntity<?> getAllConsultationsByIdPet(@PathVariable Long idPet){
+        List<ConsultationDto> consultations = consultationService.findAllConsultationById(idPet);
+        return ResponseEntity.ok(consultations);
+    }
+
     @PostMapping
     public ResponseEntity<?> saveInfoConsultation(@RequestBody ConsultationDto consultationDto) {
         ConsultationDto savedConsultation = consultationService.saveConsultation(consultationDto);

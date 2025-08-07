@@ -15,4 +15,8 @@ public interface ConsultationService {
 
     ConsultationDto findConsultationByIdPet(Long idPet);
 
+    List<ConsultationDto> findAllConsultationById(Long idPet);
+
+    // Revisa al delete, posiblemente no sea buena idea eliminar del todo, quizas si desabilitar
+
 }
