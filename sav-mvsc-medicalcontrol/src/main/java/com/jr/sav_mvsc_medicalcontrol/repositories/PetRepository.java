@@ -15,4 +15,10 @@ public interface PetRepository extends JpaRepository<Pet, Long>{
     @Query("SELECT p FROM Pet p WHERE p.owner.documentNumber =:documentNumber")
     List<Pet> findPetsByOwnerDocument(@Param("documentNumber") Long documentNumber);
 
+    @Query("SELECT p FROM Pet p WHERE p.active = true")
+    List<Pet> findAllActivePets();
+
+    @Query("SELECT p FROM Pet p WHERE p.active = false")
+    List<Pet> findAllDisablePets();
+
 }

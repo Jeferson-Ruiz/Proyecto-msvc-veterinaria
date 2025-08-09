@@ -16,4 +16,5 @@ public class PetResponseDto {
     private String sex;
     private LocalDate dateOfBirth;
     private LocalDate dateOfRecording;
+    private Boolean active;
 }

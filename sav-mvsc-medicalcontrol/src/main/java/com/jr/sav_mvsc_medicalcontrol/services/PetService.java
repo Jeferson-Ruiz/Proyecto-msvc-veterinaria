@@ -11,14 +11,16 @@ public interface PetService {
 
     List<PetResponseDto> findAllPets();
 
-    List<PetOwnerResponseDto> findAllPetsWithOwners();
+    List<PetOwnerResponseDto> findAllDisablePets();
+
+    List<PetOwnerResponseDto> findAllActivesPets();
 
     PetResponseDto findPetById(Long idPet);
 
     PetOwnerResponseDto findByNameAndOwnerNumber(String name, Long ownerNumber);
 
     List<PetResponseDto> findPetsByOwner(Long documentNumber);
-    
-    void deletePetById(Long idPet);
 
+    void disablePetById(Long idPet);
+    
 }

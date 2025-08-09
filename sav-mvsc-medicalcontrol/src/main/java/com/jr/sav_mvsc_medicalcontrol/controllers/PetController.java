@@ -33,16 +33,20 @@ public class PetController {
         return ResponseEntity.status(HttpStatus.CREATED).body(petCreated);
     }
     
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<PetResponseDto>> getAllPets() {
         return ResponseEntity.ok(petService.findAllPets());
     }
-
-    @GetMapping("/owners")
-    public ResponseEntity<List<PetOwnerResponseDto>> getAllPetsWithOwners() {
-        return ResponseEntity.ok(petService.findAllPetsWithOwners());
+    
+    @GetMapping("/disable")
+    public ResponseEntity<List<PetOwnerResponseDto>> getAllDisablePets() {
+        return ResponseEntity.ok(petService.findAllDisablePets());
     }
 
+    @GetMapping("/info-owners")
+    public ResponseEntity<List<PetOwnerResponseDto>> getAllActivePets() {
+        return ResponseEntity.ok(petService.findAllActivesPets());
+    }
 
     @GetMapping("/id/{idPet}")
     public ResponseEntity<?> getPetById(@PathVariable Long idPet) {
@@ -65,7 +69,7 @@ public class PetController {
 
     @DeleteMapping("/{idPet}")
     public ResponseEntity<?> deleteInfoPet(@PathVariable Long idPet) {
-        petService.deletePetById(idPet);
+        petService.disablePetById(idPet);;
         return ResponseEntity.noContent().build();
     }
 
