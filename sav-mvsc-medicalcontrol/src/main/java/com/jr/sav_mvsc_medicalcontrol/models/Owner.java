@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Table(name = "owners")
 public class Owner {
-        @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "owner_id")
     private Long idOwner;
@@ -44,6 +44,9 @@ public class Owner {
 
     @Column(name = "owner_data_of_recording", nullable = false)
     private LocalDate dateOfRecording;
+
+    @Column(name = "owner_active")
+    private Boolean active;
 
     @OneToMany(mappedBy = "owner")
     private List<Pet> pets;

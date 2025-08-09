@@ -16,4 +16,5 @@ public class OwnerDto {
     private String email;
     private Long phoneNumber;
     private LocalDate dateOfRecording;
+    private Boolean active;
 }

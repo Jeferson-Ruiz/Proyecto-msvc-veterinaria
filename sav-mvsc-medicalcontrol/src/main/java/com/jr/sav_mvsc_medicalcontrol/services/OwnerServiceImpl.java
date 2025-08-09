@@ -2,11 +2,13 @@ package com.jr.sav_mvsc_medicalcontrol.services;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.jr.sav_mvsc_medicalcontrol.dto.OwnerDto;
 import com.jr.sav_mvsc_medicalcontrol.mapper.OwnerMapper;
 import com.jr.sav_mvsc_medicalcontrol.models.Owner;
+import com.jr.sav_mvsc_medicalcontrol.models.Pet;
 import com.jr.sav_mvsc_medicalcontrol.repositories.OwnerRepository;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -28,6 +30,18 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
+    public List<OwnerDto> findAllDisabeOwners(){
+        return ownerRepository.findAllDisableOwners().stream()
+        .map(ownerMapper::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OwnerDto> findAllActiveOwners(){
+        return ownerRepository.findAllActiveOwners().stream()
+        .map(ownerMapper::toDto).collect(Collectors.toList());
+    }
+
+    @Override
     public OwnerDto findOwnerById(Long idOwner){
         Owner owner = ownerRepository.findById(idOwner)
             .orElseThrow(() -> new EntityNotFoundException("El propietario con ID " + idOwner + " no fue encontrado"));
@@ -44,21 +58,32 @@ public class OwnerServiceImpl implements OwnerService {
 
     @Override
     public OwnerDto saveOwner(OwnerDto ownerDto){
-        Owner owner = ownerRepository.findByDocumentNumber(ownerDto.getDocumentNumber())
-            .orElseThrow(() -> new RuntimeException("Ya existe un propietario con el número de documento " + ownerDto.getDocumentNumber()));
+        boolean exists = ownerRepository.findByDocumentNumber(ownerDto.getDocumentNumber()).isPresent();
 
-        owner = ownerMapper.toEntity(ownerDto);
+        if (exists) {
+        throw new RuntimeException("Ya existe un propietario con el número de documento " + ownerDto.getDocumentNumber());
+        }
+        
+        Owner owner = ownerMapper.toEntity(ownerDto);
         owner.setDateOfRecording(LocalDate.now());
+        owner.setActive(true);
         Owner savedOwner = ownerRepository.save(owner);
         return ownerMapper.toDto(savedOwner);
     }
 
     @Override
-    public void deleteOwnerById(Long idOwner){
+    @Transactional
+    public void disableOwnerById(Long idOwner){
         Owner owner = ownerRepository.findById(idOwner)
             .orElseThrow(() -> new EntityNotFoundException("El propietario con ID " + idOwner + " no fue encontrado"));
-        
-        ownerRepository.delete(owner);
+
+        owner.setActive(false);
+        if (!owner.getPets().isEmpty()) {
+            for(Pet pet : owner.getPets()){
+                pet.setActive(false);
+            }
+        }
+        ownerRepository.save(owner);
     }
 
     @Override
@@ -78,4 +103,5 @@ public class OwnerServiceImpl implements OwnerService {
         }
         ownerRepository.updateEmail(idOwner, email);
     }
+
 }

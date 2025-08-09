@@ -29,6 +29,16 @@ public class OwnerController {
         return ResponseEntity.ok(ownerService.findAllOwners());
     }
 
+    @GetMapping("/disable")
+    public ResponseEntity<List<OwnerDto>> getAllDisableOwners() {
+        return ResponseEntity.ok(ownerService.findAllDisabeOwners());
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<List<OwnerDto>> getAllActiveOwners() {
+        return ResponseEntity.ok(ownerService.findAllActiveOwners());
+    }
+
     @GetMapping("/id/{idOwner}")
     public ResponseEntity<?> getOwnerById(@PathVariable Long idOwner) {
         OwnerDto owner = ownerService.findOwnerById(idOwner);
@@ -49,7 +59,7 @@ public class OwnerController {
 
     @DeleteMapping("/id/{idOwner}")
     public ResponseEntity<?> deleteInfoOwner(@PathVariable Long idOwner) {
-        ownerService.deleteOwnerById(idOwner);
+        ownerService.disableOwnerById(idOwner);
         return ResponseEntity.noContent().build();
     }
 

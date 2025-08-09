@@ -1,5 +1,6 @@
 package com.jr.sav_mvsc_medicalcontrol.repositories;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -18,5 +19,11 @@ public interface OwnerRepository extends JpaRepository<Owner, Long>{
     @Modifying
     @Query("update Owner set email=:email where idOwner=:idOwner")
     void updateEmail(@Param("idOwner") Long idOwner, @Param("email") String email);
+
+    @Query("SELECT o FROM Owner o Where o.active = true")
+    public List<Owner> findAllActiveOwners();
+
+    @Query("SELECT o FROM Owner o Where o.active = false")
+    public List<Owner> findAllDisableOwners();
 
 }
