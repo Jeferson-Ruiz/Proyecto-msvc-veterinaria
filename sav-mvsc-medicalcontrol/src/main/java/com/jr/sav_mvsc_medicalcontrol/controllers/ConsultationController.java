@@ -1,6 +1,8 @@
 package com.jr.sav_mvsc_medicalcontrol.controllers;
 
+import com.jr.sav_mvsc_medicalcontrol.dto.ConsultationDateUpdate;
 import com.jr.sav_mvsc_medicalcontrol.dto.ConsultationDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.ConsultationReponseDto;
 import com.jr.sav_mvsc_medicalcontrol.services.ConsultationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,37 +20,38 @@ public class ConsultationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ConsultationDto>> getAllConsultation() {
+    public ResponseEntity<List<ConsultationReponseDto>> getAllConsultation() {
         return ResponseEntity.ok(consultationService.findAllConsultations());
     }
 
     @GetMapping("/id/{idConsultation}")
     public ResponseEntity<?> getConsultationById(@PathVariable Long idConsultation) {
-        ConsultationDto consultation = consultationService.findConsultionById(idConsultation);
+        ConsultationReponseDto consultation = consultationService.findConsultionById(idConsultation);
         return ResponseEntity.ok(consultation);
     }
+    
+    @PostMapping
+    public ResponseEntity<?> saveInfoConsultation(@RequestBody ConsultationDto consultationDto) {
+        ConsultationReponseDto savedConsultation = consultationService.saveConsultation(consultationDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedConsultation);
+    }
 
+    // Deve retorna la ultima
     @GetMapping("/idpet/{idPet}")
-    public ResponseEntity<?> getConsultationByIdPet(@PathVariable Long idPet){
-        ConsultationDto consultation = consultationService.findConsultationByIdPet(idPet);
+    public ResponseEntity<?> getLastConsultationByIdPet(@PathVariable Long idPet){
+        ConsultationReponseDto consultation = consultationService.findConsultationByIdPet(idPet);
         return ResponseEntity.ok(consultation);
     }
 
     @GetMapping("/all/pet/{idPet}")
     public ResponseEntity<?> getAllConsultationsByIdPet(@PathVariable Long idPet){
-        List<ConsultationDto> consultations = consultationService.findAllConsultationById(idPet);
+        List<ConsultationReponseDto> consultations = consultationService.findAllConsultationById(idPet);
         return ResponseEntity.ok(consultations);
     }
 
-    @PostMapping
-    public ResponseEntity<?> saveInfoConsultation(@RequestBody ConsultationDto consultationDto) {
-        ConsultationDto savedConsultation = consultationService.saveConsultation(consultationDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedConsultation);
-    }
-
-    @DeleteMapping("id/{idConsultation}")
-    public ResponseEntity<?> deleteInfoConsultation(@PathVariable Long idConsultation) {
-        consultationService.deleteConsultation(idConsultation);
+    @PatchMapping("update/date/{idConsultation}")
+    public ResponseEntity<?> updateConsultationDate(@PathVariable Long idConsultation, @RequestBody ConsultationDateUpdate newDate){
+        consultationService.updateConsultationDate(idConsultation, newDate.getNewDate());
         return ResponseEntity.noContent().build();
     }
 }

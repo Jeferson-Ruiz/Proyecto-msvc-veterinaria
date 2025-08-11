@@ -26,19 +26,19 @@ public class Consultation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "", unique = true)
+    @Column(name = "id_consultation", unique = true)
     private Long idConsultation;
 
-    @Column(name = "con_id_pet", nullable = false)
-    private Long idPet;
+    @Column(name = "con_reason", nullable = true, length = 20)
+    private String reason;
 
     @Column(name = "con_date", nullable = false)
     private LocalDateTime registrationDate;
 
-    @Column(name = "con_reason", length = 20, nullable = false)
-    private String citationDate;
+    @Column(name = "con_citation_date", nullable = false)
+    private LocalDateTime citationDate;
 
-    @Column(name = "con_observation", length = 30, nullable = false)
+    @Column(name = "con_observation", length = 30)
     private String observations;
 
     @Column(name = "con_veterinary_id", nullable = false)

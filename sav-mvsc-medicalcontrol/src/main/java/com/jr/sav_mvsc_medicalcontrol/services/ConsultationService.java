@@ -1,22 +1,22 @@
 package com.jr.sav_mvsc_medicalcontrol.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import com.jr.sav_mvsc_medicalcontrol.dto.ConsultationDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.ConsultationReponseDto;
 
 public interface ConsultationService {
 
-    List<ConsultationDto> findAllConsultations();
+    List<ConsultationReponseDto> findAllConsultations();
 
-    ConsultationDto findConsultionById(Long idConsultation);
+    ConsultationReponseDto findConsultionById(Long idConsultation);
 
-    ConsultationDto saveConsultation(ConsultationDto consultationDto);
+    ConsultationReponseDto saveConsultation(ConsultationDto consultationDto);
 
-    void deleteConsultation(Long idConsultation);
+    ConsultationReponseDto findConsultationByIdPet(Long idPet);
 
-    ConsultationDto findConsultationByIdPet(Long idPet);
+    List<ConsultationReponseDto> findAllConsultationById(Long idPet);
 
-    List<ConsultationDto> findAllConsultationById(Long idPet);
-
-    // Revisa al delete, posiblemente no sea buena idea eliminar del todo, quizas si desabilitar
+    void updateConsultationDate(Long idConsultation, LocalDateTime newDate);
 
 }
