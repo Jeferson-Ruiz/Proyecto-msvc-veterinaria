@@ -29,7 +29,7 @@ public class Consultation {
     @Column(name = "id_consultation", unique = true)
     private Long idConsultation;
 
-    @Column(name = "con_reason", nullable = true, length = 20)
+    @Column(name = "con_reason", nullable = false, length = 20)
     private String reason;
 
     @Column(name = "con_date", nullable = false)
