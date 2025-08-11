@@ -1,14 +1,17 @@
 package com.jr.sav_mvsc_medicalcontrol.services;
 
-import com.jr.sav_mvsc_medicalcontrol.dto.TreatmentDto;
 import java.util.List;
+import com.jr.sav_mvsc_medicalcontrol.dto.treatment.TreatmentDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.treatment.TreatmentResponseDto;
 
 public interface TreatmentService {
-    List<TreatmentDto> findAlltreatments();
+    List<TreatmentResponseDto> findAlltreatments();
+    
+    TreatmentResponseDto findTreatmentById(Long idTreatment);
+    
+    TreatmentResponseDto saveTreatment(TreatmentDto treatmentDto);
 
-    List<TreatmentDto> findTreatmentByIdPet(Long idPet);
+    List<TreatmentResponseDto> findTreatmentByIdPet(Long idPet);
 
-    TreatmentDto findTreatmentById(Long idTreatment);
-
-    TreatmentDto saveTreatment(TreatmentDto treatmentDto);
+    List<TreatmentResponseDto> findTreatmentByIdConsultation(Long idPet);
 }

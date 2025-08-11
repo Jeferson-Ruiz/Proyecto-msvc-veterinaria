@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.jr.sav_mvsc_medicalcontrol.dto.TreatmentDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.treatment.TreatmentDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.treatment.TreatmentResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.services.TreatmentService;
+
 
 @RestController
 @RequestMapping("api/sav/treatment")
@@ -23,25 +25,32 @@ public class TreatmentController {
     }
 
     @GetMapping
-    public ResponseEntity <List<TreatmentDto>> getAllTreatment(){
+    public ResponseEntity<List<TreatmentResponseDto>> getAllTreatment(){
         return ResponseEntity.ok(treatmentService.findAlltreatments());
     }
 
-    @GetMapping("idtreatment/{idTreatment}")
+    @GetMapping("id/{idTreatment}")
     public ResponseEntity<?> getTreatmentById(@PathVariable Long idTreatment){
-        TreatmentDto treatmentDto = treatmentService.findTreatmentById(idTreatment);
+        TreatmentResponseDto treatmentDto = treatmentService.findTreatmentById(idTreatment);
         return ResponseEntity.ok(treatmentDto);   
     }
 
     @PostMapping
     public ResponseEntity<?> saveInfoTreatment(@RequestBody TreatmentDto treatmentdDto){
-        TreatmentDto treatmentDto = treatmentService.saveTreatment(treatmentdDto);
+        TreatmentResponseDto treatmentDto = treatmentService.saveTreatment(treatmentdDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(treatmentDto);
     }
 
+    @GetMapping("/all/pet")
+    public ResponseEntity<?> getAllTreatmentByIdPet(@PathVariable Long idPet){
+        List<TreatmentResponseDto> treatmentDto = treatmentService.findTreatmentByIdPet(idPet);
+        return ResponseEntity.ok(treatmentDto);
+    }
 
-    // @DeleteMapping("idtreatment/{idTreatment}")
-    // public ResponseEntity<?> deleteInfoTreatment(@PathVariable Long idTreatment){
-    //     treatmentService.
-    // }
+    @GetMapping("/all/consultation")    
+    public ResponseEntity<?> getAllTreatmentByIdConsultation(@PathVariable Long idConsu){
+        List<TreatmentResponseDto> treatments = treatmentService.findTreatmentByIdConsultation(idConsu);
+        return ResponseEntity.ok(treatments);
+    }
+
 }
