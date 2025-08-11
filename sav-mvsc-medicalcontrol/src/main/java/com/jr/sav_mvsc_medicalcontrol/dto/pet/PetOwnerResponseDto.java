@@ -1,19 +1,20 @@
-package com.jr.sav_mvsc_medicalcontrol.dto;
+package com.jr.sav_mvsc_medicalcontrol.dto.pet;
 
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-public class PetDto {
+public class PetOwnerResponseDto {
     private Long idPet;
     private String name;
     private String specie;
     private String breed;
     private String sex;
     private LocalDate dateOfBirth;
-    private Long documentNumber;
+    private String ownerName;
+    private Long ownerPhone;
 }

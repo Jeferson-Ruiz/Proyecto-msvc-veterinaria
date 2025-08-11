@@ -1,8 +1,8 @@
 package com.jr.sav_mvsc_medicalcontrol.controllers;
 
-import com.jr.sav_mvsc_medicalcontrol.dto.ConsultationDateUpdate;
-import com.jr.sav_mvsc_medicalcontrol.dto.ConsultationDto;
-import com.jr.sav_mvsc_medicalcontrol.dto.ConsultationReponseDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationDateUpdate;
+import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationReponseDto;
 import com.jr.sav_mvsc_medicalcontrol.services.ConsultationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

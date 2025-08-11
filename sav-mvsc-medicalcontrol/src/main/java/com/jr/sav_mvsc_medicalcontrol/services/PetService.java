@@ -1,9 +1,10 @@
 package com.jr.sav_mvsc_medicalcontrol.services;
 
 import java.util.List;
-import com.jr.sav_mvsc_medicalcontrol.dto.PetDto;
-import com.jr.sav_mvsc_medicalcontrol.dto.PetOwnerResponseDto;
-import com.jr.sav_mvsc_medicalcontrol.dto.PetResponseDto;
+
+import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetOwnerResponseDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetResponseDto;
 
 public interface PetService {
 

@@ -11,5 +11,4 @@ public interface TreatmentService {
     TreatmentDto findTreatmentById(Long idTreatment);
 
     TreatmentDto saveTreatment(TreatmentDto treatmentDto);
-    
 }

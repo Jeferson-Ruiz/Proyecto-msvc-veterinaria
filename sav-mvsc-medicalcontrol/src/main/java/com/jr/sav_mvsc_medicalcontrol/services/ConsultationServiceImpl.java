@@ -5,8 +5,9 @@ import java.time.LocalTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.jr.sav_mvsc_medicalcontrol.dto.ConsultationDto;
-import com.jr.sav_mvsc_medicalcontrol.dto.ConsultationReponseDto;
+
+import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationReponseDto;
 import com.jr.sav_mvsc_medicalcontrol.mapper.ConsultationMapper;
 import com.jr.sav_mvsc_medicalcontrol.models.Consultation;
 import com.jr.sav_mvsc_medicalcontrol.models.Pet;

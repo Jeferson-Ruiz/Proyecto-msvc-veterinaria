@@ -4,9 +4,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import com.jr.sav_mvsc_medicalcontrol.dto.PetDto;
-import com.jr.sav_mvsc_medicalcontrol.dto.PetOwnerResponseDto;
-import com.jr.sav_mvsc_medicalcontrol.dto.PetResponseDto;
+
+import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetOwnerResponseDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.mapper.PetMapper;
 import com.jr.sav_mvsc_medicalcontrol.models.Owner;
 import com.jr.sav_mvsc_medicalcontrol.models.Pet;

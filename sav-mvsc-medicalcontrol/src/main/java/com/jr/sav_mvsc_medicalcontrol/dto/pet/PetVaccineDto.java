@@ -1,4 +1,4 @@
-package com.jr.sav_mvsc_medicalcontrol.dto;
+package com.jr.sav_mvsc_medicalcontrol.dto.pet;
 
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;

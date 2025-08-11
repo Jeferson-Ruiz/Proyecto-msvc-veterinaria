@@ -1,7 +1,7 @@
 package com.jr.sav_mvsc_medicalcontrol.mapper;
 
-import com.jr.sav_mvsc_medicalcontrol.dto.ConsultationDto;
-import com.jr.sav_mvsc_medicalcontrol.dto.ConsultationReponseDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationReponseDto;
 import com.jr.sav_mvsc_medicalcontrol.models.Consultation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

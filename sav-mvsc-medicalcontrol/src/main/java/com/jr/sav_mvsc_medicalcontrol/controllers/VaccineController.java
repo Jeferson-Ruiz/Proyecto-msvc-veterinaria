@@ -42,7 +42,7 @@ public class VaccineController {
     } 
 
     @GetMapping("/vacciness/idpet/{idPet}")
-    public ResponseEntity<?> getVaccinesIdPet(@PathVariable Long idPet){
+    public ResponseEntity<?> getAllVaccinesIdPet(@PathVariable Long idPet){
         List<VaccineDto> vaccine = vaccineService.findVaccinesIdPet(idPet);
         return ResponseEntity.ok(vaccine);
     }

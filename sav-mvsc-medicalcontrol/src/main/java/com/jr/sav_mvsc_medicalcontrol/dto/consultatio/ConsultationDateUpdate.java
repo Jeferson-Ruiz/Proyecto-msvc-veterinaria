@@ -1,4 +1,4 @@
-package com.jr.sav_mvsc_medicalcontrol.dto;
+package com.jr.sav_mvsc_medicalcontrol.dto.consultatio;
 
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
