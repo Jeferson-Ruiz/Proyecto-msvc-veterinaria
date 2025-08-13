@@ -11,8 +11,7 @@ public interface TreatmentRespository extends JpaRepository<Treatment, Long> {
     @Query("SELECT t From Treatment t JOIN t.consultation c WHERE c.pet.idPet = :idPet")
     List<Treatment> findAllTreatmentsByIdpet(@Param("idPet") Long idPet);
 
-    @Query("SELECT t FROM Treatment t WHERE t.consultation.idConsultation =:id")
-    List<Treatment> findAllTreatmentByIdcosultation(@Param("idConsultation") Long id);
-    
+    @Query("SELECT t FROM Treatment t WHERE t.consultation.idConsultation =:idConsultation")
+    List<Treatment> findAllTreatmentByIdcosultation(@Param("idConsultation") Long idConsultation);
 
 }

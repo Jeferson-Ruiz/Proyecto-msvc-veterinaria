@@ -13,42 +13,41 @@ import com.jr.sav_mvsc_medicalcontrol.dto.treatment.TreatmentDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.treatment.TreatmentResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.services.TreatmentService;
 
-
 @RestController
 @RequestMapping("api/sav/treatment")
 public class TreatmentController {
 
     private final TreatmentService treatmentService;
-            
+
     public TreatmentController(TreatmentService treatmentService) {
         this.treatmentService = treatmentService;
     }
 
     @GetMapping
-    public ResponseEntity<List<TreatmentResponseDto>> getAllTreatment(){
+    public ResponseEntity<List<TreatmentResponseDto>> getAllTreatment() {
         return ResponseEntity.ok(treatmentService.findAlltreatments());
     }
 
     @GetMapping("id/{idTreatment}")
-    public ResponseEntity<?> getTreatmentById(@PathVariable Long idTreatment){
+    public ResponseEntity<?> getTreatmentById(@PathVariable Long idTreatment) {
         TreatmentResponseDto treatmentDto = treatmentService.findTreatmentById(idTreatment);
-        return ResponseEntity.ok(treatmentDto);   
+        return ResponseEntity.ok(treatmentDto);
     }
 
     @PostMapping
-    public ResponseEntity<?> saveInfoTreatment(@RequestBody TreatmentDto treatmentdDto){
+    public ResponseEntity<?> saveInfoTreatment(@RequestBody TreatmentDto treatmentdDto) {
         TreatmentResponseDto treatmentDto = treatmentService.saveTreatment(treatmentdDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(treatmentDto);
     }
 
-    @GetMapping("/all/pet")
-    public ResponseEntity<?> getAllTreatmentByIdPet(@PathVariable Long idPet){
+    @GetMapping("/all/pet/{idPet}")
+    public ResponseEntity<?> getAllTreatmentByIdPet(@PathVariable Long idPet) {
         List<TreatmentResponseDto> treatmentDto = treatmentService.findTreatmentByIdPet(idPet);
         return ResponseEntity.ok(treatmentDto);
     }
 
-    @GetMapping("/all/consultation")    
-    public ResponseEntity<?> getAllTreatmentByIdConsultation(@PathVariable Long idConsu){
+    @GetMapping("/all/consultation/{idConsu}")
+    public ResponseEntity<?> getAllTreatmentByIdConsultation(@PathVariable Long idConsu) {
         List<TreatmentResponseDto> treatments = treatmentService.findTreatmentByIdConsultation(idConsu);
         return ResponseEntity.ok(treatments);
     }

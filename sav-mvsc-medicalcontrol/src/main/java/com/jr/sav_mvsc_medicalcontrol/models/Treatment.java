@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -27,15 +26,15 @@ public class Treatment {
     @Column(name = "id_treatment")
     private Long idTreatment;
 
-    @Column(name = "tre_description", nullable = false, length = 30)
+    @Column(name = "tre_name", nullable = false, length = 100)
     private String name;
 
-    @Column(name = "tre_description", nullable = false, length = 30)
+    @Column(name = "tre_description", nullable = false, length = 100)
     private String description;
 
-    @Column(name = "tre_start_date", nullable = false)
+    @Column(name = "tre_registration_date", nullable = false)
     private LocalDate registrationDate;
-    
+
     @Column(name = "tre_start_date", nullable = false)
     private LocalDate startDate;
 
@@ -48,5 +47,5 @@ public class Treatment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_consultation", nullable = false)
     private Consultation consultation;
-    
+
 }

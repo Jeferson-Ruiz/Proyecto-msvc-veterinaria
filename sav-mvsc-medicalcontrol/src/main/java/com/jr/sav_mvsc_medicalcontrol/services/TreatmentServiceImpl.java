@@ -9,6 +9,7 @@ import com.jr.sav_mvsc_medicalcontrol.repositories.ConsultationRepository;
 import com.jr.sav_mvsc_medicalcontrol.repositories.TreatmentRespository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,27 +47,39 @@ public class TreatmentServiceImpl implements TreatmentService {
                 .orElseThrow(
                         () -> new EntityNotFoundException("No se puede registrar un tratamiento sin previa consulta"));
 
-        if (!treatmentDto.getStartDate().isAfter(treatmentDto.getEndDate()) ||
-                treatmentDto.getStartDate().isBefore(consultation.getCitationDate().toLocalDate())) {
-
+        if (treatmentDto.getStartDate().isAfter(treatmentDto.getEndDate())) {
             throw new IllegalArgumentException("Error en el cronograma de fechas del tratamiento");
         }
 
+        if (treatmentDto.getStartDate().isBefore(consultation.getCitationDate().toLocalDate())) {
+            throw new IllegalArgumentException(
+                    "La fecha de inicio del tratamiento no puede ser posterior a la fecha de la cita");
+        }
+
         Treatment entity = treatmentMapper.toEntiry(treatmentDto);
+        entity.setRegistrationDate(LocalDate.now());
+        entity.setConsultation(consultation);
         Treatment save = treatmentRespository.save(entity);
         return treatmentMapper.toDto(save);
     }
 
     @Override
     public List<TreatmentResponseDto> findTreatmentByIdPet(Long idPet) {
-        return treatmentRespository.findAllTreatmentsByIdpet(idPet).stream()
-                .map(treatmentMapper::toDto).collect(Collectors.toList());
+        List<Treatment> treatments = treatmentRespository.findAllTreatmentsByIdpet(idPet);
+        if (treatments.isEmpty()) {
+            throw new EntityNotFoundException("No se encontro tratamiento asociado al paciente id: " + idPet);
+        }
+        return treatments.stream().map(treatmentMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
     public List<TreatmentResponseDto> findTreatmentByIdConsultation(Long idConsultation) {
-        return treatmentRespository.findAllTreatmentByIdcosultation(idConsultation).stream()
-                .map(treatmentMapper::toDto).collect(Collectors.toList());
+        List<Treatment> treatments = treatmentRespository.findAllTreatmentByIdcosultation(idConsultation);
+        if (treatments.isEmpty()) {
+            throw new EntityNotFoundException("No se encontro tratamiento asociado a la consutla id: " + idConsultation);
+        }
+        return treatments.stream().map(treatmentMapper::toDto).collect(Collectors.toList());
     }
+
 
 }
