@@ -25,11 +25,8 @@ public class Vaccine {
     @Column(name = "id_vaccine", unique = true)
     private Long idVaccine;
 
-    @Column(name = "vac_id_pet", nullable = false)
-    private Long idPet;
-
     @Column(name = "vac_vaccine_name", nullable = false, length = 20)
-    private String vaccineName;
+    private String name;
 
     @Column(name = "vac_application_date", nullable = false)
     private LocalDate applicationData;

@@ -1,17 +1,19 @@
 package com.jr.sav_mvsc_medicalcontrol.services;
 
+import java.time.LocalDate;
 import java.util.List;
 import com.jr.sav_mvsc_medicalcontrol.dto.VaccineDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.VaccineResponseDto;
 
 public interface VaccineService {
 
-    List<VaccineDto> findAllVaccines();
+    List<VaccineResponseDto> findAllVaccines();
 
-    VaccineDto saveVaccine(VaccineDto vaccineDto);
+    VaccineResponseDto saveVaccine(VaccineDto vaccineDto);
 
-    VaccineDto findVaccineById(Long idVaccine);
+    List<VaccineResponseDto> findVaccinesIdPet(Long idPet);
 
-    List<VaccineDto> findVaccinesIdPet(Long idPet);
-
-    void deleteVaccine(Long idVaccine);
+    void updateNextApplicationDate(Long idVaccine, LocalDate newDate);
+    
+    void updateName(Long idVaccine, String name);
 }
