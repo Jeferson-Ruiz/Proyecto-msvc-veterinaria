@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
-import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetDto;
-import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetOwnerResponseDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetRequestDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetWithOwnerResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.mapper.PetMapper;
 import com.jr.sav_mvsc_medicalcontrol.models.Owner;
@@ -30,7 +30,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public PetOwnerResponseDto savePet(PetDto petDto){
+    public PetWithOwnerResponseDto savePet(PetRequestDto petDto){
 
         Owner owner = ownerRepository.findByDocumentNumber(petDto.getDocumentNumber())
         .orElseThrow(() -> new EntityNotFoundException(
@@ -57,14 +57,14 @@ public class PetServiceImpl implements PetService {
     }
     
     @Override
-    public List<PetOwnerResponseDto> findAllDisablePets(){
+    public List<PetWithOwnerResponseDto> findAllDisablePets(){
         List<Pet> pets = petRepository.findAllDisablePets();
         return pets.stream().map(petMapper::toResponseDto)
             .collect(Collectors.toList());
     }
 
     @Override
-    public List<PetOwnerResponseDto> findAllActivesPets(){
+    public List<PetWithOwnerResponseDto> findAllActivesPets(){
         List<Pet> pets = petRepository.findAllActivePets();
         return pets.stream().map(petMapper::toResponseDto)
             .collect(Collectors.toList());
@@ -78,7 +78,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public PetOwnerResponseDto findByNameAndOwnerNumber(String name, Long ownerNumber){
+    public PetWithOwnerResponseDto findByNameAndOwnerNumber(String name, Long ownerNumber){
         Pet pet = petRepository.findByNameAndOwnerNumber(name, ownerNumber)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro la mascota " + name + " asociado al propipeatio "+ ownerNumber));
         
@@ -103,6 +103,5 @@ public class PetServiceImpl implements PetService {
         
         petRepository.save(pet);
     }
-
 
 }

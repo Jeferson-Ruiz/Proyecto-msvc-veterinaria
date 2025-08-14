@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetDto;
-import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetOwnerResponseDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetRequestDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetWithOwnerResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.services.PetService;
 
@@ -28,8 +28,8 @@ public class PetController {
     }
     
     @PostMapping
-    public ResponseEntity<?> saveInfoPet(@RequestBody PetDto petDto) {
-        PetOwnerResponseDto petCreated = petService.savePet(petDto);
+    public ResponseEntity<?> saveInfoPet(@RequestBody PetRequestDto petDto) {
+        PetWithOwnerResponseDto petCreated = petService.savePet(petDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(petCreated);
     }
@@ -40,12 +40,12 @@ public class PetController {
     }
     
     @GetMapping("/disable")
-    public ResponseEntity<List<PetOwnerResponseDto>> getAllDisablePets() {
+    public ResponseEntity<List<PetWithOwnerResponseDto>> getAllDisablePets() {
         return ResponseEntity.ok(petService.findAllDisablePets());
     }
 
     @GetMapping("/info-owners")
-    public ResponseEntity<List<PetOwnerResponseDto>> getAllActivePets() {
+    public ResponseEntity<List<PetWithOwnerResponseDto>> getAllActivePets() {
         return ResponseEntity.ok(petService.findAllActivesPets());
     }
 
@@ -58,7 +58,7 @@ public class PetController {
     @GetMapping("/owner/{ownerNumber}")
     public ResponseEntity<?> getPetAndOwnerByNameAndDocument(@PathVariable Long ownerNumber,
             @RequestParam String name) {
-        PetOwnerResponseDto petDto = petService.findByNameAndOwnerNumber(name, ownerNumber);
+        PetWithOwnerResponseDto petDto = petService.findByNameAndOwnerNumber(name, ownerNumber);
         return ResponseEntity.ok(petDto);
     }
 

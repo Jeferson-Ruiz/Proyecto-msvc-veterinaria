@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class PetDto {
-    private Long idPet;
+public class PetRequestDto {
     private String name;
     private String specie;
     private String breed;
