@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface EmployeeRespository extends JpaRepository<Employee, Long> {
 
-    Optional<Employee> findByDocumentNumber(Long documentNumber);
+    Optional<Employee> findByDocumentNumber(String documentNumber);
 
     List<Employee> findByJobPosition(JobPosition jobPosition);
 
@@ -21,12 +21,12 @@ public interface EmployeeRespository extends JpaRepository<Employee, Long> {
     void updateEmail(@Param("idEmployee") Long idEmployee, @Param("email") String email);
 
     @Modifying
-    @Query("update Employee set phoneNumber=:phoneNumber where idEmployee=:idEmployee" )
-    void updatePhoneNumber(@Param("idEmployee")Long idEmployee, @Param("phoneNumber") Long phoneNumber);
+    @Query("update Employee set phoneNumber=:phoneNumber where idEmployee=:idEmployee")
+    void updatePhoneNumber(@Param("idEmployee") Long idEmployee, @Param("phoneNumber") String phoneNumber);
 
     @Modifying
     @Query("update Employee set contractType=:contractType where idEmployee=:idEmployee")
-    void updateContractType (@Param("idEmployee") Long idEmployee, @Param("contractType") ContractType contractType);
+    void updateContractType(@Param("idEmployee") Long idEmployee, @Param("contractType") ContractType contractType);
 
     @Modifying
     @Query("update Employee set workStatus=:workStatus where idEmployee=:idEmployee")

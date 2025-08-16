@@ -14,10 +14,12 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -29,7 +31,7 @@ public abstract class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "emp_id")
-    private Long idEmployee;
+    private Long employeeId;
 
     @Column(name = "emp_name", length = 20, nullable = false)
     private String name;
@@ -37,11 +39,12 @@ public abstract class Employee {
     @Column(name = "emp_last_name", length = 20, nullable = false)
     private String lastName;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "emp_docu_type", nullable = false, length = 20)
-    private String documentType;
+    private DocumentType documentType;
 
     @Column(name = "emp_docu_number", nullable = false, unique = true)
-    private Long documentNumber;
+    private String documentNumber;
 
     @Column(name = "emp_date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
@@ -50,18 +53,14 @@ public abstract class Employee {
     private String email;
 
     @Column(name = "emp_phone_number", nullable = false)
-    private Long phoneNumber;
+    private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "emp_contract_type", nullable = false, length = 20)
     private ContractType contractType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "emp_job_position", insertable = false, updatable = false)
-    private JobPosition jobPosition;
-
     @Column(name = "emp_work_status", nullable = false)
-    private Boolean workStatus;
+    private Boolean active;
 
     @Column(name = "emp_registration_date")
     private LocalDate registrationDate;

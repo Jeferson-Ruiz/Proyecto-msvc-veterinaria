@@ -3,12 +3,13 @@ package com.jeferson.msvc_sav_workstaff.services;
 import com.jeferson.msvc_sav_workstaff.dto.EmployeeDto;
 import com.jeferson.msvc_sav_workstaff.mapper.EmployeeMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
+import com.jeferson.msvc_sav_workstaff.models.Employee;
 import com.jeferson.msvc_sav_workstaff.models.JobPosition;
 import com.jeferson.msvc_sav_workstaff.repositories.EmployeeRespository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -28,15 +29,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Optional<EmployeeDto> findById(Long idEmployee) {
-        return employeeRespository.findById(idEmployee)
-                .map(employeeMapper::toDto);
+    public EmployeeDto findById(Long idEmployee) {
+        Employee employee = employeeRespository.findById(idEmployee)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al Id "+ idEmployee));
+        
+        return employeeMapper.toDto(employee);
     }
 
     @Override
-    public Optional<EmployeeDto> findByDocumentNumber(Long documentNumber) {
-        return employeeRespository.findByDocumentNumber(documentNumber)
-                .map(employeeMapper::toDto);
+    public EmployeeDto findByDocumentNumber(String documentNumber) {
+        Employee employee = employeeRespository.findByDocumentNumber(documentNumber)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al N° identificacion "+ documentNumber));
+
+        return employeeMapper.toDto(employee);
     }
 
     @Override
@@ -47,31 +52,44 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public void delete(Long idEmployee) {
-        employeeRespository.deleteById(idEmployee);
+        Employee employee = employeeRespository.findById(idEmployee)
+            .orElseThrow(() -> new RuntimeException("No se encontro empleado asociado al Id "+ idEmployee));
+        employee.setActive(false);
+        employeeRespository.save(employee);
+
     }
 
     @Override
     @Transactional
     public void updateEmail(Long idEmployee, String email) {
-        employeeRespository.updateEmail(idEmployee, email);
+        Employee employee = employeeValidation(idEmployee);
+        employeeRespository.updateEmail(employee.getEmployeeId(), email);
     }
 
     @Override
     @Transactional
-    public void updateNumberPhone(Long idEmployee, Long phoneNumber) {
-        employeeRespository.updatePhoneNumber(idEmployee, phoneNumber);
+    public void updateNumberPhone(Long idEmployee, String phoneNumber) {
+        Employee employee = employeeValidation(idEmployee);
+        employeeRespository.updatePhoneNumber(employee.getEmployeeId(), phoneNumber);
     }
 
     @Override
     @Transactional
     public void updateContractType(Long idEmployee, ContractType contractType) {
-        employeeRespository.updateContractType(idEmployee, contractType);
+        Employee employee = employeeValidation(idEmployee);
+        employeeRespository.updateContractType(employee.getEmployeeId(), contractType);
     }
 
-    @Override
-    @Transactional
-    public void updateWorkStatus(Long idEmployee, Boolean workStatus){
-        employeeRespository.updateWorkStatus(idEmployee, workStatus);
+
+    private Employee employeeValidation(Long id){
+        Employee employee = employeeRespository.findById(id)
+            .orElseThrow(() -> new RuntimeException("No se encontro empleado asociado al Id "+ id + " en el sistema"));
+
+        if (!employee.getActive()) {
+            throw new RuntimeException("El empleado con el Id" + id +" se encuentra dehabilitado");
+        }
+        return employee;
     }
 }

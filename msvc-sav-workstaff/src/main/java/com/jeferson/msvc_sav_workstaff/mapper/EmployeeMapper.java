@@ -8,5 +8,6 @@ import com.jeferson.msvc_sav_workstaff.models.Employee;
 public interface EmployeeMapper {
 
     EmployeeDto toDto(Employee entity);
+    
 
 }
