@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.jeferson.msvc_sav_workstaff.dto.VetDto;
+import com.jeferson.msvc_sav_workstaff.dto.VetRequestDto;
 import com.jeferson.msvc_sav_workstaff.mapper.VetMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.services.VetService;
@@ -28,8 +28,8 @@ public class VetController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveInfoVet(@RequestBody VetDto vetDto) {
-        Optional<VetDto> optVet = vetService.saveVet(vetDto);
+    public ResponseEntity<?> saveInfoVet(@RequestBody VetRequestDto vetDto) {
+        Optional<VetRequestDto> optVet = vetService.saveVet(vetDto);
 
         if (optVet.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)

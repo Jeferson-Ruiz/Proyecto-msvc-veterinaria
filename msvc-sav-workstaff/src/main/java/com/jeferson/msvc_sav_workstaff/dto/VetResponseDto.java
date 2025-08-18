@@ -9,10 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class VetDto extends EmployeeDto {
+public class VetResponseDto extends EmployeeResponseDto{
     private String speciality;
-    private Long professionalCard;
-    private String trainingCareer;
+    private String professionalCard;
 
-    
 }

@@ -20,5 +20,5 @@ public class Vet extends Employee {
     private String speciality;
 
     @Column(name = "vet_prof_card", nullable = false)
-    private Long professionalCard;
+    private String professionalCard;
 }

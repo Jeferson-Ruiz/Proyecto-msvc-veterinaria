@@ -1,21 +1,20 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
-import java.util.Optional;
-import com.jeferson.msvc_sav_workstaff.dto.VetDto;
+import com.jeferson.msvc_sav_workstaff.dto.VetRequestDto;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 
 public interface VetService {
-    Optional<VetDto> saveVet(VetDto vetDto);
+    VetRequestDto saveVet(VetRequestDto vetDto);
 
-    Optional<VetDto> findById(Long idEmployee);
+    VetRequestDto findById(Long idEmployee);
+
+    VetRequestDto findAdminByDocumentNumber(String documentNumber);
 
     void updateEmail(Long idEmployee, String email);
 
-    void updateNumberPhone(Long idEmployee, Long phoneNumber);
+    void updateNumberPhone(Long idEmployee, String phoneNumber);
 
     void updateContractType(Long idEmployee, ContractType contractType);
-
-    void updateWorkStatus(Long idEmployee, Boolean workStatus);
 
     void delete(Long idEmployee);
 }

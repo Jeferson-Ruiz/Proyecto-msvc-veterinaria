@@ -1,91 +1,77 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
 import java.time.LocalDate;
-import java.util.Optional;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-import com.jeferson.msvc_sav_workstaff.dto.VetDto;
+import com.jeferson.msvc_sav_workstaff.dto.VetRequestDto;
 import com.jeferson.msvc_sav_workstaff.mapper.VetMapper;
 import com.jeferson.msvc_sav_workstaff.models.Vet;
+import com.jeferson.msvc_sav_workstaff.repositories.EmployeeRepository;
 import com.jeferson.msvc_sav_workstaff.repositories.VetRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class VetServiceImpl implements VetService {
 
+    private final EmployeeRepository employeeRepo;
     private final VetRepository vetRepository;
     private final EmployeeService employeeService;
     private final VetMapper vetMapper;
 
-    public VetServiceImpl(VetRepository vetRepository, EmployeeService empRespository, VetMapper vetMapper) {
+    public VetServiceImpl(VetRepository vetRepository, EmployeeService empRespository, VetMapper vetMapper, EmployeeRepository employeeRepo) {
         this.vetRepository = vetRepository;
         this.employeeService = empRespository;
         this.vetMapper = vetMapper;
+        this.employeeRepo = employeeRepo;
     }
 
     @Override
-    public Optional<VetDto> saveVet(VetDto vetDto) {
-        if (employeeService.findByDocumentNumber(vetDto.getDocumentNumber()).isPresent()) {
-            return Optional.empty();
+    public VetRequestDto saveVet(VetRequestDto vetDto) {
+        if (employeeRepo.findByDocumentNumber(vetDto.getDocumentNumber()).isPresent()) {
+            throw new RuntimeException("El documento "+ vetDto.getDocumentNumber()+" ya se encuentra vinculado a un empleado");
         }
         Vet entity = vetMapper.toEntity(vetDto);
         entity.setRegistrationDate(LocalDate.now());
-        return Optional.of(vetMapper.toDto(vetRepository.save(entity)));
+        entity.setActive(true);
+        return vetMapper.toDto(vetRepository.save(entity));
     }
 
     @Override
-    public Optional<VetDto> findById(Long idEmployee){
-        Optional<Vet> optVet = vetRepository.findById(idEmployee);
-        if (optVet.isEmpty()) {
-            return Optional.empty();
-        }
-        return vetRepository.findById(idEmployee).map(vetMapper::toDto);
+    public VetRequestDto findById(Long idEmployee){
+        Vet vet = vetRepository.findById(idEmployee)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro veterinario asociado al id "+ idEmployee));
+        return vetMapper.toDto(vet);
+    }
+
+    @Override
+    public VetRequestDto findAdminByDocumentNumber(String documentNumber){
+        Vet vet = vetRepository.findByDocumentNumber(documentNumber)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro veterianio asociado al numero de documento " + documentNumber));
+        return vetMapper.toDto(vet);
     }
 
     @Override
     @Transactional
     public void updateEmail (Long idEmployee, String email){
-        if (vetRepository.findById(idEmployee).isEmpty()){
-            throw new EntityNotFoundException();
-        }
         employeeService.updateEmail(idEmployee, email);
     }
 
     @Override
     @Transactional
-    public void updateNumberPhone(Long idEmployee, Long phoneNumber){
-        if (vetRepository.findById(idEmployee).isEmpty()){
-            throw new EntityNotFoundException();
-        }
+    public void updateNumberPhone(Long idEmployee, String phoneNumber){
         employeeService.updateNumberPhone(idEmployee, phoneNumber);
     }
 
     @Override
     @Transactional
     public void updateContractType(Long idEmployee, ContractType contractType){
-        if (vetRepository.findById(idEmployee).isEmpty()){
-            throw new EntityNotFoundException();
-        }
         employeeService.updateContractType(idEmployee, contractType);
     }
 
     @Override
-    @Transactional
-    public void updateWorkStatus(Long idEmployee, Boolean workStatus){
-        if (vetRepository.findById(idEmployee).isEmpty()) {
-            throw new EntityNotFoundException();
-        }
-        employeeService.updateWorkStatus(idEmployee, workStatus);
-    }
-
-    @Override
     public void delete(Long idEmployee){
-        if (vetRepository.findById(idEmployee).isEmpty()){
-            throw new EntityNotFoundException();
-        }
         employeeService.delete(idEmployee);
     }
-
 
 }
