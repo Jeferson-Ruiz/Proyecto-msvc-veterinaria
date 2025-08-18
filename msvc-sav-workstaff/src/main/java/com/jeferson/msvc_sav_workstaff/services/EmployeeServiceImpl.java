@@ -1,11 +1,11 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
-import com.jeferson.msvc_sav_workstaff.dto.EmployeeDto;
+import com.jeferson.msvc_sav_workstaff.dto.EmployeeResponseDto;
 import com.jeferson.msvc_sav_workstaff.mapper.EmployeeMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.Employee;
 import com.jeferson.msvc_sav_workstaff.models.JobPosition;
-import com.jeferson.msvc_sav_workstaff.repositories.EmployeeRespository;
+import com.jeferson.msvc_sav_workstaff.repositories.EmployeeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,22 +14,22 @@ import java.util.List;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private final EmployeeRespository employeeRespository;
+    private final EmployeeRepository employeeRespository;
     private final EmployeeMapper employeeMapper;
 
-    public EmployeeServiceImpl(EmployeeRespository employeeRespository, EmployeeMapper employeeMapper) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRespository, EmployeeMapper employeeMapper) {
         this.employeeRespository = employeeRespository;
         this.employeeMapper = employeeMapper;
     }
 
     @Override
-    public List<EmployeeDto> findAll() {
+    public List<EmployeeResponseDto> findAll() {
         return employeeRespository.findAll().stream()
                 .map(employeeMapper::toDto).toList();
     }
 
     @Override
-    public EmployeeDto findById(Long idEmployee) {
+    public EmployeeResponseDto findById(Long idEmployee) {
         Employee employee = employeeRespository.findById(idEmployee)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al Id "+ idEmployee));
         
@@ -37,7 +37,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeDto findByDocumentNumber(String documentNumber) {
+    public EmployeeResponseDto findByDocumentNumber(String documentNumber) {
         Employee employee = employeeRespository.findByDocumentNumber(documentNumber)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al N° identificacion "+ documentNumber));
 
@@ -45,7 +45,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<EmployeeDto> findAllByJobPosition(JobPosition jobPosition) {
+    public List<EmployeeResponseDto> findAllByJobPosition(JobPosition jobPosition) {
         return employeeRespository.findByJobPosition(jobPosition).stream()
                 .map(employeeMapper::toDto)
                 .toList();

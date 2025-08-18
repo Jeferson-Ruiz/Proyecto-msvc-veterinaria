@@ -1,19 +1,19 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
 import java.util.List;
-import com.jeferson.msvc_sav_workstaff.dto.EmployeeDto;
+import com.jeferson.msvc_sav_workstaff.dto.EmployeeResponseDto;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.JobPosition;
 
 public interface EmployeeService {
 
-    List<EmployeeDto> findAll();
+    List<EmployeeResponseDto> findAll();
 
-    EmployeeDto findById(Long idEmployee);
+    EmployeeResponseDto findById(Long idEmployee);
 
-    EmployeeDto findByDocumentNumber(String documentNumber);
+    EmployeeResponseDto findByDocumentNumber(String documentNumber);
 
-    List<EmployeeDto> findAllByJobPosition(JobPosition jobPosition);
+    List<EmployeeResponseDto> findAllByJobPosition(JobPosition jobPosition);
 
     void delete(Long idEmployee);
 

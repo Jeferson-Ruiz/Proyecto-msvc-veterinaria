@@ -1,0 +1,25 @@
+package com.jeferson.msvc_sav_workstaff.dto;
+
+import java.time.LocalDate;
+import com.jeferson.msvc_sav_workstaff.models.ContractType;
+import com.jeferson.msvc_sav_workstaff.models.DocumentType;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class EmployeeResponseDto {
+    private Long id;
+    private String fullName;
+    private DocumentType documentType;
+    private String documentNumber;
+    private Byte age;
+    private String email;
+    private String phoneNumber;
+    private ContractType contractType;
+    private LocalDate registrationDate;
+}

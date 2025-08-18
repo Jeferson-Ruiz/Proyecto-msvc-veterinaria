@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.jeferson.msvc_sav_workstaff.dto.EmployeeDto;
+import com.jeferson.msvc_sav_workstaff.dto.EmployeeRequestDto;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.JobPosition;
 import com.jeferson.msvc_sav_workstaff.services.EmployeeService;
@@ -27,28 +27,28 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EmployeeDto>> getAllEmployee() {
+    public ResponseEntity<List<EmployeeRequestDto>> getAllEmployee() {
         return ResponseEntity.ok(employeeService.findAll());
     }
 
     @GetMapping("id/{idEmployee}")
-    public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long idEmployee) {
-        Optional<EmployeeDto> optEmployee = employeeService.findById(idEmployee);
+    public ResponseEntity<EmployeeRequestDto> getEmployeeById(@PathVariable Long idEmployee) {
+        Optional<EmployeeRequestDto> optEmployee = employeeService.findById(idEmployee);
 
         return optEmployee.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @GetMapping("document/{documentNumber}")
-    public ResponseEntity<EmployeeDto> getEmployeeByDocumentNumber(@PathVariable Long documentNumber) {
+    public ResponseEntity<EmployeeRequestDto> getEmployeeByDocumentNumber(@PathVariable Long documentNumber) {
         return employeeService.findByDocumentNumber(documentNumber)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("jobposition/{jobPosition}")
-    public ResponseEntity<List<EmployeeDto>> getAllEmployeeByJonPosition(@PathVariable JobPosition jobPosition) {
-        List<EmployeeDto> employeesDto = employeeService.findAllByJobPosition(jobPosition);
+    public ResponseEntity<List<EmployeeRequestDto>> getAllEmployeeByJonPosition(@PathVariable JobPosition jobPosition) {
+        List<EmployeeRequestDto> employeesDto = employeeService.findAllByJobPosition(jobPosition);
         return ResponseEntity.ok(employeesDto);
     }
 
