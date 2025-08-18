@@ -1,6 +1,9 @@
 package com.jeferson.msvc_sav_workstaff.repositories;
 
 import com.jeferson.msvc_sav_workstaff.models.Administrative;
+
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -11,5 +14,8 @@ public interface AdministrativeRepository extends CrudRepository<Administrative,
     @Modifying
     @Query("update Administrative set workArea=:workArea where idEmployee=:idEmployee")
     void updateWorkArea(@Param("idEmployee") Long idEmployee, @Param("workArea") String workArea);
+
+    @Query("SELECT a FROM a Administrative WHERE a.documentNumber =:documentNumber")
+    Optional<Administrative> findByDocumentNumber(@Param("documentNumber") String documentNumber);
 
 }

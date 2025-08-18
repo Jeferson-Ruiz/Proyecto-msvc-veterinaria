@@ -22,6 +22,4 @@ public class Administrative extends Employee {
     @Column(name = "adm_prof_card", nullable = true)
     private Long professionalCard;
 
-    @Column(name = "adm_work_area", nullable = false, length = 20)
-    private String workArea;
 }

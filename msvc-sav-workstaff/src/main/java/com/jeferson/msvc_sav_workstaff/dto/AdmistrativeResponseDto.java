@@ -7,9 +7,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class AdministrativeDto extends EmployeeDto{
+@AllArgsConstructor
+public class AdmistrativeResponseDto extends EmployeeResponseDto{
     private String academicTitle;
     private Long professionalCard;
     private String workArea;
