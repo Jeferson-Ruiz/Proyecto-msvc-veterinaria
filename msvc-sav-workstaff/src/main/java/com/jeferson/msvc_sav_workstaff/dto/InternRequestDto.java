@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class InternDto extends EmployeeDto {
+public class InternRequestDto extends EmployeeRequestDto {
     private String educationInstitute;
     private String levelAcademic;
     private String trainingCareer;

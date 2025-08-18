@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.jeferson.msvc_sav_workstaff.dto.InternDto;
+import com.jeferson.msvc_sav_workstaff.dto.InternRequestDto;
 import com.jeferson.msvc_sav_workstaff.mapper.InternMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.services.InternService;
@@ -28,8 +28,8 @@ public class InternController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveInfoIntern(@RequestBody InternDto internDto) {
-        Optional<InternDto> optInter = intService.saveIntern(internDto);
+    public ResponseEntity<?> saveInfoIntern(@RequestBody InternRequestDto internDto) {
+        Optional<InternRequestDto> optInter = intService.saveIntern(internDto);
 
         if (optInter.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
