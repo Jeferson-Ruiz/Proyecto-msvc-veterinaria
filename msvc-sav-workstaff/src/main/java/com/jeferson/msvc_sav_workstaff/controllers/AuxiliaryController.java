@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryDto;
+import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryRequestDto;
 import com.jeferson.msvc_sav_workstaff.mapper.AuxiliaryMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.services.AuxiliaryService;
@@ -28,8 +28,8 @@ public class AuxiliaryController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveInfoAuxiliary(@RequestBody AuxiliaryDto auxiliaryDto) {
-        Optional<AuxiliaryDto> optAuxiliary = auxService.saveAuxiliary(auxiliaryDto);
+    public ResponseEntity<?> saveInfoAuxiliary(@RequestBody AuxiliaryRequestDto auxiliaryDto) {
+        Optional<AuxiliaryRequestDto> optAuxiliary = auxService.saveAuxiliary(auxiliaryDto);
 
         if (optAuxiliary.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
