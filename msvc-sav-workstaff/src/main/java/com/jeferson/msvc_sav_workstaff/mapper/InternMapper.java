@@ -1,6 +1,7 @@
 package com.jeferson.msvc_sav_workstaff.mapper;
 
 import org.mapstruct.Mapper;
+import com.jeferson.msvc_sav_workstaff.dto.InterResponseDto;
 import com.jeferson.msvc_sav_workstaff.dto.InternRequestDto;
 import com.jeferson.msvc_sav_workstaff.models.Intern;
 
@@ -8,6 +9,5 @@ import com.jeferson.msvc_sav_workstaff.models.Intern;
 public interface InternMapper {
 
     Intern toEntity(InternRequestDto dto);
-    InternRequestDto toDto(Intern entity);
-
+    InterResponseDto toDto(Intern entity);
 }

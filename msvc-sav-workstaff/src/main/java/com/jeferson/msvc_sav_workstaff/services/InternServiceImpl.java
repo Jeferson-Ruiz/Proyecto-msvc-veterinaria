@@ -1,9 +1,12 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import com.jeferson.msvc_sav_workstaff.dto.InterResponseDto;
 import com.jeferson.msvc_sav_workstaff.dto.InternRequestDto;
 import com.jeferson.msvc_sav_workstaff.mapper.InternMapper;
 import com.jeferson.msvc_sav_workstaff.models.Intern;
@@ -28,7 +31,7 @@ public class InternServiceImpl implements InternService {
     }
 
     @Override
-    public InternRequestDto saveIntern(InternRequestDto internDto) {
+    public InterResponseDto saveIntern(InternRequestDto internDto) {
         if (employeeRepo.findByDocumentNumber(internDto.getDocumentNumber()).isPresent()) {
             throw new RuntimeException("El documento "+ internDto.getDocumentNumber()+" ya se encuentra vinculado a un empleado");
         }
@@ -39,14 +42,22 @@ public class InternServiceImpl implements InternService {
     }
 
     @Override
-    public InternRequestDto findById(Long idEmployee){
+    public List<InterResponseDto> findAllInter(){
+        return intRepository.findAll()
+            .stream()
+            .map(intMapper::toDto)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public InterResponseDto findById(Long idEmployee){
         Intern intern = intRepository.findById(idEmployee)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro pasante asociada al id "+ idEmployee));
         return intMapper.toDto(intern);
     }
 
     @Override
-    public InternRequestDto findAdminByDocumentNumber(String documentNumber){
+    public InterResponseDto findAdminByDocumentNumber(String documentNumber){
         Intern intern = intRepository.findByDocumentNumber(documentNumber)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro veterianio asociado al numero de documento " + documentNumber));
         return intMapper.toDto(intern);
