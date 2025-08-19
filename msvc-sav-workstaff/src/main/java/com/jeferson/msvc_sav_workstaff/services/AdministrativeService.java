@@ -1,15 +1,19 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
+import java.util.List;
 import com.jeferson.msvc_sav_workstaff.dto.AdministrativeRequestDto;
+import com.jeferson.msvc_sav_workstaff.dto.AdmistrativeResponseDto;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 
 public interface AdministrativeService {
 
-    AdministrativeRequestDto saveAdministrative(AdministrativeRequestDto administrative);
+    AdmistrativeResponseDto saveAdministrative(AdministrativeRequestDto administrative);
+
+    List<AdmistrativeResponseDto> findAllAdmin();
     
-    AdministrativeRequestDto findAdminById (Long idEmployee);
+    AdmistrativeResponseDto findAdminById (Long idEmployee);
     
-    AdministrativeRequestDto findAdminByDocumentNumber(String documentNumber);
+    AdmistrativeResponseDto findAdminByDocumentNumber(String documentNumber);
 
     void updateEmail(Long idEmployee, String email);
 

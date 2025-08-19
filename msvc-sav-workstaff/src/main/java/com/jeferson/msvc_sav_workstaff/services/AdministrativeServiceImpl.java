@@ -1,11 +1,14 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.jeferson.msvc_sav_workstaff.dto.AdministrativeRequestDto;
+import com.jeferson.msvc_sav_workstaff.dto.AdmistrativeResponseDto;
 import com.jeferson.msvc_sav_workstaff.mapper.AdministrativeMapper;
 import com.jeferson.msvc_sav_workstaff.models.Administrative;
 import com.jeferson.msvc_sav_workstaff.repositories.AdministrativeRepository;
@@ -30,7 +33,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     }
 
     @Override
-    public AdministrativeRequestDto saveAdministrative(AdministrativeRequestDto administrativeDto) {
+    public AdmistrativeResponseDto saveAdministrative(AdministrativeRequestDto administrativeDto) {
         Boolean employee = employeeRepo.findByDocumentNumber(administrativeDto.getDocumentNumber()).isPresent();
         if (!employee) {
             throw new RuntimeException("El documento " + administrativeDto.getDocumentNumber()
@@ -43,7 +46,15 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     }
 
     @Override
-    public AdministrativeRequestDto findAdminById(Long idEmployee) {
+    public List<AdmistrativeResponseDto> findAllAdmin(){
+        return administrativeRepository.findAll()
+            .stream()
+            .map(administrativeMapper::toDto)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public AdmistrativeResponseDto findAdminById(Long idEmployee) {
 
         Administrative administrative = administrativeRepository.findById(idEmployee)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -52,7 +63,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     }
 
     @Override
-    public AdministrativeRequestDto findAdminByDocumentNumber(String documentNumber){
+    public AdmistrativeResponseDto findAdminByDocumentNumber(String documentNumber){
         Administrative administrative = administrativeRepository.findByDocumentNumber(documentNumber)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro veterianio asociado al numero de documento " + documentNumber));
         return administrativeMapper.toDto(administrative);
