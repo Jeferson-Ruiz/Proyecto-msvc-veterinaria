@@ -1,10 +1,14 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import com.jeferson.msvc_sav_workstaff.dto.VetRequestDto;
+import com.jeferson.msvc_sav_workstaff.dto.VetResponseDto;
 import com.jeferson.msvc_sav_workstaff.mapper.VetMapper;
 import com.jeferson.msvc_sav_workstaff.models.Vet;
 import com.jeferson.msvc_sav_workstaff.repositories.EmployeeRepository;
@@ -27,7 +31,7 @@ public class VetServiceImpl implements VetService {
     }
 
     @Override
-    public VetRequestDto saveVet(VetRequestDto vetDto) {
+    public VetResponseDto saveVet(VetRequestDto vetDto) {
         if (employeeRepo.findByDocumentNumber(vetDto.getDocumentNumber()).isPresent()) {
             throw new RuntimeException("El documento "+ vetDto.getDocumentNumber()+" ya se encuentra vinculado a un empleado");
         }
@@ -38,14 +42,22 @@ public class VetServiceImpl implements VetService {
     }
 
     @Override
-    public VetRequestDto findById(Long idEmployee){
+    public List<VetResponseDto> findAllVet(){
+        return vetRepository.findAll()
+            .stream()
+            .map(vetMapper::toDto)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public VetResponseDto findById(Long idEmployee){
         Vet vet = vetRepository.findById(idEmployee)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro veterinario asociado al id "+ idEmployee));
         return vetMapper.toDto(vet);
     }
 
     @Override
-    public VetRequestDto findAdminByDocumentNumber(String documentNumber){
+    public VetResponseDto findAdminByDocumentNumber(String documentNumber){
         Vet vet = vetRepository.findByDocumentNumber(documentNumber)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro veterianio asociado al numero de documento " + documentNumber));
         return vetMapper.toDto(vet);

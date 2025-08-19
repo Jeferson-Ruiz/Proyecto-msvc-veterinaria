@@ -1,14 +1,18 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
+import java.util.List;
 import com.jeferson.msvc_sav_workstaff.dto.VetRequestDto;
+import com.jeferson.msvc_sav_workstaff.dto.VetResponseDto;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 
 public interface VetService {
-    VetRequestDto saveVet(VetRequestDto vetDto);
+    VetResponseDto saveVet(VetRequestDto vetDto);
 
-    VetRequestDto findById(Long idEmployee);
+    List<VetResponseDto> findAllVet();
 
-    VetRequestDto findAdminByDocumentNumber(String documentNumber);
+    VetResponseDto findById(Long idEmployee);
+
+    VetResponseDto findAdminByDocumentNumber(String documentNumber);
 
     void updateEmail(Long idEmployee, String email);
 
