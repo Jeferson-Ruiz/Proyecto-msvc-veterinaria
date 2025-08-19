@@ -1,15 +1,19 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
+import java.util.List;
 import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryRequestDto;
+import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryResponseDto;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 
 public interface AuxiliaryService {
 
-    AuxiliaryRequestDto saveAuxiliary(AuxiliaryRequestDto auxiliaryDto);
+    AuxiliaryResponseDto saveAuxiliary(AuxiliaryRequestDto auxiliaryDto);
 
-    AuxiliaryRequestDto findById(Long idEmployee);
+    List<AuxiliaryResponseDto> findAllAuxiliary();
 
-    AuxiliaryRequestDto findAdminByDocumentNumber(String documentNumber);
+    AuxiliaryResponseDto findById(Long idEmployee);
+
+    AuxiliaryResponseDto findAdminByDocumentNumber(String documentNumber);
 
     void updateEmail(Long idEmployee, String email);
 
