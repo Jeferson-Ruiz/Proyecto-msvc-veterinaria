@@ -13,7 +13,7 @@ public interface AdministrativeRepository extends JpaRepository<Administrative, 
     @Query("update Administrative set workArea=:workArea where idEmployee=:idEmployee")
     void updateWorkArea(@Param("idEmployee") Long idEmployee, @Param("workArea") String workArea);
 
-    @Query("SELECT a FROM a Administrative WHERE a.documentNumber =:documentNumber")
+    @Query("SELECT a FROM Administrative a WHERE a.documentNumber =:documentNumber")
     Optional<Administrative> findByDocumentNumber(@Param("documentNumber") String documentNumber);
 
 }

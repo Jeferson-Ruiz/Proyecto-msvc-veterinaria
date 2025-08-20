@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface VetRepository extends JpaRepository<Vet, Long > {
 
-    @Query("SELECT a FROM a Vet WHERE a.documentNumber =:documentNumber")
+    @Query("SELECT v FROM Vet v WHERE v.documentNumber =:documentNumber")
     Optional<Vet> findByDocumentNumber(@Param("documentNumber") String documentNumber);
 
 }

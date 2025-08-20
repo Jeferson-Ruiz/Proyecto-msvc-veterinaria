@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface InternRepository extends JpaRepository<Intern, Long> {
-    @Query("SELECT a FROM a Intern WHERE a.documentNumber =:documentNumber")
+    @Query("SELECT i FROM Intern i WHERE i.documentNumber =:documentNumber")
     Optional<Intern> findByDocumentNumber(@Param("documentNumber") String documentNumber);
 
 }

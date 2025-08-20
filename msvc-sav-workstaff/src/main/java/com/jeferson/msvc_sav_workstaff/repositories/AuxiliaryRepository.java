@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface AuxiliaryRepository  extends JpaRepository<Auxiliary, Long> {
 
-    @Query("SELECT a FROM a Auxiliary WHERE a.documentNumber =:documentNumber")
+    @Query("SELECT a FROM Auxiliary a WHERE a.documentNumber =:documentNumber")
     Optional<Auxiliary> findByDocumentNumber(@Param("documentNumber") String documentNumber);
 }
