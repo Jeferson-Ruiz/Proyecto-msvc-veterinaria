@@ -3,7 +3,6 @@ package com.jeferson.msvc_sav_workstaff.services;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryResponseDto;
@@ -46,18 +45,21 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
     }
 
     @Override
+    public List<AuxiliaryResponseDto> findAllAuxiliary(){
+    List<Auxiliary> auxiliaries = auxRepository.findAll();
+    if (auxiliaries.isEmpty()) {
+        throw new EntityNotFoundException("No se encontraron empleados asociados al cargo de auxiliar");
+    }
+    return auxiliaries.stream()
+        .map(auxMapper::toDto)
+        .collect(Collectors.toList());
+    }
+
+    @Override
     public AuxiliaryResponseDto findById(Long idEmployee){
         Auxiliary auxiliary = auxRepository.findById(idEmployee)
         .orElseThrow(() -> new EntityNotFoundException("No se encontro administrativo asociado al Id "+ idEmployee + " en el sistema"));
         return auxMapper.toDto(auxiliary);
-    }
-
-    @Override
-    public List<AuxiliaryResponseDto> findAllAuxiliary(){
-        return auxRepository.findAll()
-            .stream()
-            .map(auxMapper::toDto)
-            .collect(Collectors.toList());
     }
 
     @Override
@@ -66,7 +68,6 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
             .orElseThrow(() -> new EntityNotFoundException("No se encontro veterianio asociado al numero de documento " + documentNumber));
         return auxMapper.toDto(auxiliary);
     }
-
 
     @Override
     @Transactional
