@@ -58,13 +58,15 @@ public class EmployeeServiceImpl implements EmployeeService {
             .orElseThrow(() -> new RuntimeException("No se encontro empleado asociado al Id "+ idEmployee));
         employee.setActive(false);
         employeeRespository.save(employee);
-
     }
 
     @Override
     @Transactional
     public void updateEmail(Long idEmployee, String email) {
         Employee employee = employeeValidation(idEmployee);
+        if (employee.getEmail().equals(email)) {
+            throw new IllegalArgumentException("Email ya registrado en el sistema, ingrese un nuevo email");
+        }
         employeeRespository.updateEmail(employee.getEmployeeId(), email);
     }
 
@@ -72,6 +74,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public void updateNumberPhone(Long idEmployee, String phoneNumber) {
         Employee employee = employeeValidation(idEmployee);
+        if (employee.getPhoneNumber().equals(phoneNumber)) {
+            throw new IllegalArgumentException("Telefono ya registrado en el sistema, ingrese un nuevo numero telefonico");
+        }
         employeeRespository.updatePhoneNumber(employee.getEmployeeId(), phoneNumber);
     }
 
@@ -79,6 +84,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public void updateContractType(Long idEmployee, ContractType contractType) {
         Employee employee = employeeValidation(idEmployee);
+
+        if (employee.getContractType().equals(contractType)) {
+            throw new IllegalArgumentException("El empleado ya cuenta con el contrato en el sistema, ingrese un nuevo contrato");
+        }
         employeeRespository.updateContractType(employee.getEmployeeId(), contractType);
     }
 
