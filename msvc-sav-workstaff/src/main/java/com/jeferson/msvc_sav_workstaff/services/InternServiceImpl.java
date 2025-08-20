@@ -43,8 +43,11 @@ public class InternServiceImpl implements InternService {
 
     @Override
     public List<InterResponseDto> findAllInter(){
-        return intRepository.findAll()
-            .stream()
+        List<Intern> inters = intRepository.findAll();
+        if (inters.isEmpty()) {
+            throw new EntityNotFoundException("No se encuentran empleados vinculados al cardo de pasantes");
+        }
+        return inters.stream()
             .map(intMapper::toDto)
             .collect(Collectors.toList());
     }
