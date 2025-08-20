@@ -47,8 +47,11 @@ public class AdministrativeServiceImpl implements AdministrativeService {
 
     @Override
     public List<AdmistrativeResponseDto> findAllAdmin(){
-        return administrativeRepository.findAll()
-            .stream()
+        List<Administrative> admistratives = administrativeRepository.findAll();
+        if (admistratives.isEmpty()) {
+            throw new EntityNotFoundException("No existen empleados asociadoas al cargo de administrativos");
+        }
+        return admistratives.stream()
             .map(administrativeMapper::toDto)
             .collect(Collectors.toList());
     }
