@@ -43,8 +43,11 @@ public class VetServiceImpl implements VetService {
 
     @Override
     public List<VetResponseDto> findAllVet(){
-        return vetRepository.findAll()
-            .stream()
+        List<Vet> vets = vetRepository.findAll();
+        if (vets.isEmpty()) {
+            throw new EntityNotFoundException("No se encontro empleados al cargo de veterinarios");
+        }
+        return vets.stream()
             .map(vetMapper::toDto)
             .collect(Collectors.toList());
     }
