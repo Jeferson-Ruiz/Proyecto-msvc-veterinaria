@@ -11,7 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AdmistrativeResponseDto extends EmployeeResponseDto{
     private String academicTitle;
-    private Long professionalCard;
-    private String workArea;
+    private String professionalCard;
 
 }

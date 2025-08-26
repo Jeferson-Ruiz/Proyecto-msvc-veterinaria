@@ -9,6 +9,7 @@ import com.jeferson.msvc_sav_workstaff.models.Administrative;
 public interface AdministrativeMapper {
 
     Administrative toEntity(AdministrativeRequestDto dto);
+
     AdmistrativeResponseDto toDto(Administrative entity);
 
 }

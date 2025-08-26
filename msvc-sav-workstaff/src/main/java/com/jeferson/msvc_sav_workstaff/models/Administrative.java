@@ -20,6 +20,6 @@ public class Administrative extends Employee {
     private String academicTitle;
 
     @Column(name = "adm_prof_card", nullable = true)
-    private Long professionalCard;
+    private String professionalCard;
 
 }

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
+import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,14 +36,15 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     @Override
     public AdmistrativeResponseDto saveAdministrative(AdministrativeRequestDto administrativeDto) {
         Boolean employee = employeeRepo.findByDocumentNumber(administrativeDto.getDocumentNumber()).isPresent();
-        if (!employee) {
+        if (employee == true) {
             throw new RuntimeException("El documento " + administrativeDto.getDocumentNumber()
                     + " ya se encuentra vinculado a un empleado");
         }
         Administrative entity = administrativeMapper.toEntity(administrativeDto);
         entity.setRegistrationDate(LocalDate.now());
         entity.setActive(true);
-        return administrativeMapper.toDto(entity);
+        Administrative saved = employeeRepo.save(entity);
+        return administrativeMapper.toDto(saved);
     }
 
     @Override
@@ -88,6 +90,12 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     @Transactional
     public void updateContractType(Long idEmployee, ContractType contractType) {
         employeeServi.updateContractType(idEmployee, contractType);
+    }
+
+    @Override
+    @Transactional
+    public void updateWorkArea(Long idEmployee, WorkArea workArea){
+        employeeServi.updateWorkArea(idEmployee, workArea);
     }
 
     @Override

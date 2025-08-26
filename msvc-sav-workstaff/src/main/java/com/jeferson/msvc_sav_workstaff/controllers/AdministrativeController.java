@@ -3,6 +3,7 @@ package com.jeferson.msvc_sav_workstaff.controllers;
 import com.jeferson.msvc_sav_workstaff.dto.AdministrativeRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.AdmistrativeResponseDto;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
+import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 import com.jeferson.msvc_sav_workstaff.services.AdministrativeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,13 +38,13 @@ public class AdministrativeController {
         return ResponseEntity.ok(adminService.findAllAdmin());
     }
 
-    @GetMapping("/{idEmployee}")
+    @GetMapping("/id/{idEmployee}")
     public ResponseEntity<?> getAdministrativeById(@PathVariable Long idEmployee) {
         AdmistrativeResponseDto adminDto = adminService.findAdminById(idEmployee);
         return ResponseEntity.ok(adminDto);
     }
 
-    @GetMapping("/{idEmployee}")
+    @GetMapping("/document/{documentNumber}")
     public ResponseEntity<?> getAdministrativeByDocument(@PathVariable String documentNumber) {
         AdmistrativeResponseDto adminDto = adminService.findAdminByDocumentNumber(documentNumber);
         return ResponseEntity.ok(adminDto);
@@ -64,6 +65,12 @@ public class AdministrativeController {
     @PatchMapping("/update-contract/{idEmployee}")
     public ResponseEntity<?> updInfoContractType(@PathVariable Long idEmployee, @RequestBody ContractType contractType) {
         adminService.updateContractType(idEmployee, contractType);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/update-area/{idEmployee}")
+    public ResponseEntity<?> updworkArea(@PathVariable Long idEmployee, @RequestBody WorkArea workArea) {
+        adminService.updateWorkArea(idEmployee, workArea);
         return ResponseEntity.noContent().build();
     }
 
