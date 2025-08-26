@@ -3,7 +3,7 @@ package com.jeferson.msvc_sav_workstaff.services;
 import java.util.List;
 import com.jeferson.msvc_sav_workstaff.dto.EmployeeResponseDto;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
-import com.jeferson.msvc_sav_workstaff.models.JobPosition;
+import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 
 public interface EmployeeService {
 
@@ -13,7 +13,7 @@ public interface EmployeeService {
 
     EmployeeResponseDto findByDocumentNumber(String documentNumber);
 
-    List<EmployeeResponseDto> findAllByJobPosition(JobPosition jobPosition);
+    List<EmployeeResponseDto> findAllByJobPosition(WorkArea jobPosition);
 
     void delete(Long idEmployee);
 
@@ -22,5 +22,6 @@ public interface EmployeeService {
     void updateNumberPhone(Long idEmployee, String phoneNumber);
 
     void updateContractType(Long idEmployee, ContractType contractType);
-    
+
+    void updateWorkArea(Long idEmployee, WorkArea workArea);   
 }

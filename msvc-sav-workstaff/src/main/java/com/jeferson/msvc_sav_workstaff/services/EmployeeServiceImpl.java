@@ -4,7 +4,7 @@ import com.jeferson.msvc_sav_workstaff.dto.EmployeeResponseDto;
 import com.jeferson.msvc_sav_workstaff.mapper.EmployeeMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.Employee;
-import com.jeferson.msvc_sav_workstaff.models.JobPosition;
+import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 import com.jeferson.msvc_sav_workstaff.repositories.EmployeeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -45,8 +45,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<EmployeeResponseDto> findAllByJobPosition(JobPosition jobPosition) {
-        return employeeRespository.findByJobPosition(jobPosition).stream()
+    public List<EmployeeResponseDto> findAllByJobPosition(WorkArea workArea) {
+        return employeeRespository.findByWorkArea(workArea).stream()
                 .map(employeeMapper::toDto)
                 .toList();
     }
@@ -54,8 +54,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void delete(Long idEmployee) {
-        Employee employee = employeeRespository.findById(idEmployee)
-            .orElseThrow(() -> new RuntimeException("No se encontro empleado asociado al Id "+ idEmployee));
+        Employee employee = employeeValidation(idEmployee);
         employee.setActive(false);
         employeeRespository.save(employee);
     }
@@ -91,13 +90,23 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRespository.updateContractType(employee.getEmployeeId(), contractType);
     }
 
+    @Override
+    @Transactional
+    public void updateWorkArea(Long idEmployee, WorkArea workArea){
+        Employee employee = employeeValidation(idEmployee);
+        if (employee.getWorkArea().equals(workArea)) {
+            throw new IllegalArgumentException("El empleado ya cuenta con esa area de trabajo en el sistema, ingrese una nueva");
+        }
+        employeeRespository.updateWorkArea(idEmployee, workArea);
+    }
+
 
     private Employee employeeValidation(Long id){
         Employee employee = employeeRespository.findById(id)
             .orElseThrow(() -> new RuntimeException("No se encontro empleado asociado al Id "+ id + " en el sistema"));
 
         if (!employee.getActive()) {
-            throw new RuntimeException("El empleado con el Id" + id +" se encuentra dehabilitado");
+            throw new RuntimeException("El empleado con el Id " + id +" se encuentra dehabilitado del sistema");
         }
         return employee;
     }

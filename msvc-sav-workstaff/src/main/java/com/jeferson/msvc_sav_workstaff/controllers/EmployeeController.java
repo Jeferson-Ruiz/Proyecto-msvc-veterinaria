@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc_sav_workstaff.dto.EmployeeResponseDto;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
-import com.jeferson.msvc_sav_workstaff.models.JobPosition;
+import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 import com.jeferson.msvc_sav_workstaff.services.EmployeeService;
 
 @RestController
@@ -41,9 +41,9 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeDto);
     }
 
-    @GetMapping("all/{jobPosition}")
-    public ResponseEntity<?> getAllEmployeeByJonPosition(@PathVariable JobPosition jobPosition) {
-        List<EmployeeResponseDto> employeesDto = employeeService.findAllByJobPosition(jobPosition);
+    @GetMapping("all/{workArea}")
+    public ResponseEntity<?> getAllEmployeeByJonPosition(@PathVariable WorkArea workArea) {
+        List<EmployeeResponseDto> employeesDto = employeeService.findAllByJobPosition(workArea);
         return ResponseEntity.ok(employeesDto);
     }
 
@@ -60,13 +60,15 @@ public class EmployeeController {
     }
 
     @PatchMapping("update-phonenumber/{idEmployee}")
-    public ResponseEntity<?> updateInfoNumberPhoneEmployee(@PathVariable Long idEmployee, @RequestBody String numberPhone) {
+    public ResponseEntity<?> updateInfoNumberPhoneEmployee(@PathVariable Long idEmployee,
+            @RequestBody String numberPhone) {
         employeeService.updateNumberPhone(idEmployee, numberPhone);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("update-contractype/{idEmployee}")
-    public ResponseEntity<?> updateInfoContractType(@PathVariable Long idEmployee, @RequestBody ContractType contractType) {
+    public ResponseEntity<?> updateInfoContractType(@PathVariable Long idEmployee,
+            @RequestBody ContractType contractType) {
         employeeService.updateContractType(idEmployee, contractType);
         return ResponseEntity.noContent().build();
     }

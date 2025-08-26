@@ -1,6 +1,6 @@
 package com.jeferson.msvc_sav_workstaff.repositories;
 
-import com.jeferson.msvc_sav_workstaff.models.JobPosition;
+import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,21 +14,22 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     Optional<Employee> findByDocumentNumber(String documentNumber);
 
-    List<Employee> findByJobPosition(JobPosition jobPosition);
+    List<Employee> findByWorkArea(WorkArea workArea);
 
     @Modifying
-    @Query("update Employee set email=:email where idEmployee=:idEmployee")
-    void updateEmail(@Param("idEmployee") Long idEmployee, @Param("email") String email);
+    @Query("update Employee set email=:email where employeeId=:employeeId")
+    void updateEmail(@Param("employeeId") Long employeeId, @Param("email") String email);
 
     @Modifying
-    @Query("update Employee set phoneNumber=:phoneNumber where idEmployee=:idEmployee")
-    void updatePhoneNumber(@Param("idEmployee") Long idEmployee, @Param("phoneNumber") String phoneNumber);
+    @Query("update Employee set phoneNumber=:phoneNumber where employeeId=:employeeId")
+    void updatePhoneNumber(@Param("employeeId") Long employeeId, @Param("phoneNumber") String phoneNumber);
 
     @Modifying
-    @Query("update Employee set contractType=:contractType where idEmployee=:idEmployee")
-    void updateContractType(@Param("idEmployee") Long idEmployee, @Param("contractType") ContractType contractType);
+    @Query("update Employee set contractType=:contractType where employeeId=:employeeId")
+    void updateContractType(@Param("employeeId") Long employeeId, @Param("contractType") ContractType contractType);
 
     @Modifying
-    @Query("update Employee set workStatus=:workStatus where idEmployee=:idEmployee")
-    void updateWorkStatus(@Param("idEmployee") Long idEmployee, @Param("workStatus") Boolean workStatus);
+    @Query("update Employee set workArea=:workArea where employeeId =:employeeId")
+    void updateWorkArea(@Param ("employeeId") Long employeeId, @Param("workArea") WorkArea workArea);
+
 }
