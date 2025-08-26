@@ -10,6 +10,7 @@ import com.jeferson.msvc_sav_workstaff.dto.InterResponseDto;
 import com.jeferson.msvc_sav_workstaff.dto.InternRequestDto;
 import com.jeferson.msvc_sav_workstaff.mapper.InternMapper;
 import com.jeferson.msvc_sav_workstaff.models.Intern;
+import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 import com.jeferson.msvc_sav_workstaff.repositories.EmployeeRepository;
 import com.jeferson.msvc_sav_workstaff.repositories.InternRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,6 +84,14 @@ public class InternServiceImpl implements InternService {
     public void updateContractType(Long idEmployee, ContractType contractType){
         employeeService.updateContractType(idEmployee, contractType);
     }
+
+    @Override
+    @Transactional
+    public void updateWorkArea(Long idEmployee, WorkArea workArea){
+        employeeRepo.updateWorkArea(idEmployee, workArea);
+    }
+
+    
 
     @Override
     public void delete (Long idEmployee){
