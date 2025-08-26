@@ -15,6 +15,7 @@ import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryResponseDto;
 import com.jeferson.msvc_sav_workstaff.mapper.AuxiliaryMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
+import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 import com.jeferson.msvc_sav_workstaff.services.AuxiliaryService;
 
 @RestController
@@ -39,9 +40,16 @@ public class AuxiliaryController {
         return ResponseEntity.ok(auxiliaries);
     }
 
-    @GetMapping("/{idEmployee}")
+    @GetMapping("/id/{idEmployee}")
     public ResponseEntity<?> getAuxiliaryById(@PathVariable Long idEmployee) {
         AuxiliaryResponseDto auxiliaryDto = auxService.findById(idEmployee);
+        return ResponseEntity.ok(auxiliaryDto);
+    }
+
+    
+    @GetMapping("/document/{idEmployee}")
+    public ResponseEntity<?> getAuxiliaryDocumentNumber(@PathVariable String documentNumber) {
+        AuxiliaryResponseDto auxiliaryDto = auxService.findAdminByDocumentNumber(documentNumber);
         return ResponseEntity.ok(auxiliaryDto);
     }
 
@@ -60,6 +68,12 @@ public class AuxiliaryController {
     @PatchMapping("/update-contract/{idEmployee}")
     public ResponseEntity<?> updInfoContractType(@PathVariable Long idEmployee,@RequestBody ContractType contractType) {
        auxService.updateContractType(idEmployee, contractType);
+       return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/update-area/{idEmployee}")
+    public ResponseEntity<?> updWorkArea(@PathVariable Long idEmployee,@RequestBody WorkArea workArea) {
+       auxService.updateWorkArea(idEmployee, workArea);
        return ResponseEntity.noContent().build();
     }
 

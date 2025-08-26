@@ -9,6 +9,7 @@ import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryResponseDto;
 import com.jeferson.msvc_sav_workstaff.mapper.AuxiliaryMapper;
 import com.jeferson.msvc_sav_workstaff.models.Auxiliary;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
+import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 import com.jeferson.msvc_sav_workstaff.repositories.AuxiliaryRepository;
 import com.jeferson.msvc_sav_workstaff.repositories.EmployeeRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -85,6 +86,12 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
     @Transactional
     public void updateContractType(Long idEmployee, ContractType contractType){
         employeeRespo.updateContractType(idEmployee, contractType);
+    }
+
+    @Override
+    @Transactional
+    public void updateWorkArea(Long idEmployee, WorkArea workArea){
+        employeeRespo.updateWorkArea(idEmployee, workArea);
     }
 
     @Override

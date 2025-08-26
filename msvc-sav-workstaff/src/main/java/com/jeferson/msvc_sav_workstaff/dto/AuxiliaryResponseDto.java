@@ -11,5 +11,4 @@ import lombok.Setter;
 @NoArgsConstructor
 public class AuxiliaryResponseDto extends EmployeeResponseDto {
     private String academicCertificate;
-    private String workArea;
 }
