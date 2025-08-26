@@ -15,6 +15,7 @@ import com.jeferson.msvc_sav_workstaff.dto.VetRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.VetResponseDto;
 import com.jeferson.msvc_sav_workstaff.mapper.VetMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
+import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 import com.jeferson.msvc_sav_workstaff.services.VetService;
 
 @RestController
@@ -60,6 +61,12 @@ public class VetController {
     @PatchMapping("/update-contract/{idEmployee}")
     public ResponseEntity<?> updInfoContractType(@PathVariable Long idEmployee, @RequestBody ContractType contract) {
         vetService.updateContractType(idEmployee, contract);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/update-area/{idEmployee}")
+    public ResponseEntity<?> updWorkArea(@PathVariable Long idEmployee, @RequestBody WorkArea workArea) {
+        vetService.updateWorkArea(idEmployee, workArea);
         return ResponseEntity.noContent().build();
     }
 

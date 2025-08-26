@@ -11,6 +11,7 @@ import com.jeferson.msvc_sav_workstaff.dto.VetRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.VetResponseDto;
 import com.jeferson.msvc_sav_workstaff.mapper.VetMapper;
 import com.jeferson.msvc_sav_workstaff.models.Vet;
+import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 import com.jeferson.msvc_sav_workstaff.repositories.EmployeeRepository;
 import com.jeferson.msvc_sav_workstaff.repositories.VetRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,6 +83,12 @@ public class VetServiceImpl implements VetService {
     @Transactional
     public void updateContractType(Long idEmployee, ContractType contractType){
         employeeService.updateContractType(idEmployee, contractType);
+    }
+
+    @Override
+    @Transactional
+    public void updateWorkArea(Long idEmployee, WorkArea workArea){
+        employeeService.updateWorkArea(idEmployee, workArea);
     }
 
     @Override
