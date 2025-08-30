@@ -39,7 +39,8 @@ public class InternServiceImpl implements InternService {
         Intern entity = intMapper.toEntity(internDto);
         entity.setRegistrationDate(LocalDate.now());
         entity.setActive(true);
-        return intMapper.toDto(intRepository.save(entity));
+        Intern saved = intRepository.save(entity);
+        return intMapper.toDto(saved);
     }
 
     @Override
