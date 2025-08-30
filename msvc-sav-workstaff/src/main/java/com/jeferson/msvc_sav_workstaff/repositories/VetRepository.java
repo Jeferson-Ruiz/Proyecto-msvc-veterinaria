@@ -11,4 +11,5 @@ public interface VetRepository extends JpaRepository<Vet, Long > {
     @Query("SELECT v FROM Vet v WHERE v.documentNumber =:documentNumber")
     Optional<Vet> findByDocumentNumber(@Param("documentNumber") String documentNumber);
 
+    Boolean existsByProfessionalCard(String professionalCard);
 }

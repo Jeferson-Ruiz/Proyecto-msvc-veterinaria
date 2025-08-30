@@ -40,9 +40,15 @@ public class VetController {
         return ResponseEntity.ok(vets);
     }
 
-    @GetMapping("/{idEmployee}")
+    @GetMapping("/id/{idEmployee}")
     public ResponseEntity<?> getVetById(@PathVariable Long idEmployee) {
         VetResponseDto vet = vetService.findById(idEmployee);
+        return ResponseEntity.ok(vet);
+    }
+
+    @GetMapping("/document/{idEmployee}")
+    public ResponseEntity<?> getVetBydocumentNumber(@PathVariable String documentNumber) {
+        VetResponseDto vet = vetService.findAdminByDocumentNumber(documentNumber);
         return ResponseEntity.ok(vet);
     }
 

@@ -3,7 +3,6 @@ package com.jeferson.msvc_sav_workstaff.services;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -37,9 +36,13 @@ public class VetServiceImpl implements VetService {
             throw new RuntimeException("El documento "+ vetDto.getDocumentNumber()+" ya se encuentra vinculado a un empleado");
         }
         Vet entity = vetMapper.toEntity(vetDto);
+        if (vetRepository.existsByProfessionalCard(entity.getProfessionalCard())) {
+            throw new IllegalArgumentException("La tarjeta profesional "+ entity.getProfessionalCard() +" ya se encuentra asociado a un veterinario");
+        }
         entity.setRegistrationDate(LocalDate.now());
         entity.setActive(true);
-        return vetMapper.toDto(vetRepository.save(entity));
+        Vet saved = vetRepository.save(entity);
+        return vetMapper.toDto(saved);
     }
 
     @Override
@@ -70,30 +73,57 @@ public class VetServiceImpl implements VetService {
     @Override
     @Transactional
     public void updateEmail (Long idEmployee, String email){
+        Vet vet = validateInfo(idEmployee);
+        if (vet.getEmail().equals(email)) {
+            throw new IllegalArgumentException("El email "+ email+ " ya se encuentra asociado al veterinario "+ idEmployee);
+        }
         employeeService.updateEmail(idEmployee, email);
     }
 
     @Override
     @Transactional
     public void updateNumberPhone(Long idEmployee, String phoneNumber){
+        Vet vet = validateInfo(idEmployee);
+        if (vet.getPhoneNumber().equals(phoneNumber)) {
+            throw new IllegalArgumentException("El telefono "+ phoneNumber + " ya se encuentra asociado al veterinario "+ idEmployee);
+        }
         employeeService.updateNumberPhone(idEmployee, phoneNumber);
     }
 
     @Override
     @Transactional
     public void updateContractType(Long idEmployee, ContractType contractType){
+        Vet vet = validateInfo(idEmployee);
+        if (vet.getContractType().equals(contractType)) {
+            throw new IllegalArgumentException("El contrato "+ contractType + " ya se encuentra asociado al veterinario "+ idEmployee);
+        }        
         employeeService.updateContractType(idEmployee, contractType);
     }
 
     @Override
     @Transactional
     public void updateWorkArea(Long idEmployee, WorkArea workArea){
+        Vet vet = validateInfo(idEmployee);
+        if (vet.getWorkArea().equals(workArea)) {
+            throw new IllegalArgumentException("El area de trabajo "+ workArea + " ya se encuentra asociado al veterinario "+ idEmployee);
+        }
         employeeService.updateWorkArea(idEmployee, workArea);
     }
 
     @Override
     public void delete(Long idEmployee){
-        employeeService.delete(idEmployee);
+        Vet vet = validateInfo(idEmployee);
+        vet.setActive(false);
+        employeeRepo.save(vet);
+    }
+
+    private Vet validateInfo(Long idEmployee) {
+        Vet vet = vetRepository.findById(idEmployee)
+                .orElseThrow(() -> new EntityNotFoundException("No se encontro veterinario asociado al id " + idEmployee));
+        if (!vet.getActive()) {
+            throw new IllegalArgumentException("El empleado " + idEmployee + " se encuentra desactivado del sistema");
+        }
+        return vet;
     }
 
 }
