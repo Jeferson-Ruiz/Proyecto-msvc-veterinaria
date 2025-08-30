@@ -32,7 +32,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeResponseDto findById(Long idEmployee) {
         Employee employee = employeeRespository.findById(idEmployee)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al Id "+ idEmployee));
-        
         return employeeMapper.toDto(employee);
     }
 
@@ -40,7 +39,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeResponseDto findByDocumentNumber(String documentNumber) {
         Employee employee = employeeRespository.findByDocumentNumber(documentNumber)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al N° identificacion "+ documentNumber));
-
         return employeeMapper.toDto(employee);
     }
 
@@ -54,7 +52,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void delete(Long idEmployee) {
-        Employee employee = employeeValidation(idEmployee);
+        Employee employee = employeeRespository.getReferenceById(idEmployee);
         employee.setActive(false);
         employeeRespository.save(employee);
     }
@@ -62,52 +60,25 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void updateEmail(Long idEmployee, String email) {
-        Employee employee = employeeValidation(idEmployee);
-        if (employee.getEmail().equals(email)) {
-            throw new IllegalArgumentException("Email ya registrado en el sistema, ingrese un nuevo email");
-        }
-        employeeRespository.updateEmail(employee.getEmployeeId(), email);
+        employeeRespository.updateEmail(idEmployee, email);
     }
 
     @Override
     @Transactional
     public void updateNumberPhone(Long idEmployee, String phoneNumber) {
-        Employee employee = employeeValidation(idEmployee);
-        if (employee.getPhoneNumber().equals(phoneNumber)) {
-            throw new IllegalArgumentException("Telefono ya registrado en el sistema, ingrese un nuevo numero telefonico");
-        }
-        employeeRespository.updatePhoneNumber(employee.getEmployeeId(), phoneNumber);
+        employeeRespository.updatePhoneNumber(idEmployee, phoneNumber);
     }
 
     @Override
     @Transactional
     public void updateContractType(Long idEmployee, ContractType contractType) {
-        Employee employee = employeeValidation(idEmployee);
-
-        if (employee.getContractType().equals(contractType)) {
-            throw new IllegalArgumentException("El empleado ya cuenta con el contrato en el sistema, ingrese un nuevo contrato");
-        }
-        employeeRespository.updateContractType(employee.getEmployeeId(), contractType);
+        employeeRespository.updateContractType(idEmployee, contractType);
     }
 
     @Override
     @Transactional
     public void updateWorkArea(Long idEmployee, WorkArea workArea){
-        Employee employee = employeeValidation(idEmployee);
-        if (employee.getWorkArea().equals(workArea)) {
-            throw new IllegalArgumentException("El empleado ya cuenta con esa area de trabajo en el sistema, ingrese una nueva");
-        }
         employeeRespository.updateWorkArea(idEmployee, workArea);
     }
 
-
-    private Employee employeeValidation(Long id){
-        Employee employee = employeeRespository.findById(id)
-            .orElseThrow(() -> new RuntimeException("No se encontro empleado asociado al Id "+ id + " en el sistema"));
-
-        if (!employee.getActive()) {
-            throw new RuntimeException("El empleado con el Id " + id +" se encuentra dehabilitado del sistema");
-        }
-        return employee;
-    }
 }
