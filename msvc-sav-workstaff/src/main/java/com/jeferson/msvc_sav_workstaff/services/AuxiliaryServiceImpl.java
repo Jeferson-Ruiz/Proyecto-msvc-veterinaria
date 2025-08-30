@@ -36,12 +36,13 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
     @Override
     public AuxiliaryResponseDto saveAuxiliary(AuxiliaryRequestDto auxiliaryDto) {
         Boolean employee = employeeRespo.findByDocumentNumber(auxiliaryDto.getDocumentNumber()).isPresent();
-        if (!employee) {
+        if (employee) {
             throw new RuntimeException("El documento "+ auxiliaryDto.getDocumentNumber()+" ya se encuentra vinculado a un empleado");
         }
         Auxiliary entity = auxMapper.toEntity(auxiliaryDto);
         entity.setRegistrationDate(LocalDate.now());
         entity.setActive(true);
+        auxRepository.save(entity);
         return auxMapper.toDto(entity);
     }
 
@@ -73,29 +74,57 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
     @Override
     @Transactional
     public void updateEmail(Long idEmployee, String email){
+        Auxiliary auxiliary = validateInfo(idEmployee);
+        if (auxiliary.getEmail().equals(email)) {
+            throw new IllegalArgumentException("El email "+ email +" ya se encuentra vinculado al auxiliar "+ idEmployee);
+        }
         employeeService.updateEmail(idEmployee, email);
     }
 
     @Override
     @Transactional
     public void updatePhoneNumber(Long idEmployee, String phoneNumber){
+        Auxiliary auxiliary = validateInfo(idEmployee);
+        if (auxiliary.getPhoneNumber().equals(phoneNumber)) {
+            throw new IllegalArgumentException("El telefono "+ phoneNumber +" ya se encuentra vinculado al auxiliar "+ idEmployee);
+        }
         employeeService.updateNumberPhone(idEmployee, phoneNumber);
     }
 
     @Override
     @Transactional
     public void updateContractType(Long idEmployee, ContractType contractType){
+        Auxiliary auxiliary = validateInfo(idEmployee);
+        if (auxiliary.getContractType().equals(contractType)) {
+            throw new IllegalArgumentException("El contrato "+ contractType +" ya se encuentra vinculado al auxiliar "+ idEmployee);
+        }
         employeeRespo.updateContractType(idEmployee, contractType);
     }
 
     @Override
     @Transactional
     public void updateWorkArea(Long idEmployee, WorkArea workArea){
+        Auxiliary auxiliary = validateInfo(idEmployee);
+        if (auxiliary.getWorkArea().equals(workArea)) {
+            throw new IllegalArgumentException("El area de trabajo "+ workArea +" ya se encuentra vinculado al auxiliar "+ idEmployee);
+        }
         employeeRespo.updateWorkArea(idEmployee, workArea);
     }
 
     @Override
     public void delete (Long idEmployee){
-        employeeService.delete(idEmployee);        
+        Auxiliary auxiliary = validateInfo(idEmployee);
+        auxiliary.setActive(false);
+        employeeRespo.save(auxiliary);
+    }
+
+
+    private Auxiliary validateInfo(Long idEmployee){
+        Auxiliary auxiliary = auxRepository.findById(idEmployee)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro auxiliar asociado al id "+ idEmployee));
+        if (!auxiliary.getActive()) {
+            throw new IllegalArgumentException("El empelado "+ idEmployee + " se encuentra deshabilitado del sistema");
+        }
+        return auxiliary;
     }
 }

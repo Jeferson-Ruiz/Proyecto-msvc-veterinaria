@@ -35,7 +35,7 @@ public class AuxiliaryController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findAllAuxiliary(){
+    public ResponseEntity<?> findAllAuxiliary() {
         List<AuxiliaryResponseDto> auxiliaries = auxService.findAllAuxiliary();
         return ResponseEntity.ok(auxiliaries);
     }
@@ -46,8 +46,8 @@ public class AuxiliaryController {
         return ResponseEntity.ok(auxiliaryDto);
     }
 
-    
-    @GetMapping("/document/{idEmployee}")
+    // error
+    @GetMapping("/document/{documentNumber}")
     public ResponseEntity<?> getAuxiliaryDocumentNumber(@PathVariable String documentNumber) {
         AuxiliaryResponseDto auxiliaryDto = auxService.findAdminByDocumentNumber(documentNumber);
         return ResponseEntity.ok(auxiliaryDto);
@@ -66,20 +66,21 @@ public class AuxiliaryController {
     }
 
     @PatchMapping("/update-contract/{idEmployee}")
-    public ResponseEntity<?> updInfoContractType(@PathVariable Long idEmployee,@RequestBody ContractType contractType) {
-       auxService.updateContractType(idEmployee, contractType);
-       return ResponseEntity.noContent().build();
+    public ResponseEntity<?> updInfoContractType(@PathVariable Long idEmployee,
+            @RequestBody ContractType contractType) {
+        auxService.updateContractType(idEmployee, contractType);
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/update-area/{idEmployee}")
-    public ResponseEntity<?> updWorkArea(@PathVariable Long idEmployee,@RequestBody WorkArea workArea) {
-       auxService.updateWorkArea(idEmployee, workArea);
-       return ResponseEntity.noContent().build();
+    public ResponseEntity<?> updWorkArea(@PathVariable Long idEmployee, @RequestBody WorkArea workArea) {
+        auxService.updateWorkArea(idEmployee, workArea);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{idEmployee}")
     public ResponseEntity<?> deleteAuxiliary(@PathVariable Long idEmployee) {
-       auxService.delete(idEmployee);
-       return ResponseEntity.noContent().build();
+        auxService.delete(idEmployee);
+        return ResponseEntity.noContent().build();
     }
 }
