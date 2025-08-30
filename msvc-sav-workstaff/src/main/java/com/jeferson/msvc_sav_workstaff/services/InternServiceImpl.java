@@ -70,32 +70,57 @@ public class InternServiceImpl implements InternService {
     @Override
     @Transactional
     public void updateEmail(Long idEmployee, String email){
+        Intern intern = validateInfo(idEmployee);
+        if (intern.getEmail().equals(email)) {
+            throw new IllegalArgumentException("El email "+ email +" ya se encuentra asociado al pasante "+ idEmployee);
+        }
         employeeService.updateEmail(idEmployee, email);
     }
 
     @Override
     @Transactional
     public void updateNumberPhone(Long idEmployee, String phoneNumber){
+        Intern intern = validateInfo(idEmployee);
+        if (intern.getPhoneNumber().equals(phoneNumber)) {
+            throw new IllegalArgumentException("El telefono "+ phoneNumber +" ya se encuentra asociado al pasante "+ idEmployee);
+        }
         employeeService.updateNumberPhone(idEmployee, phoneNumber);
     }
 
     @Override
     @Transactional
     public void updateContractType(Long idEmployee, ContractType contractType){
+        Intern intern = validateInfo(idEmployee);
+        if (intern.getContractType().equals(contractType)) {
+            throw new IllegalArgumentException("El contrato "+ contractType +" ya se encuentra asociado al pasante "+ idEmployee);
+        }
         employeeService.updateContractType(idEmployee, contractType);
     }
 
     @Override
     @Transactional
     public void updateWorkArea(Long idEmployee, WorkArea workArea){
+        Intern intern = validateInfo(idEmployee);
+        if (intern.getWorkArea().equals(workArea)) {
+            throw new IllegalArgumentException("El area de trabajo "+ workArea +" ya se encuentra asociado al pasante "+ idEmployee);
+        }
         employeeRepo.updateWorkArea(idEmployee, workArea);
     }
 
-    
-
     @Override
     public void delete (Long idEmployee){
-        employeeService.delete(idEmployee);
+        Intern intern = validateInfo(idEmployee);
+        intern.setActive(false);
+        employeeRepo.save(intern);
+    }
+
+    private Intern validateInfo(Long idEmployee){
+        Intern intern = intRepository.findById(idEmployee)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro pasante asociado al id "+ idEmployee));
+        if (!intern.getActive()) {
+            throw new IllegalArgumentException("El pasante "+ idEmployee + " se encuentra deshabilitado del sistema");
+        }
+        return intern;
     }
 
 }
