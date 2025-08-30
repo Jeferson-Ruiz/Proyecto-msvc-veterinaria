@@ -19,7 +19,7 @@ public class Administrative extends Employee {
     @Column(name = "adm_academic_title", length = 30, nullable = false)
     private String academicTitle;
 
-    @Column(name = "adm_prof_card", nullable = true)
+    @Column(name = "adm_prof_card", nullable = true, unique = true)
     private String professionalCard;
 
 }

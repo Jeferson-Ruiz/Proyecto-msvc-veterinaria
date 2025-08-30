@@ -41,6 +41,9 @@ public class AdministrativeServiceImpl implements AdministrativeService {
                     + " ya se encuentra vinculado a un empleado");
         }
         Administrative entity = administrativeMapper.toEntity(administrativeDto);
+        if (administrativeRepository.existsByProfessionalCard(entity.getProfessionalCard())) {
+            throw new IllegalArgumentException("La tarjeta profesional "+ administrativeDto.getProfessionalCard()+ " ya se encuentra vinculado en el sistema");
+        }
         entity.setRegistrationDate(LocalDate.now());
         entity.setActive(true);
         Administrative saved = employeeRepo.save(entity);
@@ -48,14 +51,14 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     }
 
     @Override
-    public List<AdmistrativeResponseDto> findAllAdmin(){
+    public List<AdmistrativeResponseDto> findAllAdmin() {
         List<Administrative> admistratives = administrativeRepository.findAll();
         if (admistratives.isEmpty()) {
             throw new EntityNotFoundException("No existen empleados asociadoas al cargo de administrativos");
         }
         return admistratives.stream()
-            .map(administrativeMapper::toDto)
-            .collect(Collectors.toList());
+                .map(administrativeMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -68,39 +71,73 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     }
 
     @Override
-    public AdmistrativeResponseDto findAdminByDocumentNumber(String documentNumber){
+    public AdmistrativeResponseDto findAdminByDocumentNumber(String documentNumber) {
         Administrative administrative = administrativeRepository.findByDocumentNumber(documentNumber)
-            .orElseThrow(() -> new EntityNotFoundException("No se encontro veterianio asociado al numero de documento " + documentNumber));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "No se encontro administrativo asociado al numero de documento " + documentNumber));
         return administrativeMapper.toDto(administrative);
     }
 
     @Override
     @Transactional
     public void updateEmail(Long idEmployee, String email) {
+        Administrative administrative = validateInfo(idEmployee);
+        if (administrative.getEmail().equals(email)) {
+            throw new IllegalArgumentException(
+                    "El email " + email + " ya se encuentra vinculado al administrativo " + idEmployee);
+        }
         employeeServi.updateEmail(idEmployee, email);
     }
 
     @Override
     @Transactional
     public void updateNumberPhone(long idEmployee, String phoneNumber) {
+        Administrative administrative = validateInfo(idEmployee);
+        if (administrative.getPhoneNumber().equals(phoneNumber)) {
+            throw new IllegalArgumentException(
+                    "El telefono " + phoneNumber + " ya se encuentra vinculado al administrativo " + idEmployee);
+        }
         employeeServi.updateNumberPhone(idEmployee, phoneNumber);
     }
 
     @Override
     @Transactional
     public void updateContractType(Long idEmployee, ContractType contractType) {
+        Administrative administrative = validateInfo(idEmployee);
+        if (administrative.getContractType().equals(contractType)) {
+            throw new IllegalArgumentException(
+                    "El contrato " + contractType + " ya se encuentra vinculado al administrativo " + idEmployee);
+        }
         employeeServi.updateContractType(idEmployee, contractType);
     }
 
     @Override
     @Transactional
-    public void updateWorkArea(Long idEmployee, WorkArea workArea){
+    public void updateWorkArea(Long idEmployee, WorkArea workArea) {
+        Administrative administrative = validateInfo(idEmployee);
+        if (administrative.getWorkArea().equals(workArea)) {
+            throw new IllegalArgumentException(
+                    "El area de trabajo " + workArea + " ya se encuentra vinculado al administrativo " + idEmployee);
+        }
         employeeServi.updateWorkArea(idEmployee, workArea);
     }
 
     @Override
     public void delete(Long idEmployee) {
-        employeeServi.delete(idEmployee);
+        Administrative administrative = validateInfo(idEmployee);
+        administrative.setActive(false);
+        employeeRepo.save(administrative);
+    }
+
+    private Administrative validateInfo(Long idEmployee) {
+        Administrative administrative = administrativeRepository.findById(idEmployee)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "No se encontro administrativo asociado al id " + idEmployee));
+
+        if (!administrative.getActive()) {
+            throw new IllegalArgumentException("El empleado " + idEmployee + " se encuentra desactivado del sistema");
+        }
+        return administrative;
     }
 
 }

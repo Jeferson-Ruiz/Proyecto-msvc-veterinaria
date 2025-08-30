@@ -11,4 +11,5 @@ public interface AdministrativeRepository extends JpaRepository<Administrative, 
     @Query("SELECT a FROM Administrative a WHERE a.documentNumber =:documentNumber")
     Optional<Administrative> findByDocumentNumber(@Param("documentNumber") String documentNumber);
 
+    Boolean existsByProfessionalCard(String professionalCard);
 }
