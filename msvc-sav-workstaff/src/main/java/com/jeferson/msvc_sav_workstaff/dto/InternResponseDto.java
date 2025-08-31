@@ -14,20 +14,22 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class VetRequestDto {
-    private String name;
-    private String lastName;
+public class InternResponseDto {
+
+    private Long employeeId;
+    private String fullName;
     private DocumentType documentType;
     private String documentNumber;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private LocalDate dateOfBirth;
-
+    private Byte age;
     private String email;
     private String phoneNumber;
     private ContractType contractType;
     private WorkArea workArea;
-    private String speciality;
-    private String professionalCard;
-    
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private LocalDate registrationDate;
+
+    private String educationInstitute;
+    private String levelAcademic;
+    private String trainingCareer;
 }
