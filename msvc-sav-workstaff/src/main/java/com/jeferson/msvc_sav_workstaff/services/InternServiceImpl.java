@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-import com.jeferson.msvc_sav_workstaff.dto.InterResponseDto;
+import com.jeferson.msvc_sav_workstaff.dto.InternResponseDto;
 import com.jeferson.msvc_sav_workstaff.dto.InternRequestDto;
 import com.jeferson.msvc_sav_workstaff.mapper.InternMapper;
 import com.jeferson.msvc_sav_workstaff.models.Intern;
@@ -32,7 +32,7 @@ public class InternServiceImpl implements InternService {
     }
 
     @Override
-    public InterResponseDto saveIntern(InternRequestDto internDto) {
+    public InternResponseDto saveIntern(InternRequestDto internDto) {
         if (employeeRepo.findByDocumentNumber(internDto.getDocumentNumber()).isPresent()) {
             throw new RuntimeException("El documento "+ internDto.getDocumentNumber()+" ya se encuentra vinculado a un empleado");
         }
@@ -44,7 +44,7 @@ public class InternServiceImpl implements InternService {
     }
 
     @Override
-    public List<InterResponseDto> findAllInter(){
+    public List<InternResponseDto> findAllInter(){
         List<Intern> inters = intRepository.findAll();
         if (inters.isEmpty()) {
             throw new EntityNotFoundException("No se encuentran empleados vinculados al cardo de pasantes");
@@ -55,14 +55,14 @@ public class InternServiceImpl implements InternService {
     }
 
     @Override
-    public InterResponseDto findById(Long idEmployee){
+    public InternResponseDto findById(Long idEmployee){
         Intern intern = intRepository.findById(idEmployee)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro pasante asociada al id "+ idEmployee));
         return intMapper.toDto(intern);
     }
 
     @Override
-    public InterResponseDto findAdminByDocumentNumber(String documentNumber){
+    public InternResponseDto findAdminByDocumentNumber(String documentNumber){
         Intern intern = intRepository.findByDocumentNumber(documentNumber)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro veterianio asociado al numero de documento " + documentNumber));
         return intMapper.toDto(intern);

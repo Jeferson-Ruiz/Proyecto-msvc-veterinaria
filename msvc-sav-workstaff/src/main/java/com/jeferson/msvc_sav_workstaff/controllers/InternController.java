@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.jeferson.msvc_sav_workstaff.dto.InterResponseDto;
+import com.jeferson.msvc_sav_workstaff.dto.InternResponseDto;
 import com.jeferson.msvc_sav_workstaff.dto.InternRequestDto;
 import com.jeferson.msvc_sav_workstaff.mapper.InternMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
@@ -30,19 +30,19 @@ public class InternController {
 
     @PostMapping
     public ResponseEntity<?> saveInfoIntern(@RequestBody InternRequestDto internDto) {
-        InterResponseDto intern = intService.saveIntern(internDto);
+        InternResponseDto intern = intService.saveIntern(internDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(intern);
     }
 
     @GetMapping
     public ResponseEntity<?> getAllInterns(){
-        List<InterResponseDto> interns = intService.findAllInter();
+        List<InternResponseDto> interns = intService.findAllInter();
         return ResponseEntity.ok(interns);
     }
 
     @GetMapping("/id/{idEmployee}")
     public ResponseEntity<?> getInternById(@PathVariable Long idEmployee) {
-        InterResponseDto intern = intService.findById(idEmployee);
+        InternResponseDto intern = intService.findById(idEmployee);
         return ResponseEntity.ok(intern);
     }
 

@@ -1,20 +1,20 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
 import java.util.List;
-import com.jeferson.msvc_sav_workstaff.dto.InterResponseDto;
+import com.jeferson.msvc_sav_workstaff.dto.InternResponseDto;
 import com.jeferson.msvc_sav_workstaff.dto.InternRequestDto;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 
 public interface InternService {
 
-    InterResponseDto saveIntern(InternRequestDto internDto);
+    InternResponseDto saveIntern(InternRequestDto internDto);
 
-    List<InterResponseDto> findAllInter();
+    List<InternResponseDto> findAllInter();
 
-    InterResponseDto findById(Long idEmployee);
+    InternResponseDto findById(Long idEmployee);
     
-    InterResponseDto findAdminByDocumentNumber(String documentNumber);
+    InternResponseDto findAdminByDocumentNumber(String documentNumber);
 
     void updateEmail(Long idEmployee, String email);
 
