@@ -35,7 +35,7 @@ public class InternController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllInterns(){
+    public ResponseEntity<?> getAllInterns() {
         List<InternResponseDto> interns = intService.findAllInter();
         return ResponseEntity.ok(interns);
     }
@@ -43,6 +43,12 @@ public class InternController {
     @GetMapping("/id/{idEmployee}")
     public ResponseEntity<?> getInternById(@PathVariable Long idEmployee) {
         InternResponseDto intern = intService.findById(idEmployee);
+        return ResponseEntity.ok(intern);
+    }
+
+    @GetMapping("/document/{documentNumber}")
+    public ResponseEntity<?> getInternByDocument(@PathVariable String documentNumber) {
+        InternResponseDto intern = intService.findAdminByDocumentNumber(documentNumber);
         return ResponseEntity.ok(intern);
     }
 
@@ -62,13 +68,13 @@ public class InternController {
     public ResponseEntity<?> updContractType(@PathVariable Long idEmployee, @RequestBody ContractType contract) {
         intService.updateContractType(idEmployee, contract);
         return ResponseEntity.noContent().build();
-    }  
+    }
 
     @PatchMapping("/update-area/{idEmployee}")
     public ResponseEntity<?> updWorkArea(@PathVariable Long idEmployee, @RequestBody WorkArea workArea) {
         intService.updateWorkArea(idEmployee, workArea);
         return ResponseEntity.noContent().build();
-    }  
+    }
 
     @DeleteMapping("/{idEmployee}")
     public ResponseEntity<?> deleteIntern(@PathVariable Long idEmployee) {
