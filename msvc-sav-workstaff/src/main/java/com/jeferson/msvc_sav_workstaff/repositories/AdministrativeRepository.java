@@ -1,6 +1,8 @@
 package com.jeferson.msvc_sav_workstaff.repositories;
 
 import com.jeferson.msvc_sav_workstaff.models.Administrative;
+
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,6 +12,9 @@ public interface AdministrativeRepository extends JpaRepository<Administrative, 
 
     @Query("SELECT a FROM Administrative a WHERE a.documentNumber =:documentNumber")
     Optional<Administrative> findByDocumentNumber(@Param("documentNumber") String documentNumber);
+
+    @Query("SELECT a FROM Administrative a WHERE a.active")
+    List<Administrative> findAllActiveAdministrators();
 
     Boolean existsByProfessionalCard(String professionalCard);
 }

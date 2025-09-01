@@ -42,7 +42,8 @@ public class AdministrativeServiceImpl implements AdministrativeService {
         }
         Administrative entity = administrativeMapper.toEntity(administrativeDto);
         if (administrativeRepository.existsByProfessionalCard(entity.getProfessionalCard())) {
-            throw new IllegalArgumentException("La tarjeta profesional "+ administrativeDto.getProfessionalCard()+ " ya se encuentra vinculado en el sistema");
+            throw new IllegalArgumentException("La tarjeta profesional " + administrativeDto.getProfessionalCard()
+                    + " ya se encuentra vinculado en el sistema");
         }
         entity.setRegistrationDate(LocalDate.now());
         entity.setActive(true);
@@ -52,7 +53,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
 
     @Override
     public List<AdmistrativeResponseDto> findAllAdmin() {
-        List<Administrative> admistratives = administrativeRepository.findAll();
+        List<Administrative> admistratives = administrativeRepository.findAllActiveAdministrators();
         if (admistratives.isEmpty()) {
             throw new EntityNotFoundException("No existen empleados asociadoas al cargo de administrativos");
         }
@@ -63,10 +64,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
 
     @Override
     public AdmistrativeResponseDto findAdminById(Long idEmployee) {
-
-        Administrative administrative = administrativeRepository.findById(idEmployee)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "No se encontro administrativo asociado al Id " + idEmployee + " en el sistema"));
+        Administrative administrative = validateInfo(idEmployee);
         return administrativeMapper.toDto(administrative);
     }
 
@@ -75,6 +73,10 @@ public class AdministrativeServiceImpl implements AdministrativeService {
         Administrative administrative = administrativeRepository.findByDocumentNumber(documentNumber)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "No se encontro administrativo asociado al numero de documento " + documentNumber));
+        if (!administrative.getActive()) {
+            throw new IllegalArgumentException(
+                    "El empleado asignado al documento " + documentNumber + " se encientra desahabilitado del sistema");
+        }
         return administrativeMapper.toDto(administrative);
     }
 
