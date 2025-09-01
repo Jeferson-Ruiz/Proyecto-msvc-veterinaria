@@ -35,7 +35,7 @@ public class VetController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findAllVets(){
+    public ResponseEntity<?> findAllVets() {
         List<VetResponseDto> vets = vetService.findAllVet();
         return ResponseEntity.ok(vets);
     }
@@ -46,7 +46,7 @@ public class VetController {
         return ResponseEntity.ok(vet);
     }
 
-    @GetMapping("/document/{idEmployee}")
+    @GetMapping("/document/{documentNumber}")
     public ResponseEntity<?> getVetBydocumentNumber(@PathVariable String documentNumber) {
         VetResponseDto vet = vetService.findAdminByDocumentNumber(documentNumber);
         return ResponseEntity.ok(vet);
