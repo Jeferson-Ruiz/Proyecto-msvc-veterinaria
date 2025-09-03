@@ -3,8 +3,8 @@ package com.jeferson.msvc_sav_workstaff.services;
 import java.util.List;
 import com.jeferson.msvc_sav_workstaff.dto.AdministrativeRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.AdmistrativeResponseDto;
+import com.jeferson.msvc_sav_workstaff.models.AdministrativeRoles;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
-import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 
 public interface AdministrativeService {
 
@@ -22,7 +22,7 @@ public interface AdministrativeService {
 
     void updateContractType(Long idEmployee, ContractType contractType);
     
-    void updateWorkArea(Long idEmployee, WorkArea workArea);
+    void updateRole(Long idEmployee, AdministrativeRoles admiRoles);
 
     void delete (Long idEmployee);
 

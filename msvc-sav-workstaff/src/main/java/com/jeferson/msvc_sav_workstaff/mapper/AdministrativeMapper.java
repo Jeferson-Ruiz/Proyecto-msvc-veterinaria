@@ -12,7 +12,7 @@ import com.jeferson.msvc_sav_workstaff.models.Administrative;
 public interface AdministrativeMapper {
 
     Administrative toEntity(AdministrativeRequestDto dto);
-
+    
     @Mapping(target = "fullName", expression = "java(entity.getName() + \" \" + entity.getLastName())")
     @Mapping(target = "age", expression = "java(calculateAge(entity.getDateOfBirth()))")
     AdmistrativeResponseDto toDto(Administrative entity);

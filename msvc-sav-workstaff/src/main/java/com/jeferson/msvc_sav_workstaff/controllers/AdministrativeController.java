@@ -2,8 +2,8 @@ package com.jeferson.msvc_sav_workstaff.controllers;
 
 import com.jeferson.msvc_sav_workstaff.dto.AdministrativeRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.AdmistrativeResponseDto;
+import com.jeferson.msvc_sav_workstaff.models.AdministrativeRoles;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
-import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 import com.jeferson.msvc_sav_workstaff.services.AdministrativeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,8 +69,8 @@ public class AdministrativeController {
     }
 
     @PatchMapping("/update-area/{idEmployee}")
-    public ResponseEntity<?> updworkArea(@PathVariable Long idEmployee, @RequestBody WorkArea workArea) {
-        adminService.updateWorkArea(idEmployee, workArea);
+    public ResponseEntity<?> updworkArea(@PathVariable Long idEmployee, @RequestBody AdministrativeRoles admiRoles) {
+        adminService.updateRole(idEmployee, admiRoles);
         return ResponseEntity.noContent().build();
     }
 

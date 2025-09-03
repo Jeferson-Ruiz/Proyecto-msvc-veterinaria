@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
-import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +11,7 @@ import com.jeferson.msvc_sav_workstaff.dto.AdministrativeRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.AdmistrativeResponseDto;
 import com.jeferson.msvc_sav_workstaff.mapper.AdministrativeMapper;
 import com.jeferson.msvc_sav_workstaff.models.Administrative;
+import com.jeferson.msvc_sav_workstaff.models.AdministrativeRoles;
 import com.jeferson.msvc_sav_workstaff.repositories.AdministrativeRepository;
 import com.jeferson.msvc_sav_workstaff.repositories.EmployeeRepository;
 
@@ -115,13 +115,13 @@ public class AdministrativeServiceImpl implements AdministrativeService {
 
     @Override
     @Transactional
-    public void updateWorkArea(Long idEmployee, WorkArea workArea) {
+    public void updateRole(Long idEmployee, AdministrativeRoles admiRoles) {
         Administrative administrative = validateInfo(idEmployee);
-        if (administrative.getWorkArea().equals(workArea)) {
+        if (administrative.getAdministrativeRoles().equals(admiRoles)) {
             throw new IllegalArgumentException(
-                    "El area de trabajo " + workArea + " ya se encuentra vinculado al administrativo " + idEmployee);
+                    "El area de trabajo " + admiRoles + " ya se encuentra vinculado al administrativo " + idEmployee);
         }
-        employeeServi.updateWorkArea(idEmployee, workArea);
+        administrativeRepository.updateRole(idEmployee, admiRoles);
     }
 
     @Override
