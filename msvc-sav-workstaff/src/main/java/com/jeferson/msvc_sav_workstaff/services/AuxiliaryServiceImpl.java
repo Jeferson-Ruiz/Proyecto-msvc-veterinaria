@@ -8,8 +8,8 @@ import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryResponseDto;
 import com.jeferson.msvc_sav_workstaff.mapper.AuxiliaryMapper;
 import com.jeferson.msvc_sav_workstaff.models.Auxiliary;
+import com.jeferson.msvc_sav_workstaff.models.AuxiliaryRoles;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
-import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 import com.jeferson.msvc_sav_workstaff.repositories.AuxiliaryRepository;
 import com.jeferson.msvc_sav_workstaff.repositories.EmployeeRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -111,13 +111,13 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
 
     @Override
     @Transactional
-    public void updateWorkArea(Long idEmployee, WorkArea workArea) {
+    public void updateRole(Long idEmployee, AuxiliaryRoles auxiliaryRoles) {
         Auxiliary auxiliary = validateInfo(idEmployee);
-        if (auxiliary.getWorkArea().equals(workArea)) {
+        if (auxiliary.getAuxiliaryRoles().equals(auxiliaryRoles)) {
             throw new IllegalArgumentException(
-                    "El area de trabajo " + workArea + " ya se encuentra vinculado al auxiliar " + idEmployee);
+                    "El area de trabajo " + auxiliaryRoles + " ya se encuentra vinculado al auxiliar " + idEmployee);
         }
-        employeeRespo.updateWorkArea(idEmployee, workArea);
+        auxRepository.updateRole(idEmployee, auxiliaryRoles);
     }
 
     @Override

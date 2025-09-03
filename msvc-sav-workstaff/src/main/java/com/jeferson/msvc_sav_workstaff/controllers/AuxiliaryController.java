@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryResponseDto;
 import com.jeferson.msvc_sav_workstaff.mapper.AuxiliaryMapper;
+import com.jeferson.msvc_sav_workstaff.models.AuxiliaryRoles;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
-import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 import com.jeferson.msvc_sav_workstaff.services.AuxiliaryService;
 
 @RestController
@@ -73,8 +73,8 @@ public class AuxiliaryController {
     }
 
     @PatchMapping("/update-area/{idEmployee}")
-    public ResponseEntity<?> updWorkArea(@PathVariable Long idEmployee, @RequestBody WorkArea workArea) {
-        auxService.updateWorkArea(idEmployee, workArea);
+    public ResponseEntity<?> updWorkArea(@PathVariable Long idEmployee, @RequestBody AuxiliaryRoles auxiliaryRole) {
+        auxService.updateRole(idEmployee, auxiliaryRole);
         return ResponseEntity.noContent().build();
     }
 
