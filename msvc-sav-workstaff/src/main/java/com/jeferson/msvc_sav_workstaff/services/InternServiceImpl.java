@@ -10,7 +10,7 @@ import com.jeferson.msvc_sav_workstaff.dto.InternResponseDto;
 import com.jeferson.msvc_sav_workstaff.dto.InternRequestDto;
 import com.jeferson.msvc_sav_workstaff.mapper.InternMapper;
 import com.jeferson.msvc_sav_workstaff.models.Intern;
-import com.jeferson.msvc_sav_workstaff.models.WorkArea;
+import com.jeferson.msvc_sav_workstaff.models.InternRoles;
 import com.jeferson.msvc_sav_workstaff.repositories.EmployeeRepository;
 import com.jeferson.msvc_sav_workstaff.repositories.InternRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,13 +108,13 @@ public class InternServiceImpl implements InternService {
 
     @Override
     @Transactional
-    public void updateWorkArea(Long idEmployee, WorkArea workArea) {
+    public void updateRoles(Long idEmployee, InternRoles internRoles) {
         Intern intern = validateInfo(idEmployee);
-        if (intern.getWorkArea().equals(workArea)) {
+        if (intern.getInternRoles().equals(internRoles)) {
             throw new IllegalArgumentException(
-                    "El area de trabajo " + workArea + " ya se encuentra asociado al pasante " + idEmployee);
+                    "El area de trabajo " + internRoles + " ya se encuentra asociado al pasante " + idEmployee);
         }
-        employeeRepo.updateWorkArea(idEmployee, workArea);
+        intRepository.updateRole(idEmployee, internRoles);
     }
 
     @Override

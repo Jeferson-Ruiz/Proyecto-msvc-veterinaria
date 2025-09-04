@@ -4,7 +4,7 @@ import java.util.List;
 import com.jeferson.msvc_sav_workstaff.dto.InternResponseDto;
 import com.jeferson.msvc_sav_workstaff.dto.InternRequestDto;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
-import com.jeferson.msvc_sav_workstaff.models.WorkArea;
+import com.jeferson.msvc_sav_workstaff.models.InternRoles;
 
 public interface InternService {
 
@@ -22,7 +22,7 @@ public interface InternService {
 
     void updateContractType(Long idEmployee, ContractType contractType);
 
-    void updateWorkArea(Long idEmployee, WorkArea workArea);
+    void updateRoles(Long idEmployee, InternRoles internRoles);
 
     void delete (Long idEmployee);
 }

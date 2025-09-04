@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.DocumentType;
-import com.jeferson.msvc_sav_workstaff.models.WorkArea;
+import com.jeferson.msvc_sav_workstaff.models.InternRoles;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +26,7 @@ public class InternRequestDto{
     private String email;
     private String phoneNumber;
     private ContractType contractType;
-    private WorkArea workArea;
+    private InternRoles internRoles;
 
     private String educationInstitute;
     private String levelAcademic;

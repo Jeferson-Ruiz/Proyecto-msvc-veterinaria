@@ -15,7 +15,7 @@ import com.jeferson.msvc_sav_workstaff.dto.InternResponseDto;
 import com.jeferson.msvc_sav_workstaff.dto.InternRequestDto;
 import com.jeferson.msvc_sav_workstaff.mapper.InternMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
-import com.jeferson.msvc_sav_workstaff.models.WorkArea;
+import com.jeferson.msvc_sav_workstaff.models.InternRoles;
 import com.jeferson.msvc_sav_workstaff.services.InternService;
 
 @RestController
@@ -71,8 +71,8 @@ public class InternController {
     }
 
     @PatchMapping("/update-area/{idEmployee}")
-    public ResponseEntity<?> updWorkArea(@PathVariable Long idEmployee, @RequestBody WorkArea workArea) {
-        intService.updateWorkArea(idEmployee, workArea);
+    public ResponseEntity<?> updWorkArea(@PathVariable Long idEmployee, @RequestBody InternRoles internRoles) {
+        intService.updateRoles(idEmployee, internRoles);
         return ResponseEntity.noContent().build();
     }
 
