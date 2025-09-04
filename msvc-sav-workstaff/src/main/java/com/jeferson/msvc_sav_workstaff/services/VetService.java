@@ -4,7 +4,7 @@ import java.util.List;
 import com.jeferson.msvc_sav_workstaff.dto.VetRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.VetResponseDto;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
-import com.jeferson.msvc_sav_workstaff.models.WorkArea;
+import com.jeferson.msvc_sav_workstaff.models.VetRoles;
 
 public interface VetService {
     VetResponseDto saveVet(VetRequestDto vetDto);
@@ -21,7 +21,7 @@ public interface VetService {
 
     void updateContractType(Long idEmployee, ContractType contractType);
 
-    void updateWorkArea(Long idEmployee, WorkArea workArea);
+    void updateRole(Long idEmployee, VetRoles vetRoles);
 
     void delete(Long idEmployee);
 }

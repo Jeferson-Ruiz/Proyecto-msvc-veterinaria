@@ -10,7 +10,7 @@ import com.jeferson.msvc_sav_workstaff.dto.VetRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.VetResponseDto;
 import com.jeferson.msvc_sav_workstaff.mapper.VetMapper;
 import com.jeferson.msvc_sav_workstaff.models.Vet;
-import com.jeferson.msvc_sav_workstaff.models.WorkArea;
+import com.jeferson.msvc_sav_workstaff.models.VetRoles;
 import com.jeferson.msvc_sav_workstaff.repositories.EmployeeRepository;
 import com.jeferson.msvc_sav_workstaff.repositories.VetRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -105,12 +105,12 @@ public class VetServiceImpl implements VetService {
 
     @Override
     @Transactional
-    public void updateWorkArea(Long idEmployee, WorkArea workArea){
+    public void updateRole(Long idEmployee, VetRoles vetRoles){
         Vet vet = validateInfo(idEmployee);
-        if (vet.getWorkArea().equals(workArea)) {
-            throw new IllegalArgumentException("El area de trabajo "+ workArea + " ya se encuentra asociado al veterinario "+ idEmployee);
+        if (vet.getVetRoles().equals(vetRoles)) {
+            throw new IllegalArgumentException("El area de trabajo "+ vetRoles + " ya se encuentra asociado al veterinario "+ idEmployee);
         }
-        employeeService.updateWorkArea(idEmployee, workArea);
+        vetRepository.updateRole(idEmployee, vetRoles);
     }
 
     @Override
