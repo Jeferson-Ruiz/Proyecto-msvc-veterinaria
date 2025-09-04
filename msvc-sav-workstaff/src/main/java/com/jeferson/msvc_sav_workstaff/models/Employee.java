@@ -58,11 +58,11 @@ public abstract class Employee {
     @Column(name = "emp_contract_type", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     private ContractType contractType;
-    
-    @Column(name = "emp_work_area", nullable = false)
+
+    @Column(name = "emp_work_area", nullable = true)
     @Enumerated(EnumType.STRING)
     private WorkArea workArea;
-    
+
     @Column(name = "emp_work_status", nullable = false)
     private Boolean active;
 

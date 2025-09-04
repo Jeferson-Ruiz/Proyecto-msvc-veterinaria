@@ -24,21 +24,22 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<EmployeeResponseDto> findAll() {
-        return employeeRespository.findAll().stream()
+        return employeeRespository.findAll().stream().limit(10)
                 .map(employeeMapper::toDto).toList();
     }
 
     @Override
     public EmployeeResponseDto findById(Long idEmployee) {
         Employee employee = employeeRespository.findById(idEmployee)
-            .orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al Id "+ idEmployee));
+                .orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al Id " + idEmployee));
         return employeeMapper.toDto(employee);
     }
 
     @Override
     public EmployeeResponseDto findByDocumentNumber(String documentNumber) {
         Employee employee = employeeRespository.findByDocumentNumber(documentNumber)
-            .orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al N° identificacion "+ documentNumber));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "No se encontro empleado asociado al N° identificacion " + documentNumber));
         return employeeMapper.toDto(employee);
     }
 
@@ -53,6 +54,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public void delete(Long idEmployee) {
         Employee employee = employeeRespository.getReferenceById(idEmployee);
+
+        if (!employee.getActive()) {
+            throw new IllegalArgumentException(
+                    "El empleado " + idEmployee + " ya se encuentra desahabilitado del sistema");
+        }
         employee.setActive(false);
         employeeRespository.save(employee);
     }
@@ -77,7 +83,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public void updateWorkArea(Long idEmployee, WorkArea workArea){
+    public void updateWorkArea(Long idEmployee, WorkArea workArea) {
         employeeRespository.updateWorkArea(idEmployee, workArea);
     }
 
