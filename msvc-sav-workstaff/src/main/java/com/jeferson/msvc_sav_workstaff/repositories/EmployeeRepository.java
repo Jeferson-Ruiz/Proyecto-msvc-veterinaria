@@ -1,6 +1,5 @@
 package com.jeferson.msvc_sav_workstaff.repositories;
 
-import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +13,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     Optional<Employee> findByDocumentNumber(String documentNumber);
 
-    List<Employee> findByWorkArea(WorkArea workArea);
+    @Query("SELECT e FROM Employee e WHERE TYPE(e) = :clazz")
+    List<Employee> findByType(Class<? extends Employee> clazz);
 
     @Modifying
     @Query("update Employee set email=:email where employeeId=:employeeId")
@@ -27,9 +27,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Modifying
     @Query("update Employee set contractType=:contractType where employeeId=:employeeId")
     void updateContractType(@Param("employeeId") Long employeeId, @Param("contractType") ContractType contractType);
-
-    @Modifying
-    @Query("update Employee set workArea=:workArea where employeeId =:employeeId")
-    void updateWorkArea(@Param ("employeeId") Long employeeId, @Param("workArea") WorkArea workArea);
 
 }

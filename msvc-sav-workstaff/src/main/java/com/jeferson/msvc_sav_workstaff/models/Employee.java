@@ -59,10 +59,6 @@ public abstract class Employee {
     @Enumerated(EnumType.STRING)
     private ContractType contractType;
 
-    @Column(name = "emp_work_area", nullable = true)
-    @Enumerated(EnumType.STRING)
-    private WorkArea workArea;
-
     @Column(name = "emp_work_status", nullable = false)
     private Boolean active;
 

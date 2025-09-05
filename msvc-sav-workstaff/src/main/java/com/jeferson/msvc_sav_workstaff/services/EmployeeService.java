@@ -9,11 +9,11 @@ public interface EmployeeService {
 
     List<EmployeeResponseDto> findAll();
 
+    List<EmployeeResponseDto> getEmployeesByType(WorkArea workArea);
+
     EmployeeResponseDto findById(Long idEmployee);
 
     EmployeeResponseDto findByDocumentNumber(String documentNumber);
-
-    List<EmployeeResponseDto> findAllByJobPosition(WorkArea jobPosition);
 
     void delete(Long idEmployee);
 
@@ -23,5 +23,4 @@ public interface EmployeeService {
 
     void updateContractType(Long idEmployee, ContractType contractType);
 
-    void updateWorkArea(Long idEmployee, WorkArea workArea);   
 }

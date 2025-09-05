@@ -42,8 +42,8 @@ public class EmployeeController {
     }
 
     @GetMapping("all/{workArea}")
-    public ResponseEntity<?> getAllEmployeeByJonPosition(@PathVariable WorkArea workArea) {
-        List<EmployeeResponseDto> employeesDto = employeeService.findAllByJobPosition(workArea);
+    public ResponseEntity<?> getAllEmployeesByArea(@PathVariable WorkArea workArea) {
+        List<EmployeeResponseDto> employeesDto = employeeService.getEmployeesByType(workArea);
         return ResponseEntity.ok(employeesDto);
     }
 
