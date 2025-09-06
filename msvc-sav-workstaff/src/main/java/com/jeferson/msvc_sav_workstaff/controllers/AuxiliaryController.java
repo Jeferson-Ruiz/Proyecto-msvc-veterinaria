@@ -40,6 +40,12 @@ public class AuxiliaryController {
         return ResponseEntity.ok(auxiliaries);
     }
 
+    @GetMapping("disabled")
+    public ResponseEntity<?> findAllDisabledAuxiliary() {
+        List<AuxiliaryResponseDto> auxiliaries = auxService.findAllDisabledAuxiliary();
+        return ResponseEntity.ok(auxiliaries);
+    }
+
     @GetMapping("/id/{idEmployee}")
     public ResponseEntity<?> getAuxiliaryById(@PathVariable Long idEmployee) {
         AuxiliaryResponseDto auxiliaryDto = auxService.findById(idEmployee);

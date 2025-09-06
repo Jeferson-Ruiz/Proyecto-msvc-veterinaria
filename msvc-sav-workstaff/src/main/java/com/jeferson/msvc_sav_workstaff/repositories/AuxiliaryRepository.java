@@ -17,6 +17,9 @@ public interface AuxiliaryRepository  extends JpaRepository<Auxiliary, Long> {
     @Query("SELECT a FROM Auxiliary a WHERE a.active")
     List<Auxiliary> findAllActiveAuxiliaries();
 
+    @Query("SELECT a FROM Auxiliary a WHERE a.active = false")
+    List<Auxiliary> findAllDisabledAuxiliaries();
+
     @Modifying
     @Query("update Auxiliary set auxiliaryRoles=:auxiliaryRoles where employeeId =:employeeId")
     void updateRole(@Param ("employeeId") Long employeeId, @Param("auxiliaryRoles") AuxiliaryRoles auxiliaryRoles);

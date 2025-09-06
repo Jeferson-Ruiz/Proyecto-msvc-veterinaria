@@ -59,8 +59,20 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
     }
 
     @Override
+    public List<AuxiliaryResponseDto> findAllDisabledAuxiliary() {
+        List<Auxiliary> auxiliaries = auxRepository.findAllDisabledAuxiliaries();
+        if (auxiliaries.isEmpty()) {
+            throw new EntityNotFoundException("No se encontraron auxiliares desahabilidatos en el sistema");
+        }
+        return auxiliaries.stream()
+                .map(auxMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public AuxiliaryResponseDto findById(Long idEmployee) {
-        Auxiliary auxiliary = validateInfo(idEmployee);
+        Auxiliary auxiliary = auxRepository.findById(idEmployee)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro auxiliar asociado al id " + idEmployee));
         return auxMapper.toDto(auxiliary);
     }
 
@@ -69,10 +81,6 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
         Auxiliary auxiliary = auxRepository.findByDocumentNumber(documentNumber)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "No se encontro veterianio asociado al numero de documento " + documentNumber));
-        if (!auxiliary.getActive()) {
-            throw new IllegalArgumentException(
-                    "El Auxiliar asignado al documento " + documentNumber + " se encuentra desahabilitado del sistema");
-        }
         return auxMapper.toDto(auxiliary);
     }
 
