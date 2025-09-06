@@ -11,6 +11,8 @@ public interface AdministrativeService {
     AdmistrativeResponseDto saveAdministrative(AdministrativeRequestDto administrative);
 
     List<AdmistrativeResponseDto> findAllAdmin();
+
+    List<AdmistrativeResponseDto> findAllAdminDisabled();
     
     AdmistrativeResponseDto findAdminById (Long idEmployee);
     

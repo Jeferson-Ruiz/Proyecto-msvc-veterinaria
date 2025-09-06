@@ -38,6 +38,11 @@ public class AdministrativeController {
         return ResponseEntity.ok(adminService.findAllAdmin());
     }
 
+    @GetMapping("disabled")
+    public ResponseEntity<?> getAllDisabledAdministratives(){
+        return ResponseEntity.ok(adminService.findAllAdminDisabled());
+    }
+
     @GetMapping("/id/{idEmployee}")
     public ResponseEntity<?> getAdministrativeById(@PathVariable Long idEmployee) {
         AdmistrativeResponseDto adminDto = adminService.findAdminById(idEmployee);

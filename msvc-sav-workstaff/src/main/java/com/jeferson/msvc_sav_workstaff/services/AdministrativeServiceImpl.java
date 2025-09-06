@@ -63,8 +63,21 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     }
 
     @Override
+    public List<AdmistrativeResponseDto> findAllAdminDisabled() {
+        List<Administrative> admistratives = administrativeRepository.findAllDisabledAdministrators();
+        if (admistratives.isEmpty()) {
+            throw new EntityNotFoundException("No se encontraron administrativos desahabilidatos en el sistema");
+        }
+        return admistratives.stream()
+                .map(administrativeMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
     public AdmistrativeResponseDto findAdminById(Long idEmployee) {
-        Administrative administrative = validateInfo(idEmployee);
+        Administrative administrative = administrativeRepository.findById(idEmployee)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro administrativo asociado al Id " + idEmployee + " en el sistema"));
         return administrativeMapper.toDto(administrative);
     }
 
@@ -73,10 +86,6 @@ public class AdministrativeServiceImpl implements AdministrativeService {
         Administrative administrative = administrativeRepository.findByDocumentNumber(documentNumber)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "No se encontro administrativo asociado al numero de documento " + documentNumber));
-        if (!administrative.getActive()) {
-            throw new IllegalArgumentException(
-                    "El empleado asignado al documento " + documentNumber + " se encientra desahabilitado del sistema");
-        }
         return administrativeMapper.toDto(administrative);
     }
 
@@ -141,5 +150,6 @@ public class AdministrativeServiceImpl implements AdministrativeService {
         }
         return administrative;
     }
+
 
 }
