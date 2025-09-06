@@ -20,16 +20,21 @@ public class VetResponseDto{
     private String fullName;
     private DocumentType documentType;
     private String documentNumber;
-    private Byte age;
     private String email;
     private String phoneNumber;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private LocalDate dateOfBirth;
+
+    private Byte age;
     private ContractType contractType;
     private VetRoles vetRoles;
+    private String speciality;
+    private String professionalCard;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate registrationDate;
 
-    private String speciality;
-    private String professionalCard;
+    private Boolean active;
 
 }

@@ -20,16 +20,21 @@ public class InternResponseDto {
     private String fullName;
     private DocumentType documentType;
     private String documentNumber;
-    private Byte age;
     private String email;
     private String phoneNumber;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private LocalDate dateOfBirth;
+
+    private Byte age;
     private ContractType contractType;
     private InternRoles internRoles;
+    private String educationInstitute;
+    private String levelAcademic;
+    private String trainingCareer;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate registrationDate;
 
-    private String educationInstitute;
-    private String levelAcademic;
-    private String trainingCareer;
+    private Boolean active;
 }

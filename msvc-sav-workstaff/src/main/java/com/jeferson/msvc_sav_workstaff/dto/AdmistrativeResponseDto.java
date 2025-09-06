@@ -19,16 +19,20 @@ public class AdmistrativeResponseDto {
     private String fullName;
     private DocumentType documentType;
     private String documentNumber;
-    private Byte age;
     private String email;
     private String phoneNumber;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private LocalDate dateOfBirth;
+
+    private Byte age;
     private ContractType contractType;
     private AdministrativeRoles administrativeRoles;
-
+    private String academicTitle;
+    private String professionalCard;
+    
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate registrationDate;
 
-    private String academicTitle;
-    private String professionalCard;
-
+    private Boolean active;
 }

@@ -20,14 +20,20 @@ public class AuxiliaryResponseDto {
     private String fullName;
     private DocumentType documentType;
     private String documentNumber;
-    private Byte age;
     private String email;
     private String phoneNumber;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private LocalDate dateOfBirth;
+
+    private Byte age;
     private ContractType contractType;
     private AuxiliaryRoles auxiliaryRoles;
+    private String academicCertificate;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate registrationDate;
 
-    private String academicCertificate;
+    private Boolean active;
+
 }
