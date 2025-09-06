@@ -48,7 +48,18 @@ public class InternServiceImpl implements InternService {
     public List<InternResponseDto> findAllInter() {
         List<Intern> inters = intRepository.findAllActiveInterns();
         if (inters.isEmpty()) {
-            throw new EntityNotFoundException("No se encuentran empleados vinculados al cardo de pasantes");
+            throw new EntityNotFoundException("No se encuentraron empleados vinculados al cardo de pasantes");
+        }
+        return inters.stream()
+                .map(intMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<InternResponseDto> findAllDisabledInter() {
+        List<Intern> inters = intRepository.findAllDisabledInterns();
+        if (inters.isEmpty()) {
+            throw new EntityNotFoundException("No se encontraron pasantes desahabilidtados en el sistema");
         }
         return inters.stream()
                 .map(intMapper::toDto)
@@ -57,7 +68,8 @@ public class InternServiceImpl implements InternService {
 
     @Override
     public InternResponseDto findById(Long idEmployee) {
-        Intern intern = validateInfo(idEmployee);
+        Intern intern = intRepository.findById(idEmployee)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro pasante asociado al id "+ idEmployee));
         return intMapper.toDto(intern);
     }
 
@@ -66,10 +78,6 @@ public class InternServiceImpl implements InternService {
         Intern intern = intRepository.findByDocumentNumber(documentNumber)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "No se encontro veterianio asociado al numero de documento " + documentNumber));
-        if (!intern.getActive()) {
-            throw new IllegalArgumentException(
-                    "El Pasante asociado al documento " + documentNumber + " se encuentra desahabilitado del sistema");
-        }
         return intMapper.toDto(intern);
     }
 

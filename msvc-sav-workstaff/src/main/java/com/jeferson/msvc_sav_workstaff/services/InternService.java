@@ -12,6 +12,8 @@ public interface InternService {
 
     List<InternResponseDto> findAllInter();
 
+    List<InternResponseDto> findAllDisabledInter();
+
     InternResponseDto findById(Long idEmployee);
     
     InternResponseDto findAdminByDocumentNumber(String documentNumber);

@@ -40,6 +40,12 @@ public class InternController {
         return ResponseEntity.ok(interns);
     }
 
+    @GetMapping("/disabled")
+    public ResponseEntity<?> getAllDisabledInterns() {
+        List<InternResponseDto> interns = intService.findAllDisabledInter();
+        return ResponseEntity.ok(interns);
+    }
+
     @GetMapping("/id/{idEmployee}")
     public ResponseEntity<?> getInternById(@PathVariable Long idEmployee) {
         InternResponseDto intern = intService.findById(idEmployee);
