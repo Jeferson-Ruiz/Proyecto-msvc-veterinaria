@@ -19,6 +19,9 @@ public interface VetRepository extends JpaRepository<Vet, Long> {
     @Query("SELECT v FROM Vet v WHERE v.active")
     List<Vet> findAllActiveVets();
 
+    @Query("SELECT v FROM Vet v WHERE v.active =false")
+    List<Vet> findAllDisabledVets();
+
     @Modifying
     @Query("update Vet set vetRoles=:vetRoles where employeeId =:employeeId")
     void updateRole(@Param("employeeId") Long employeeId, @Param("vetRoles") VetRoles vetRoles);

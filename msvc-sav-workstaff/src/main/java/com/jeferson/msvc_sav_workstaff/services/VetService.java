@@ -11,6 +11,8 @@ public interface VetService {
 
     List<VetResponseDto> findAllVet();
 
+    List<VetResponseDto> findAllDisabledVet();
+
     VetResponseDto findById(Long idEmployee);
 
     VetResponseDto findAdminByDocumentNumber(String documentNumber);

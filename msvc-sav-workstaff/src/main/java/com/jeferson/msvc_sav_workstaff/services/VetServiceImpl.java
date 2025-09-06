@@ -49,7 +49,18 @@ public class VetServiceImpl implements VetService {
     public List<VetResponseDto> findAllVet(){
         List<Vet> vets = vetRepository.findAllActiveVets();
         if (vets.isEmpty()) {
-            throw new EntityNotFoundException("No se encontro empleados al cargo de veterinarios");
+            throw new EntityNotFoundException("No se encontro empleados vinculado al cargo de veterinarios");
+        }
+        return vets.stream()
+            .map(vetMapper::toDto)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<VetResponseDto> findAllDisabledVet(){
+        List<Vet> vets = vetRepository.findAllDisabledVets();
+        if (vets.isEmpty()) {
+            throw new EntityNotFoundException("No se encontraron veterinarios desahabilidtados en el sistema ");
         }
         return vets.stream()
             .map(vetMapper::toDto)
@@ -58,7 +69,8 @@ public class VetServiceImpl implements VetService {
 
     @Override
     public VetResponseDto findById(Long idEmployee){
-        Vet vet = validateInfo(idEmployee);
+        Vet vet = vetRepository.findById(idEmployee)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro veterinario asociado al id "+ idEmployee + " en el sistema"));
         return vetMapper.toDto(vet);
     }
 
@@ -66,10 +78,6 @@ public class VetServiceImpl implements VetService {
     public VetResponseDto findAdminByDocumentNumber(String documentNumber){
         Vet vet = vetRepository.findByDocumentNumber(documentNumber)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro veterianio asociado al numero de documento " + documentNumber));
-
-        if (!vet.getActive()) {
-            throw new IllegalArgumentException("El Veterinario asociado al documento "+ documentNumber +" se encuentra desahabilitado del sistema");
-        }
         return vetMapper.toDto(vet);
     }
 
