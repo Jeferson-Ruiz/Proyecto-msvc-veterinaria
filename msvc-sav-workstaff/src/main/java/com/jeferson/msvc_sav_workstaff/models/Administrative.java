@@ -28,4 +28,9 @@ public class Administrative extends Employee {
     @Column(name = "adm_prof_card", nullable = true, unique = true)
     private String professionalCard;
 
+    @Override
+    public WorkArea getArea() {
+        return WorkArea.ADMINISTRATIVE;
+    }
+
 }

@@ -31,4 +31,9 @@ public class Intern extends Employee {
     @Column(name = "int_training_carrear", nullable = false, length = 40)
     private String trainingCareer;
 
+    @Override
+    public WorkArea getArea() {
+        return WorkArea.INTERN;
+    }
+
 }

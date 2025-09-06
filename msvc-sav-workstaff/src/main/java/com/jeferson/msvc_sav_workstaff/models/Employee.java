@@ -64,4 +64,6 @@ public abstract class Employee {
 
     @Column(name = "emp_registration_date")
     private LocalDate registrationDate;
+
+    public abstract WorkArea getArea();
 }

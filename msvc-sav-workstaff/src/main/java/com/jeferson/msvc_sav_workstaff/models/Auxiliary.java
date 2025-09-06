@@ -25,4 +25,9 @@ public class Auxiliary extends Employee {
     @Column(name = "aux_academic_certificate", nullable = true, length = 50)
     private String academicCertificate;
 
+    @Override
+    public WorkArea getArea() {
+        return WorkArea.AUXILIARY;
+    }
+
 }

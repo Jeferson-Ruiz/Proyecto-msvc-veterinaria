@@ -27,4 +27,10 @@ public class Vet extends Employee {
 
     @Column(name = "vet_prof_card", nullable = false)
     private String professionalCard;
+
+    @Override
+    public WorkArea getArea() {
+        return WorkArea.VET;
+    }
+    
 }
