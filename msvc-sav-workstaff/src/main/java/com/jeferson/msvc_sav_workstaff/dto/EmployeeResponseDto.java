@@ -1,8 +1,5 @@
 package com.jeferson.msvc_sav_workstaff.dto;
 
-import java.time.LocalDate;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.DocumentType;
 import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 import lombok.AllArgsConstructor;
@@ -19,11 +16,8 @@ public class EmployeeResponseDto {
     private String fullName;
     private DocumentType documentType;
     private String documentNumber;
-    private Byte age;
     private String email;
     private String phoneNumber;
-    private ContractType contractType;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private LocalDate registrationDate;
     private WorkArea workArea;
+    private Boolean active;
 }

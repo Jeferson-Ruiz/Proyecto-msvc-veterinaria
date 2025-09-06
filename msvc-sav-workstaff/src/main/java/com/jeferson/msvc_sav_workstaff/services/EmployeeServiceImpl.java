@@ -28,8 +28,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<EmployeeResponseDto> findAll() {
-        return employeeRepository.findAll().stream().limit(10)
+        return employeeRepository.findAllActive().stream().limit(10)
                 .map(employeeMapper::toDto).toList();
+    }
+
+    @Override
+    public List<EmployeeResponseDto> findAllDisabled(){
+        return employeeRepository.findAllDisabled()
+            .stream()
+            .map(employeeMapper::toDto)
+            .toList();
     }
 
     @Override
@@ -77,8 +85,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.save(employee);
     }
 
-
-
     @Override
     @Transactional
     public void updateEmail(Long idEmployee, String email) {
@@ -96,5 +102,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void updateContractType(Long idEmployee, ContractType contractType) {
         employeeRepository.updateContractType(idEmployee, contractType);
     }
+
+
+    
 
 }

@@ -29,6 +29,11 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.findAll());
     }
 
+    @GetMapping("disabled")
+    public ResponseEntity<List<EmployeeResponseDto>> getAllDisabled(){
+        return ResponseEntity.ok(employeeService.findAllDisabled());
+    }
+
     @GetMapping("id/{idEmployee}")
     public ResponseEntity<?> getEmployeeById(@PathVariable Long idEmployee) {
         EmployeeResponseDto employeeDto = employeeService.findById(idEmployee);

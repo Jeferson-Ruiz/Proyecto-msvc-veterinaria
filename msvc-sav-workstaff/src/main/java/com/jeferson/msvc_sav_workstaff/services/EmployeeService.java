@@ -9,6 +9,8 @@ public interface EmployeeService {
 
     List<EmployeeResponseDto> findAll();
 
+    List<EmployeeResponseDto> findAllDisabled();
+
     List<EmployeeResponseDto> getEmployeesByType(WorkArea workArea);
 
     EmployeeResponseDto findById(Long idEmployee);

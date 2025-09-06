@@ -11,6 +11,12 @@ import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
+    @Query("SELECT e FROM Employee e WHERE e.active")
+    List<Employee> findAllActive();
+
+    @Query("SELECT e FROM Employee e WHERE e.active = false")
+    List<Employee> findAllDisabled();
+
     Optional<Employee> findByDocumentNumber(String documentNumber);
 
     @Query("SELECT e FROM Employee e WHERE TYPE(e) = :clazz")

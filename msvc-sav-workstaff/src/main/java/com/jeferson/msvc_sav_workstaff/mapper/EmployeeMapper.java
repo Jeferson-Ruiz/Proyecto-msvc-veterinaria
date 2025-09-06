@@ -11,7 +11,6 @@ import com.jeferson.msvc_sav_workstaff.models.Employee;
 public interface EmployeeMapper {
 
     @Mapping(target = "fullName", expression = "java(entity.getName() + \" \" + entity.getLastName())")
-    @Mapping(target = "age", expression = "java(calculateAge(entity.getDateOfBirth()))")
     @Mapping(target = "workArea", expression = "java(entity.getArea())")
     EmployeeResponseDto toDto(Employee entity);
 
