@@ -47,6 +47,13 @@ public class VetController {
         return ResponseEntity.ok(vets);
     }
 
+    @GetMapping("/allrole/{vetRole}")
+    public ResponseEntity<?> findAllByRole(@PathVariable VetRoles vetRole){
+        List<VetResponseDto> vets = vetService.findAllByRole(vetRole);
+        return ResponseEntity.ok(vets);
+    }
+
+
     @GetMapping("/id/{idEmployee}")
     public ResponseEntity<?> getVetById(@PathVariable Long idEmployee) {
         VetResponseDto vet = vetService.findById(idEmployee);

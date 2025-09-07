@@ -36,7 +36,7 @@ public class VetServiceImpl implements VetService {
             throw new RuntimeException("El documento "+ vetDto.getDocumentNumber()+" ya se encuentra vinculado a un empleado");
         }
         Vet entity = vetMapper.toEntity(vetDto);
-        if (vetRepository.existsByProfessionalCard(entity.getProfessionalCard())) {
+        if (vetRepository.existsByProfessionalCard(entity.getProfessionalCard()) && !entity.getProfessionalCard().isEmpty()) {
             throw new IllegalArgumentException("La tarjeta profesional "+ entity.getProfessionalCard() +" ya se encuentra asociado a un veterinario");
         }
         entity.setRegistrationDate(LocalDate.now());
@@ -65,6 +65,18 @@ public class VetServiceImpl implements VetService {
         return vets.stream()
             .map(vetMapper::toDto)
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<VetResponseDto> findAllByRole(VetRoles vetRole){
+        List<Vet> vets = vetRepository.findAllByRole(vetRole);
+
+        if (vets.isEmpty()) {
+            throw new EntityNotFoundException("No se encontraron veterinarios asociados al rol de "+ vetRole);
+        }
+        return vets.stream()
+            .map(vetMapper::toDto)
+            .toList();
     }
 
     @Override

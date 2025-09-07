@@ -12,6 +12,8 @@ public interface VetService {
     List<VetResponseDto> findAllVet();
 
     List<VetResponseDto> findAllDisabledVet();
+    
+    List<VetResponseDto> findAllByRole(VetRoles vetRole);
 
     VetResponseDto findById(Long idEmployee);
 

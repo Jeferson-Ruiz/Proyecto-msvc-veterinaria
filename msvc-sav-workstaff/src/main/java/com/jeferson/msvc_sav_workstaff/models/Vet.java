@@ -25,7 +25,7 @@ public class Vet extends Employee {
     @Column(name = "vet_speciality", nullable = true,  length = 20)
     private String speciality;
 
-    @Column(name = "vet_prof_card", nullable = false)
+    @Column(name = "vet_prof_card", nullable = false, unique = true)
     private String professionalCard;
 
     @Override
