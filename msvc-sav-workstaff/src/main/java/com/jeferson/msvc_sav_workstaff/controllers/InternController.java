@@ -46,6 +46,12 @@ public class InternController {
         return ResponseEntity.ok(interns);
     }
 
+    @GetMapping("/allrole/{internRole}")
+    public ResponseEntity<?> getAllByRole(@PathVariable InternRoles internRole){
+        List<InternResponseDto> interns = intService.findAllByRole(internRole);
+        return ResponseEntity.ok(interns);
+    }
+
     @GetMapping("/id/{idEmployee}")
     public ResponseEntity<?> getInternById(@PathVariable Long idEmployee) {
         InternResponseDto intern = intService.findById(idEmployee);

@@ -19,6 +19,9 @@ public interface InternRepository extends JpaRepository<Intern, Long> {
     @Query("SELECT i FROM Intern i WHERE i.active =false")
     List<Intern> findAllDisabledInterns();
 
+    @Query("SELECT i FROM Intern i WHERE i.internRoles =:internRole AND i.active")
+    List<Intern> findAllByRole(@Param("internRole") InternRoles internRole);
+
     @Modifying
     @Query("update Intern set internRoles=:internRoles where employeeId =:employeeId")
     void updateRole(@Param("employeeId") Long employeeId, @Param("internRoles") InternRoles internRoles);

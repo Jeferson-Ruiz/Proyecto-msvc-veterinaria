@@ -13,6 +13,8 @@ public interface InternService {
     List<InternResponseDto> findAllInter();
 
     List<InternResponseDto> findAllDisabledInter();
+    
+    List<InternResponseDto> findAllByRole(InternRoles internRole);
 
     InternResponseDto findById(Long idEmployee);
     

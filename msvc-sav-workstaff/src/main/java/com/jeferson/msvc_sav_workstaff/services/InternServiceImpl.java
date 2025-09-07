@@ -67,6 +67,17 @@ public class InternServiceImpl implements InternService {
     }
 
     @Override
+    public List<InternResponseDto> findAllByRole(InternRoles internRole){
+        List<Intern> interns = intRepository.findAllByRole(internRole);
+        if (interns.isEmpty()) {
+            throw new EntityNotFoundException("No se encontraron pasante asociados al rol de "+ internRole);
+        }
+        return interns.stream()
+            .map(intMapper::toDto)
+            .toList();
+    }
+
+    @Override
     public InternResponseDto findById(Long idEmployee) {
         Intern intern = intRepository.findById(idEmployee)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro pasante asociado al id "+ idEmployee));
