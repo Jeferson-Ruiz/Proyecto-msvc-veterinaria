@@ -14,6 +14,8 @@ public interface AuxiliaryService {
 
     List<AuxiliaryResponseDto> findAllDisabledAuxiliary();
 
+    List<AuxiliaryResponseDto> findAllByRoles(AuxiliaryRoles auxiliaryRole);
+
     AuxiliaryResponseDto findById(Long idEmployee);
 
     AuxiliaryResponseDto findAdminByDocumentNumber(String documentNumber);

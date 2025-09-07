@@ -70,6 +70,17 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
     }
 
     @Override
+    public List<AuxiliaryResponseDto> findAllByRoles(AuxiliaryRoles auxiliaryRole){
+        List<Auxiliary> auxiliaries = auxRepository.findByRoles(auxiliaryRole);
+        if (auxiliaries.isEmpty()) {
+            throw new EntityNotFoundException("No se encontraron auxiliaries asociados al rol de "+ auxiliaryRole);
+        }
+        return auxiliaries.stream()
+            .map(auxMapper::toDto)
+            .toList();
+    }
+
+    @Override
     public AuxiliaryResponseDto findById(Long idEmployee) {
         Auxiliary auxiliary = auxRepository.findById(idEmployee)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro auxiliar asociado al id " + idEmployee));

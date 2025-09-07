@@ -35,16 +35,24 @@ public class AuxiliaryController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findAllAuxiliary() {
+    public ResponseEntity<?> getAllAuxiliary() {
         List<AuxiliaryResponseDto> auxiliaries = auxService.findAllAuxiliary();
         return ResponseEntity.ok(auxiliaries);
     }
 
-    @GetMapping("disabled")
-    public ResponseEntity<?> findAllDisabledAuxiliary() {
+    @GetMapping("/disabled")
+    public ResponseEntity<?> getAllDisabledAuxiliary() {
         List<AuxiliaryResponseDto> auxiliaries = auxService.findAllDisabledAuxiliary();
         return ResponseEntity.ok(auxiliaries);
     }
+
+
+    @GetMapping("/allrole/{auxiliaryRole}")
+    public ResponseEntity<?> getAllByRole(@PathVariable AuxiliaryRoles auxiliaryRole){
+        List<AuxiliaryResponseDto> auxiliaries = auxService.findAllByRoles(auxiliaryRole);
+        return ResponseEntity.ok(auxiliaries);
+    }
+
 
     @GetMapping("/id/{idEmployee}")
     public ResponseEntity<?> getAuxiliaryById(@PathVariable Long idEmployee) {
