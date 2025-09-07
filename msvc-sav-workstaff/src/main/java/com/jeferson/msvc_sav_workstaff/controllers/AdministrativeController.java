@@ -38,9 +38,14 @@ public class AdministrativeController {
         return ResponseEntity.ok(adminService.findAllAdmin());
     }
 
-    @GetMapping("disabled")
+    @GetMapping("/disabled")
     public ResponseEntity<?> getAllDisabledAdministratives(){
         return ResponseEntity.ok(adminService.findAllAdminDisabled());
+    }
+
+    @GetMapping("/allrole/{administrativeRole}")
+    public ResponseEntity<?> getAllbyRoles(@PathVariable AdministrativeRoles administrativeRole){
+        return ResponseEntity.ok(adminService.findAllByRole(administrativeRole));
     }
 
     @GetMapping("/id/{idEmployee}")

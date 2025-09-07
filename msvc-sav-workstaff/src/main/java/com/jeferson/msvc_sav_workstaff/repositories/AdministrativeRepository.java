@@ -20,6 +20,9 @@ public interface AdministrativeRepository extends JpaRepository<Administrative, 
     @Query("SELECT a FROM Administrative a WHERE a.active = false")
     List<Administrative> findAllDisabledAdministrators();
 
+    @Query("SELECT a FROM Administrative a WHERE a.administrativeRoles =:administrativeRoles AND a.active")
+    List<Administrative> findAllByRoles(@Param("administrativeRoles") AdministrativeRoles administrativeRoles);
+
     Boolean existsByProfessionalCard(String professionalCard);
 
     @Modifying

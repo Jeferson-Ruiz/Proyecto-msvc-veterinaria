@@ -13,6 +13,8 @@ public interface AdministrativeService {
     List<AdmistrativeResponseDto> findAllAdmin();
 
     List<AdmistrativeResponseDto> findAllAdminDisabled();
+
+    List<AdmistrativeResponseDto> findAllByRole(AdministrativeRoles administrativeRole);
     
     AdmistrativeResponseDto findAdminById (Long idEmployee);
     

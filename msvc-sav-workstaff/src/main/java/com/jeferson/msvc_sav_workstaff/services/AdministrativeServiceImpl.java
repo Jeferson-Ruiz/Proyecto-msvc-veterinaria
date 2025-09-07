@@ -40,11 +40,17 @@ public class AdministrativeServiceImpl implements AdministrativeService {
             throw new RuntimeException("El documento " + administrativeDto.getDocumentNumber()
                     + " ya se encuentra vinculado a un empleado");
         }
+
         Administrative entity = administrativeMapper.toEntity(administrativeDto);
-        if (administrativeRepository.existsByProfessionalCard(entity.getProfessionalCard())) {
+        if (administrativeRepository.existsByProfessionalCard(entity.getProfessionalCard()) && !entity.getProfessionalCard().isEmpty() ) {
             throw new IllegalArgumentException("La tarjeta profesional " + administrativeDto.getProfessionalCard()
                     + " ya se encuentra vinculado en el sistema");
         }
+
+        if (entity.getProfessionalCard().isEmpty()) {
+            entity.setProfessionalCard(null);
+        }
+
         entity.setRegistrationDate(LocalDate.now());
         entity.setActive(true);
         Administrative saved = employeeRepo.save(entity);
@@ -73,6 +79,17 @@ public class AdministrativeServiceImpl implements AdministrativeService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<AdmistrativeResponseDto> findAllByRole(AdministrativeRoles administrativeRole){
+        List<Administrative> administratives = administrativeRepository.findAllByRoles(administrativeRole);
+
+        if (administratives.isEmpty()) {
+            throw new EntityNotFoundException("No se encontro empelados asociados al rol de " + administrativeRole);    
+        }
+        return administratives.stream()
+            .map(administrativeMapper::toDto)
+            .toList();
+    }
 
     @Override
     public AdmistrativeResponseDto findAdminById(Long idEmployee) {
