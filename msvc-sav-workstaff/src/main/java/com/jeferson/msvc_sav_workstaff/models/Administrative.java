@@ -25,7 +25,7 @@ public class Administrative extends Employee {
     @Column(name = "adm_academic_title", length = 30, nullable = false)
     private String academicTitle;
 
-    @Column(name = "adm_prof_card", nullable = true, unique = true)
+    @Column(name = "adm_prof_card", nullable = true, unique = true, length = 20)
     private String professionalCard;
 
     @Override

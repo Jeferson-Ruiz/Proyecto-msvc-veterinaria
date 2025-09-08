@@ -5,6 +5,7 @@ import com.jeferson.msvc_sav_workstaff.dto.AdmistrativeResponseDto;
 import com.jeferson.msvc_sav_workstaff.models.AdministrativeRoles;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.services.AdministrativeService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,7 +29,7 @@ public class AdministrativeController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveInfoAdministrative(@RequestBody AdministrativeRequestDto administrative) {
+    public ResponseEntity<?> saveInfoAdministrative(@Valid @RequestBody AdministrativeRequestDto administrative) {
         AdmistrativeResponseDto administrativeDto =  adminService.saveAdministrative(administrative);
         return ResponseEntity.status(HttpStatus.CREATED).body(administrativeDto);
     }
