@@ -18,6 +18,8 @@ import com.jeferson.msvc_sav_workstaff.models.AuxiliaryRoles;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.services.AuxiliaryService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("api/sav/employee/auxiliary")
 public class AuxiliaryController {
@@ -29,7 +31,7 @@ public class AuxiliaryController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveInfoAuxiliary(@RequestBody AuxiliaryRequestDto auxiliaryDto) {
+    public ResponseEntity<?> saveInfoAuxiliary(@Valid @RequestBody AuxiliaryRequestDto auxiliaryDto) {
         AuxiliaryResponseDto auxiliary = auxService.saveAuxiliary(auxiliaryDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(auxiliary);
     }
