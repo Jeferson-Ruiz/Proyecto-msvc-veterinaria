@@ -18,6 +18,8 @@ import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.InternRoles;
 import com.jeferson.msvc_sav_workstaff.services.InternService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("api/sav/employee/intern")
 public class InternController {
@@ -29,7 +31,7 @@ public class InternController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveInfoIntern(@RequestBody InternRequestDto internDto) {
+    public ResponseEntity<?> saveInfoIntern(@Valid @RequestBody InternRequestDto internDto) {
         InternResponseDto intern = intService.saveIntern(internDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(intern);
     }
