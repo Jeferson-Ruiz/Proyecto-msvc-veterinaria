@@ -17,6 +17,7 @@ import com.jeferson.msvc_sav_workstaff.mapper.VetMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.VetRoles;
 import com.jeferson.msvc_sav_workstaff.services.VetService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("api/sav/employee/vet")
@@ -29,7 +30,7 @@ public class VetController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveInfoVet(@RequestBody VetRequestDto vetDto) {
+    public ResponseEntity<?> saveInfoVet(@Valid @RequestBody VetRequestDto vetDto) {
         VetResponseDto vet = vetService.saveVet(vetDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(vet);
     }
