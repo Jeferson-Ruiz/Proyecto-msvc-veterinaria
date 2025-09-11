@@ -29,7 +29,7 @@ public class Consultation {
     @Column(name = "id_consultation", unique = true)
     private Long idConsultation;
 
-    @Column(name = "con_reason", nullable = false, length = 20)
+    @Column(name = "con_reason", nullable = false, length = 50)
     private String reason;
 
     @Column(name = "con_date", nullable = false)
@@ -38,7 +38,7 @@ public class Consultation {
     @Column(name = "con_citation_date", nullable = false)
     private LocalDateTime citationDate;
 
-    @Column(name = "con_observation", length = 30)
+    @Column(name = "con_observation", length = 255)
     private String observations;
 
     @Column(name = "con_veterinary_id", nullable = false)

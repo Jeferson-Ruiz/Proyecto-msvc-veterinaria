@@ -1,12 +1,12 @@
 package com.jr.sav_mvsc_medicalcontrol.services;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationRequestDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationReponseDto;
 import com.jr.sav_mvsc_medicalcontrol.mapper.ConsultationMapper;
 import com.jr.sav_mvsc_medicalcontrol.models.Consultation;
@@ -35,7 +35,11 @@ public class ConsultationServiceImpl implements ConsultationService {
 
     @Override
     public List<ConsultationReponseDto> findAllConsultations() {
-        return consultationRepository.findAll().stream()
+        List<Consultation> consultations = consultationRepository.findAll();
+        if (consultations.isEmpty()) {
+            throw new EntityNotFoundException("No se encuentran consultas asociadas en el sistema");
+        }
+        return consultations.stream()
                 .map(consultationMapper::toDto).toList();
     }
 
@@ -48,36 +52,30 @@ public class ConsultationServiceImpl implements ConsultationService {
     }
 
     @Override
-    public ConsultationReponseDto saveConsultation(ConsultationDto consultationDto) {
+    public ConsultationReponseDto saveConsultation(ConsultationRequestDto consultationDto) {
         Pet pet = petRepository.findById(consultationDto.getIdPet())
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new EntityNotFoundException(
                         "No se puede generar una consulta para la mascota " + consultationDto.getIdPet()));
 
         if (!pet.getActive()) {
-            throw new RuntimeException("No se puede generar una consuta el paciente " + consultationDto.getIdPet()
+            throw new IllegalArgumentException("No se puede generar una consuta el paciente " + consultationDto.getIdPet()
                     + " se encuentra desactivado");
         }
-
         LocalTime dateTime = consultationDto.getCitationDate().toLocalTime();
         validarHora(dateTime);
 
         Consultation consultation = consultationMapper.toEntity(consultationDto);
         consultation.setPet(pet);
         consultation.setRegistrationDate(LocalDateTime.now());
-        Consultation savedConsultation = consultationRepository.save(consultation);
-        return consultationMapper.toDto(savedConsultation);
+
+        if (consultation.getCitationDate().toLocalDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("La fecha de la cita no puede ser inferior a la de registro");
+        }
+        return consultationMapper.toDto(consultationRepository.save(consultation));
     }
 
     @Override
-    public ConsultationReponseDto findConsultationByIdPet(Long idPet) {
-        Consultation consultatio = consultationRepository.findFirstByPetIdPetOrderByCitationDateDesc(idPet)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "No existe consulta asociada al paciente con el Id: " + idPet + " en el sistema"));
-        return consultationMapper.toDto(consultatio);
-    }
-
-    @Override
-    public List<ConsultationReponseDto> findAllConsultationById(Long idPet) {
+    public List<ConsultationReponseDto> findAllConsultationByIdPet(Long idPet) {
         List<Consultation> consultations = consultationRepository.findAllByIdPet(idPet);
         if (consultations.isEmpty()) {
             throw new EntityNotFoundException("No se encontraron consultas asociadas al paciente " + idPet);

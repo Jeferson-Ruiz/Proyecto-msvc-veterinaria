@@ -1,7 +1,7 @@
 package com.jr.sav_mvsc_medicalcontrol.controllers;
 
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationDateUpdate;
-import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationRequestDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationReponseDto;
 import com.jr.sav_mvsc_medicalcontrol.services.ConsultationService;
 import org.springframework.http.HttpStatus;
@@ -31,21 +31,14 @@ public class ConsultationController {
     }
     
     @PostMapping
-    public ResponseEntity<?> saveInfoConsultation(@RequestBody ConsultationDto consultationDto) {
+    public ResponseEntity<?> saveInfoConsultation(@RequestBody ConsultationRequestDto consultationDto) {
         ConsultationReponseDto savedConsultation = consultationService.saveConsultation(consultationDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedConsultation);
     }
 
-    // Deve retorna la ultima
-    @GetMapping("/idpet/{idPet}")
-    public ResponseEntity<?> getLastConsultationByIdPet(@PathVariable Long idPet){
-        ConsultationReponseDto consultation = consultationService.findConsultationByIdPet(idPet);
-        return ResponseEntity.ok(consultation);
-    }
-
     @GetMapping("/all/pet/{idPet}")
     public ResponseEntity<?> getAllConsultationsByIdPet(@PathVariable Long idPet){
-        List<ConsultationReponseDto> consultations = consultationService.findAllConsultationById(idPet);
+        List<ConsultationReponseDto> consultations = consultationService.findAllConsultationByIdPet(idPet);
         return ResponseEntity.ok(consultations);
     }
 

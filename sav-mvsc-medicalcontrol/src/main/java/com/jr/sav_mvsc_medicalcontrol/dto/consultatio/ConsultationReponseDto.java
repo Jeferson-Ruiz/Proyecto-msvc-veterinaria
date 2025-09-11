@@ -2,13 +2,11 @@ package com.jr.sav_mvsc_medicalcontrol.dto.consultatio;
 
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Setter
+@Getter
 public class ConsultationReponseDto {
     private Long idConsultation;
     private Long idPet;

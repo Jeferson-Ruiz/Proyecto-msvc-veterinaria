@@ -1,21 +1,27 @@
 package com.jr.sav_mvsc_medicalcontrol.dto.consultatio;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class ConsultationDto {
+@Getter
+@Setter
+public class ConsultationRequestDto {
+    @NotNull
     private Long idPet;
+
+    @NotBlank
     private String reason;
     
+    @NotBlank
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime citationDate;
 
     private String observations;
+
+    @NotNull
     private Long veterinaryId;
 }
