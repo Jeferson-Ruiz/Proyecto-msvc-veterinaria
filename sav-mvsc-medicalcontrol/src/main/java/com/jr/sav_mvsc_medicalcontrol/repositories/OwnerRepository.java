@@ -10,11 +10,11 @@ import com.jr.sav_mvsc_medicalcontrol.models.Owner;
 
 public interface OwnerRepository extends JpaRepository<Owner, Long>{
     
-    Optional<Owner> findByDocumentNumber(Long documentNumber);
+    Optional<Owner> findByDocumentNumber(String documentNumber);
 
     @Modifying
     @Query("update Owner set phoneNumber=:phoneNumber where idOwner=:idOwner")
-    void updatePhoneNumber(@Param("idOwner") Long idOwner, @Param("phoneNumber") Long phoneNumber);
+    void updatePhoneNumber(@Param("idOwner") Long idOwner, @Param("phoneNumber") String phoneNumber);
 
     @Modifying
     @Query("update Owner set email=:email where idOwner=:idOwner")

@@ -14,5 +14,5 @@ public class PetRequestDto {
     private String breed;
     private String sex;
     private LocalDate dateOfBirth;
-    private Long documentNumber;
+    private String documentNumber;
 }

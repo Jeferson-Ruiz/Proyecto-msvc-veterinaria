@@ -34,13 +34,13 @@ public class Owner {
     private String documentType;
 
     @Column(name = "owner_documt_number", nullable = false)
-    private Long documentNumber;
+    private String documentNumber;
 
     @Column(name = "owner_email", nullable = false, length = 50)
     private String email;
 
     @Column(name = "owner_phone_number", nullable = false)
-    private Long phoneNumber;
+    private String phoneNumber;
 
     @Column(name = "owner_data_of_recording", nullable = false)
     private LocalDate dateOfRecording;
