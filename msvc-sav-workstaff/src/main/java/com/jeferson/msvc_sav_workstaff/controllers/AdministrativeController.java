@@ -3,6 +3,7 @@ package com.jeferson.msvc_sav_workstaff.controllers;
 import com.jeferson.msvc_sav_workstaff.dto.AdministrativeRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.AdmistrativeResponseDto;
 import com.jeferson.msvc_sav_workstaff.dto.EmailRequestDto;
+import com.jeferson.msvc_sav_workstaff.dto.PhoneNumberRequestDto;
 import com.jeferson.msvc_sav_workstaff.models.AdministrativeRoles;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.services.AdministrativeService;
@@ -69,8 +70,8 @@ public class AdministrativeController {
     }
 
     @PatchMapping("/update-number/{idEmployee}")
-    public ResponseEntity<?> updInfoNumberPhone(@PathVariable Long idEmployee, @RequestBody String PhoneNumber) {
-        adminService.updateNumberPhone(idEmployee, PhoneNumber);
+    public ResponseEntity<?> updInfoNumberPhone(@PathVariable Long idEmployee, @Valid @RequestBody PhoneNumberRequestDto request) {
+        adminService.updateNumberPhone(idEmployee, request.getPhoneNumber());
         return ResponseEntity.noContent().build();
     }
 

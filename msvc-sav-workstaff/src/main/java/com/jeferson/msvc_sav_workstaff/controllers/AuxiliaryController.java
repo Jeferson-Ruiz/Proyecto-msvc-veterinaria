@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryResponseDto;
 import com.jeferson.msvc_sav_workstaff.dto.EmailRequestDto;
+import com.jeferson.msvc_sav_workstaff.dto.PhoneNumberRequestDto;
 import com.jeferson.msvc_sav_workstaff.mapper.AuxiliaryMapper;
 import com.jeferson.msvc_sav_workstaff.models.AuxiliaryRoles;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.services.AuxiliaryService;
-
 import jakarta.validation.Valid;
 
 @RestController
@@ -77,8 +77,8 @@ public class AuxiliaryController {
     }
 
     @PatchMapping("/update-number/{idEmployee}")
-    public ResponseEntity<?> uptInfoPhoneNumber(@PathVariable Long idEmployee, @RequestBody String phoneNumber) {
-        auxService.updatePhoneNumber(idEmployee, phoneNumber);
+    public ResponseEntity<?> uptInfoPhoneNumber(@PathVariable Long idEmployee, @Valid @RequestBody PhoneNumberRequestDto request) {
+        auxService.updatePhoneNumber(idEmployee, request.getPhoneNumber());
         return ResponseEntity.noContent().build();
     }
 
