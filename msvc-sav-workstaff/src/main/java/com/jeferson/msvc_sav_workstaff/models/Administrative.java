@@ -22,7 +22,7 @@ public class Administrative extends Employee {
     @Enumerated(EnumType.STRING)
     private AdministrativeRoles administrativeRoles;
 
-    @Column(name = "adm_academic_title", length = 30, nullable = false)
+    @Column(name = "adm_academic_title", length = 40, nullable = false)
     private String academicTitle;
 
     @Column(name = "adm_prof_card", nullable = true, unique = true, length = 20)

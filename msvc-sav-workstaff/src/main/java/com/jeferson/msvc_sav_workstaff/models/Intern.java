@@ -22,7 +22,7 @@ public class Intern extends Employee {
     @Enumerated(EnumType.STRING)
     private InternRoles internRoles;
 
-    @Column(name = "int_education_institute", nullable = false, length = 30)
+    @Column(name = "int_education_institute", nullable = false, length = 80)
     private String educationInstitute;
 
     @Column(name = "int_level_academic", nullable = false, length = 20)

@@ -40,7 +40,7 @@ public abstract class Employee {
     private String lastName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "emp_docu_type", nullable = false, length = 20)
+    @Column(name = "emp_docu_type", nullable = false)
     private DocumentType documentType;
 
     @Column(name = "emp_docu_number", nullable = false, unique = true)
@@ -52,10 +52,10 @@ public abstract class Employee {
     @Column(name = "emp_email", nullable = false, length = 50)
     private String email;
 
-    @Column(name = "emp_phone_number", nullable = false)
+    @Column(name = "emp_phone_number", nullable = false, length = 10)
     private String phoneNumber;
 
-    @Column(name = "emp_contract_type", nullable = false, length = 20)
+    @Column(name = "emp_contract_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private ContractType contractType;
     
