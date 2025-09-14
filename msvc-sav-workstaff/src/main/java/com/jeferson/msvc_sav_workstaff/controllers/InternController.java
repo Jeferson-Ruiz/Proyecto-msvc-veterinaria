@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc_sav_workstaff.dto.InternResponseDto;
+import com.jeferson.msvc_sav_workstaff.dto.EmailRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.InternRequestDto;
 import com.jeferson.msvc_sav_workstaff.mapper.InternMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
@@ -67,8 +68,8 @@ public class InternController {
     }
 
     @PatchMapping("/update-email/{idEmployee}")
-    public ResponseEntity<?> updInfoEmail(@PathVariable Long idEmployee, @RequestBody String email) {
-        intService.updateEmail(idEmployee, email);
+    public ResponseEntity<?> updInfoEmail(@PathVariable Long idEmployee, @Valid @RequestBody EmailRequestDto request) {
+        intService.updateEmail(idEmployee, request.getEmail());
         return ResponseEntity.noContent().build();
     }
 

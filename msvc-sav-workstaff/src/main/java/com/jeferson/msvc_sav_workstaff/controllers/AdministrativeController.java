@@ -2,6 +2,7 @@ package com.jeferson.msvc_sav_workstaff.controllers;
 
 import com.jeferson.msvc_sav_workstaff.dto.AdministrativeRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.AdmistrativeResponseDto;
+import com.jeferson.msvc_sav_workstaff.dto.EmailRequestDto;
 import com.jeferson.msvc_sav_workstaff.models.AdministrativeRoles;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.services.AdministrativeService;
@@ -62,8 +63,8 @@ public class AdministrativeController {
     }
 
     @PatchMapping("/update-email/{idEmployee}")
-    public ResponseEntity<?> updInfoEmail(@PathVariable Long idEmployee, @RequestBody String email) {
-        adminService.updateEmail(idEmployee, email);
+    public ResponseEntity<?> updInfoEmail(@PathVariable Long idEmployee, @Valid @RequestBody EmailRequestDto request) {
+        adminService.updateEmail(idEmployee, request.getEmail());
         return ResponseEntity.noContent().build();
     }
 

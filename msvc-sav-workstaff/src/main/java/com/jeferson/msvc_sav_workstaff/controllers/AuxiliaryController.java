@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryResponseDto;
+import com.jeferson.msvc_sav_workstaff.dto.EmailRequestDto;
 import com.jeferson.msvc_sav_workstaff.mapper.AuxiliaryMapper;
 import com.jeferson.msvc_sav_workstaff.models.AuxiliaryRoles;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
@@ -70,8 +71,8 @@ public class AuxiliaryController {
     }
 
     @PatchMapping("/update-email/{idEmployee}")
-    public ResponseEntity<?> uptInfoEmail(@PathVariable Long idEmployee, @RequestBody String email) {
-        auxService.updateEmail(idEmployee, email);
+    public ResponseEntity<?> uptInfoEmail(@PathVariable Long idEmployee, @Valid @RequestBody EmailRequestDto request) {
+        auxService.updateEmail(idEmployee, request.getEmail());
         return ResponseEntity.noContent().build();
     }
 
