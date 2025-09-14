@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetRequestDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetWithOwnerResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.services.PetService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("api/sav/pet")
@@ -28,7 +28,7 @@ public class PetController {
     }
     
     @PostMapping
-    public ResponseEntity<?> saveInfoPet(@RequestBody PetRequestDto petDto) {
+    public ResponseEntity<?> saveInfoPet(@Valid @RequestBody PetRequestDto petDto) {
         PetWithOwnerResponseDto petCreated = petService.savePet(petDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(petCreated);
@@ -56,15 +56,15 @@ public class PetController {
     }
 
     @GetMapping("/owner/{ownerNumber}")
-    public ResponseEntity<?> getPetAndOwnerByNameAndDocument(@PathVariable Long ownerNumber,
+    public ResponseEntity<?> getPetAndOwnerByNameAndDocument(@PathVariable String ownerNumber,
             @RequestParam String name) {
         PetWithOwnerResponseDto petDto = petService.findByNameAndOwnerNumber(name, ownerNumber);
         return ResponseEntity.ok(petDto);
     }
 
     @GetMapping("/owner/document/{documentNumber}")
-    public ResponseEntity<?> getPetsByOwnerDocument(@PathVariable Long documentNumber) {
-        List<PetResponseDto> petDto = petService.findPetsByOwner(documentNumber);
+    public ResponseEntity<?> getPetsByOwnerDocument(@PathVariable String documentNumber) {
+        List<PetResponseDto> petDto = petService.findPetsByOwnerDocument(documentNumber);
         return ResponseEntity.ok(petDto);
     }
 

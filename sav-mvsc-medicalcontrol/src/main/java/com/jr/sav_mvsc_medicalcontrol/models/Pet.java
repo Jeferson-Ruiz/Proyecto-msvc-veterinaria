@@ -34,7 +34,7 @@ public class Pet {
     @Column(name = "pet_specie", length = 20, nullable = false)
     private String specie;
 
-    @Column(name = "pet_breed", length = 20, nullable = false)
+    @Column(name = "pet_breed", length = 20, nullable = true)
     private String breed;
 
     @Column(name = "pet_sex", length = 1, nullable = false)

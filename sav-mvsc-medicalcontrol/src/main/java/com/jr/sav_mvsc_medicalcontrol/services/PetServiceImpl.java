@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-
 import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetRequestDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetWithOwnerResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetResponseDto;
@@ -30,16 +29,26 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public PetWithOwnerResponseDto savePet(PetRequestDto petDto){
+    public PetWithOwnerResponseDto savePet(PetRequestDto petDto) {
 
         Owner owner = ownerRepository.findByDocumentNumber(petDto.getDocumentNumber())
-        .orElseThrow(() -> new EntityNotFoundException(
-            "No se puede registrar la mascota por que no se encontró el propietario con el N° identificacion " + petDto.getDocumentNumber()));
+            .orElseThrow(() -> new EntityNotFoundException(
+                "No se puede registrar la mascota porque no se encontró el propietario con el N° de identificación "
+                + petDto.getDocumentNumber()));
 
-        if (owner.getActive() == false) {
-            throw new RuntimeException(
-            "No se puede registrar una mascota por el propietario "+ petDto.getDocumentNumber()+" se encuentra desactivado en el sistema");
+        if (!owner.getActive()) {
+            throw new IllegalArgumentException(
+                "No se puede registrar una mascota porque el propietario con N° "
+                + petDto.getDocumentNumber() + " se encuentra desactivado en el sistema");
         }
+
+        // Validación de duplicados
+        if (petRepository.existByNameAndOwnerId(petDto.getName(), owner.getIdOwner())) {
+            throw new IllegalArgumentException(
+                "El propietario con N° " + petDto.getDocumentNumber()
+                + " ya tiene registrada una mascota activa con el nombre: " + petDto.getName());
+        }
+
         Pet entity = petMapper.toEntity(petDto);
         entity.setOwner(owner);
         entity.setDateOfRecording(LocalDate.now());
@@ -49,9 +58,13 @@ public class PetServiceImpl implements PetService {
         return petMapper.toResponseDto(savedPet);
     }
 
+
     @Override
     public List<PetResponseDto> findAllPets(){
         List<Pet> pets = petRepository.findAll();
+        if (pets.isEmpty()) {
+            throw new EntityNotFoundException("No se encuentran mascotas registradas en el sistema");
+        }
         return pets.stream().map(petMapper::toResponsePetDto)
             .collect(Collectors.toList());
     }
@@ -59,6 +72,9 @@ public class PetServiceImpl implements PetService {
     @Override
     public List<PetWithOwnerResponseDto> findAllDisablePets(){
         List<Pet> pets = petRepository.findAllDisablePets();
+        if (pets.isEmpty()) {
+            throw new EntityNotFoundException("No se encuentran mascotas descativadas en el sistema");
+        }
         return pets.stream().map(petMapper::toResponseDto)
             .collect(Collectors.toList());
     }
@@ -66,6 +82,9 @@ public class PetServiceImpl implements PetService {
     @Override
     public List<PetWithOwnerResponseDto> findAllActivesPets(){
         List<Pet> pets = petRepository.findAllActivePets();
+        if (pets.isEmpty()) {
+            throw new EntityNotFoundException("No se encuentran mascotas registradas en el sistema");
+        }
         return pets.stream().map(petMapper::toResponseDto)
             .collect(Collectors.toList());
     }
@@ -73,12 +92,12 @@ public class PetServiceImpl implements PetService {
     @Override
     public PetResponseDto findPetById(Long idPet){
         Pet pet = petRepository.findById(idPet)
-            .orElseThrow(() -> new EntityNotFoundException("La mascota con ID " + idPet + " no fue encontrado"));
+            .orElseThrow(() -> new EntityNotFoundException("La mascota con ID " + idPet + " no fue encontrado en el sistema"));
         return petMapper.toResponsePetDto(pet);
     }
 
     @Override
-    public PetWithOwnerResponseDto findByNameAndOwnerNumber(String name, Long ownerNumber){
+    public PetWithOwnerResponseDto findByNameAndOwnerNumber(String name, String ownerNumber){
         Pet pet = petRepository.findByNameAndOwnerNumber(name, ownerNumber)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro la mascota " + name + " asociado al propipeatio "+ ownerNumber));
         
@@ -86,10 +105,10 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public List<PetResponseDto> findPetsByOwner(Long documentNumber){
+    public List<PetResponseDto> findPetsByOwnerDocument(String documentNumber){
         List<Pet> pets = petRepository.findPetsByOwnerDocument(documentNumber);
         if (pets.isEmpty()) {
-            throw new EntityNotFoundException("No existen mascotas registradas al propietario "+ documentNumber); 
+            throw new EntityNotFoundException("No existen mascotas registradas al documento del propietario "+ documentNumber); 
         }
         return pets.stream().map(petMapper::toResponsePetDto).toList();
     }
@@ -99,8 +118,10 @@ public class PetServiceImpl implements PetService {
     public void disablePetById(Long idPet){
         Pet pet = petRepository.findById(idPet)
             .orElseThrow(() -> new EntityNotFoundException("No existe mascota registrada con el id " + idPet));
+        if (!pet.getActive()) {
+            throw new IllegalArgumentException("La mascota asociada al Id "+ idPet +" ya se encuentra desactivada del sistema");
+        }
         pet.setActive(false);
-        
         petRepository.save(pet);
     }
 

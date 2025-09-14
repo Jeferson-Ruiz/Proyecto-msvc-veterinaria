@@ -2,13 +2,11 @@ package com.jr.sav_mvsc_medicalcontrol.dto.pet;
 
 import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 public class PetResponseDto {
     private Long idPet;
     private String name;

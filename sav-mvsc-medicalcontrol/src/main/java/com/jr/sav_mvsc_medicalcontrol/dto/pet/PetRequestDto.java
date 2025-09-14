@@ -1,18 +1,33 @@
 package com.jr.sav_mvsc_medicalcontrol.dto.pet;
 
 import java.time.LocalDate;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.Setter;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class PetRequestDto {
+    
+    @NotBlank
     private String name;
+
+    @NotBlank
     private String specie;
+
+    @Pattern(regexp = "^$|^(?!\\s+$).+", message = "la raza no puede contener solo espacios en blanco")
     private String breed;
+
+    @NotBlank
     private String sex;
+
+    @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate dateOfBirth;
+
+    @NotBlank
     private String documentNumber;
 }

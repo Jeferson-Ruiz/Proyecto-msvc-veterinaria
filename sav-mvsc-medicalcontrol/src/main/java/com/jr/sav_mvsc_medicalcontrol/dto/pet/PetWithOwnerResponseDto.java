@@ -1,12 +1,10 @@
 package com.jr.sav_mvsc_medicalcontrol.dto.pet;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 public class PetWithOwnerResponseDto {
     private Long idPet;
     private String name;
