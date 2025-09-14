@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.bouncycastle.crypto.RuntimeCryptoException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.jr.sav_mvsc_medicalcontrol.dto.VaccineDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.VaccineRequestDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.VaccineResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.mapper.VaccineMapper;
 import com.jr.sav_mvsc_medicalcontrol.models.Pet;
@@ -34,7 +34,7 @@ public class VaccineServiceImpl implements VaccineService {
     }
 
     @Override
-    public VaccineResponseDto saveVaccine(VaccineDto vaccineDto){
+    public VaccineResponseDto saveVaccine(VaccineRequestDto vaccineDto){
         Pet pet = petRepository.findById(vaccineDto.getIdPet())
             .orElseThrow(() -> new RuntimeException("No se encontro paciente asociado al id "+ vaccineDto.getIdPet()));
 

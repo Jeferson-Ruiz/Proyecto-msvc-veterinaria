@@ -2,14 +2,14 @@ package com.jr.sav_mvsc_medicalcontrol.services;
 
 import java.time.LocalDate;
 import java.util.List;
-import com.jr.sav_mvsc_medicalcontrol.dto.VaccineDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.VaccineRequestDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.VaccineResponseDto;
 
 public interface VaccineService {
 
     List<VaccineResponseDto> findAllVaccines();
 
-    VaccineResponseDto saveVaccine(VaccineDto vaccineDto);
+    VaccineResponseDto saveVaccine(VaccineRequestDto vaccineDto);
 
     List<VaccineResponseDto> findVaccinesIdPet(Long idPet);
 

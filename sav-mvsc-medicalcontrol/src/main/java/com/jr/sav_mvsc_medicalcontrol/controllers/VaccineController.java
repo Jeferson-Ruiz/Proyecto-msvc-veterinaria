@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.jr.sav_mvsc_medicalcontrol.dto.VaccineDateUpdate;
-import com.jr.sav_mvsc_medicalcontrol.dto.VaccineDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.VaccineRequestDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.VaccineResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.services.VaccineService;
 
@@ -31,7 +31,7 @@ public class VaccineController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveInfoVaccine(@RequestBody VaccineDto vaccineDto) {
+    public ResponseEntity<?> saveInfoVaccine(@RequestBody VaccineRequestDto vaccineDto) {
         VaccineResponseDto vaccine = vaccineService.saveVaccine(vaccineDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(vaccine);
     }
