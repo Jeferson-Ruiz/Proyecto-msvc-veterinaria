@@ -28,14 +28,22 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<EmployeeResponseDto> findAll() {
-        return employeeRepository.findAllActive().stream().limit(10)
-                .map(employeeMapper::toDto).toList();
+        List<Employee> employees = employeeRepository.findAllActive();
+        if (employees.isEmpty()) {
+            throw new EntityNotFoundException("No se encuetran empleados registrados en el sistema");
+        }
+        return employees.stream()
+                .map(employeeMapper::toDto)
+                .toList();
     }
 
     @Override
     public List<EmployeeResponseDto> findAllDisabled(){
-        return employeeRepository.findAllDisabled()
-            .stream()
+        List<Employee> employees = employeeRepository.findAllDisabled();
+        if (employees.isEmpty()) {
+            throw new EntityNotFoundException("No se encuetran empleados desahabilitados en el sistema");
+        }
+        return employees.stream()
             .map(employeeMapper::toDto)
             .toList();
     }
@@ -71,7 +79,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.toDto(employee);
     }
 
-
     @Override
     @Transactional
     public void delete(Long idEmployee) {
@@ -102,8 +109,5 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void updateContractType(Long idEmployee, ContractType contractType) {
         employeeRepository.updateContractType(idEmployee, contractType);
     }
-
-
-    
 
 }
