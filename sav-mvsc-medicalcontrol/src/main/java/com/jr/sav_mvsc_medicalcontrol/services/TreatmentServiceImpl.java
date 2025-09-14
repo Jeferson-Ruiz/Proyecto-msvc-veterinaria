@@ -1,6 +1,6 @@
 package com.jr.sav_mvsc_medicalcontrol.services;
 
-import com.jr.sav_mvsc_medicalcontrol.dto.treatment.TreatmentDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.treatment.TreatmentRequestDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.treatment.TreatmentResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.mapper.TreatmentMapper;
 import com.jr.sav_mvsc_medicalcontrol.models.Consultation;
@@ -29,23 +29,26 @@ public class TreatmentServiceImpl implements TreatmentService {
 
     @Override
     public List<TreatmentResponseDto> findAlltreatments() {
-        return treatmentRespository.findAll().stream()
-                .map(treatmentMapper::toDto).toList();
+        List<Treatment> treatments = treatmentRespository.findAll();
+        if (treatments.isEmpty()) {
+            throw new EntityNotFoundException("No se encuentran tratamientos registrados");
+        }
+        return treatments.stream().map(treatmentMapper::toDto).toList();
     }
 
     @Override
     public TreatmentResponseDto findTreatmentById(Long idTreatment) {
         Treatment treatment = treatmentRespository.findById(idTreatment)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "No se encontro un tratamiento asociado al id:" + idTreatment));
+                        "No se encontro tratamiento asociado al id:" + idTreatment));
         return treatmentMapper.toDto(treatment);
     }
 
     @Override
-    public TreatmentResponseDto saveTreatment(TreatmentDto treatmentDto) {
+    public TreatmentResponseDto saveTreatment(TreatmentRequestDto treatmentDto) {
         Consultation consultation = consultationRepository.findById(treatmentDto.getIdConsultation())
-                .orElseThrow(
-                        () -> new EntityNotFoundException("No se puede registrar un tratamiento sin previa consulta"));
+                .orElseThrow(() -> new EntityNotFoundException(
+                    "No se encontro la consulta "+treatmentDto.getIdConsultation()+" No se puede registrar un tratamiento sin previa consulta"));
 
         if (treatmentDto.getStartDate().isAfter(treatmentDto.getEndDate())) {
             throw new IllegalArgumentException("Error en el cronograma de fechas del tratamiento");
@@ -80,6 +83,5 @@ public class TreatmentServiceImpl implements TreatmentService {
         }
         return treatments.stream().map(treatmentMapper::toDto).collect(Collectors.toList());
     }
-
 
 }

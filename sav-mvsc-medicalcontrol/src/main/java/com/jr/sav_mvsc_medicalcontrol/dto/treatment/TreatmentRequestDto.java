@@ -1,23 +1,32 @@
 package com.jr.sav_mvsc_medicalcontrol.dto.treatment;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class TreatmentDto {
+@Getter
+@Setter
+public class TreatmentRequestDto {
+    @NotNull
     private Long idConsultation;
+
+    @NotBlank
     private String name;
+
+    @NotBlank
     private String description;
 
+    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate startDate;
 
+    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate endDate;
+
+    @NotBlank
     private String instructions;
 }

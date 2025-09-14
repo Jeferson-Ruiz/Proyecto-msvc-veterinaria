@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.jr.sav_mvsc_medicalcontrol.dto.treatment.TreatmentDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.treatment.TreatmentRequestDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.treatment.TreatmentResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.services.TreatmentService;
 
@@ -35,7 +35,7 @@ public class TreatmentController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveInfoTreatment(@RequestBody TreatmentDto treatmentdDto) {
+    public ResponseEntity<?> saveInfoTreatment(@RequestBody TreatmentRequestDto treatmentdDto) {
         TreatmentResponseDto treatmentDto = treatmentService.saveTreatment(treatmentdDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(treatmentDto);
     }
