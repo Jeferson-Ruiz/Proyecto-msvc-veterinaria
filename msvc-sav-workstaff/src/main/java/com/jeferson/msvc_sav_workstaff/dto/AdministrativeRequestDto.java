@@ -7,6 +7,8 @@ import com.jeferson.msvc_sav_workstaff.exeptions.PhoneNumber;
 import com.jeferson.msvc_sav_workstaff.models.AdministrativeRoles;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.DocumentType;
+
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -33,7 +35,7 @@ public class AdministrativeRequestDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate dateOfBirth;
 
-    @NotBlank
+    @NotBlank @Email
     private String email;
     
     @PhoneNumber @NotBlank
@@ -48,8 +50,8 @@ public class AdministrativeRequestDto {
     @NotBlank
     private String academicTitle;
 
-    @Pattern(regexp = "^[a-zA-Z0-9]+$", 
-         message = "La tarjeta profesional solo puede contener numeros y letras, sin espacios en blanco ni caracteres especiales")
+    @Pattern(regexp = "^$|^[a-zA-Z0-9]+$",
+    message = "La tarjeta profesional solo puede contener números y letras")
     private String professionalCard;
 
 }

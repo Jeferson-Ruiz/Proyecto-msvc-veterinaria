@@ -7,6 +7,8 @@ import com.jeferson.msvc_sav_workstaff.exeptions.PhoneNumber;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.DocumentType;
 import com.jeferson.msvc_sav_workstaff.models.VetRoles;
+
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -32,7 +34,7 @@ public class VetRequestDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate dateOfBirth;
 
-    @NotBlank
+    @NotBlank @Email
     private String email;
 
     @NotBlank @PhoneNumber

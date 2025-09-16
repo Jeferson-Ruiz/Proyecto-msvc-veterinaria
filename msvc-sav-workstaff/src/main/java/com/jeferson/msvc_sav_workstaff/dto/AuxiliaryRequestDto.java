@@ -7,6 +7,8 @@ import com.jeferson.msvc_sav_workstaff.exeptions.PhoneNumber;
 import com.jeferson.msvc_sav_workstaff.models.AuxiliaryRoles;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.DocumentType;
+
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -32,7 +34,7 @@ public class AuxiliaryRequestDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate dateOfBirth;
 
-    @NotBlank
+    @NotBlank @Email
     private String email;
 
     @PhoneNumber @NotNull
