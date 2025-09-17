@@ -58,4 +58,7 @@ public class Pet {
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
     private List<Vaccine> vaccines;
+
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL )
+    private List<RemovalInformation> removalInformation;
 }

@@ -21,6 +21,9 @@ public interface PetRepository extends JpaRepository<Pet, Long>{
     @Query("SELECT p FROM Pet p WHERE p.active = false")
     List<Pet> findAllDisablePets();
 
+    @Query("SELECT p FROM Pet p WHERE p.specie =:specie")
+    List<Pet> findBySpecie(@Param("specie") String specie);
+
     @Query("""
     SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END
     FROM Pet p WHERE p.name = :name AND p.owner.idOwner = :idOwner AND p.active = true""")

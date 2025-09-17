@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.jr.sav_mvsc_medicalcontrol.dto.RemovalInfoRequestDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetRequestDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetResponseDisableDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetWithOwnerResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.services.PetService;
@@ -34,13 +36,8 @@ public class PetController {
         return ResponseEntity.status(HttpStatus.CREATED).body(petCreated);
     }
     
-    @GetMapping("/all")
-    public ResponseEntity<List<PetResponseDto>> getAllPets() {
-        return ResponseEntity.ok(petService.findAllPets());
-    }
-    
     @GetMapping("/disable")
-    public ResponseEntity<List<PetWithOwnerResponseDto>> getAllDisablePets() {
+    public ResponseEntity<List<PetResponseDisableDto>> getAllDisablePets() {
         return ResponseEntity.ok(petService.findAllDisablePets());
     }
 
@@ -68,9 +65,15 @@ public class PetController {
         return ResponseEntity.ok(petDto);
     }
 
+    @GetMapping("/allspecie/{specie}")
+    public ResponseEntity<?> getAllBySpecie(@PathVariable String specie){
+        List<PetWithOwnerResponseDto> pets = petService.findAllBySpecie(specie);
+        return ResponseEntity.ok(pets);
+    }
+
     @DeleteMapping("/{idPet}")
-    public ResponseEntity<?> deleteInfoPet(@PathVariable Long idPet) {
-        petService.disablePetById(idPet);;
+    public ResponseEntity<?> deleteInfoPet(@PathVariable Long idPet, @Valid @RequestBody RemovalInfoRequestDto request) {
+        petService.disablePetById(idPet, request.getDeletedBy(), request.getReason());
         return ResponseEntity.noContent().build();
     }
 
