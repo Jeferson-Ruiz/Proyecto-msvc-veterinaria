@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import com.jr.sav_mvsc_medicalcontrol.models.AttendanceStatus;
 import com.jr.sav_mvsc_medicalcontrol.models.Consultation;
 
 public interface ConsultationRepository extends JpaRepository<Consultation, Long> {
@@ -20,4 +21,9 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
     @Query("UPDATE Consultation c SET c.citationDate = :citationDate WHERE c.idConsultation =:idConsultation")
     void updateCitationDate(@Param("idConsultation") Long idConsultation,@Param("citationDate") LocalDateTime citationDate);
 
+    @Query("SELECT c FROM Consultation c WHERE c.status =:status")
+    List<Consultation> findAllByStatus(@Param("status") AttendanceStatus status);
+
+    @Query("SELECT c FROM Consultation c WHERE c.citationDate BETWEEN :start AND :end")
+    List<Consultation> findByCitationDateBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }

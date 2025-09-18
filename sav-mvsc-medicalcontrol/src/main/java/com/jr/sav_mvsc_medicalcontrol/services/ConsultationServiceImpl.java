@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationRequestDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationReponseDto;
 import com.jr.sav_mvsc_medicalcontrol.mapper.ConsultationMapper;
+import com.jr.sav_mvsc_medicalcontrol.models.AttendanceStatus;
 import com.jr.sav_mvsc_medicalcontrol.models.Consultation;
 import com.jr.sav_mvsc_medicalcontrol.models.Pet;
 import com.jr.sav_mvsc_medicalcontrol.repositories.ConsultationRepository;
@@ -66,6 +67,8 @@ public class ConsultationServiceImpl implements ConsultationService {
 
         Consultation consultation = consultationMapper.toEntity(consultationDto);
         consultation.setPet(pet);
+        consultation.setPetName(pet.getName());
+        consultation.setStatus(AttendanceStatus.PENDING);
         consultation.setRegistrationDate(LocalDateTime.now());
 
         if (consultation.getCitationDate().toLocalDate().isBefore(LocalDate.now())) {
@@ -79,6 +82,30 @@ public class ConsultationServiceImpl implements ConsultationService {
         List<Consultation> consultations = consultationRepository.findAllByIdPet(idPet);
         if (consultations.isEmpty()) {
             throw new EntityNotFoundException("No se encontraron consultas asociadas al paciente " + idPet);
+        }
+        return consultations.stream().map(consultationMapper::toDto).toList();
+    }
+
+    @Override
+    public List<ConsultationReponseDto> findAllByStatus(AttendanceStatus status){
+        List<Consultation> consultations = consultationRepository.findAllByStatus(status);
+        if (consultations.isEmpty()) {
+            throw new EntityNotFoundException("No se encontraron consultas asociadas al estado " + status);
+        }
+        return consultations.stream().map(consultationMapper::toDto).toList();
+    }
+
+    @Override
+    public List<ConsultationReponseDto> findByDate(LocalDate date){
+        if (date == null) {
+            date = LocalDate.now();
+        }
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.atTime(LocalTime.MAX);
+
+        List<Consultation>consultations = consultationRepository.findByCitationDateBetween(start, end);
+        if (consultations.isEmpty()) {
+            throw new EntityNotFoundException("No se encontro consultas registradas para el dia "+ date);
         }
         return consultations.stream().map(consultationMapper::toDto).toList();
     }
@@ -98,7 +125,7 @@ public class ConsultationServiceImpl implements ConsultationService {
         validarHora(dateTime);
 
         consultationRepository.updateCitationDate(idConsultation, newDate);
-    }
+    }    
 
     private void validarHora(LocalTime date) {
         if (date.isBefore(startTime) || date.isAfter(endTime)) {
