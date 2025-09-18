@@ -14,6 +14,7 @@ import com.jr.sav_mvsc_medicalcontrol.dto.VaccineDateUpdate;
 import com.jr.sav_mvsc_medicalcontrol.dto.VaccineRequestDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.VaccineResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.services.VaccineService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("api/sav/vaccine")
@@ -25,13 +26,8 @@ public class VaccineController {
         this.vaccineService = vaccineService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<VaccineResponseDto>> getAllVaccines() {
-        return ResponseEntity.ok(vaccineService.findAllVaccines());
-    }
-
     @PostMapping
-    public ResponseEntity<?> saveInfoVaccine(@RequestBody VaccineRequestDto vaccineDto) {
+    public ResponseEntity<?> saveInfoVaccine(@Valid @RequestBody VaccineRequestDto vaccineDto) {
         VaccineResponseDto vaccine = vaccineService.saveVaccine(vaccineDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(vaccine);
     }
@@ -49,7 +45,7 @@ public class VaccineController {
     }
 
     @PatchMapping("update/date/id/{idVaccine}")
-    public ResponseEntity<?> updateNexAppication(@PathVariable Long idVaccine, @RequestBody VaccineDateUpdate newDate) {
+    public ResponseEntity<?> updateNexAppication(@PathVariable Long idVaccine, @Valid @RequestBody VaccineDateUpdate newDate) {
         vaccineService.updateNextApplicationDate(idVaccine, newDate.getNewDate());
         return ResponseEntity.noContent().build();
     }

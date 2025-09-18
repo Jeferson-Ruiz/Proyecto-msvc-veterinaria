@@ -28,12 +28,6 @@ public class VaccineServiceImpl implements VaccineService {
     }
 
     @Override
-    public List<VaccineResponseDto> findAllVaccines(){
-        return vaccineRepository.findAll().stream()
-            .map(vaccineMapper::toDto).toList();
-    }
-
-    @Override
     public VaccineResponseDto saveVaccine(VaccineRequestDto vaccineDto){
         Pet pet = petRepository.findById(vaccineDto.getIdPet())
             .orElseThrow(() -> new RuntimeException("No se encontro paciente asociado al id "+ vaccineDto.getIdPet()));
@@ -80,7 +74,5 @@ public class VaccineServiceImpl implements VaccineService {
         }
         vaccineRepository.updateName(idVaccine, name);
     }
-
-    
 
 }

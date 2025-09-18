@@ -7,8 +7,6 @@ import com.jr.sav_mvsc_medicalcontrol.dto.VaccineResponseDto;
 
 public interface VaccineService {
 
-    List<VaccineResponseDto> findAllVaccines();
-
     VaccineResponseDto saveVaccine(VaccineRequestDto vaccineDto);
 
     List<VaccineResponseDto> findVaccinesIdPet(Long idPet);
