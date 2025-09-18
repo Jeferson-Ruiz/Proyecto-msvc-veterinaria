@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jr.sav_mvsc_medicalcontrol.dto.treatment.TreatmentRequestDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.treatment.TreatmentResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.services.TreatmentService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("api/sav/treatment")
@@ -35,7 +36,7 @@ public class TreatmentController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveInfoTreatment(@RequestBody TreatmentRequestDto treatmentdDto) {
+    public ResponseEntity<?> saveInfoTreatment(@Valid @RequestBody TreatmentRequestDto treatmentdDto) {
         TreatmentResponseDto treatmentDto = treatmentService.saveTreatment(treatmentdDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(treatmentDto);
     }

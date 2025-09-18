@@ -61,6 +61,7 @@ public class TreatmentServiceImpl implements TreatmentService {
 
         Treatment entity = treatmentMapper.toEntiry(treatmentDto);
         entity.setRegistrationDate(LocalDate.now());
+        entity.setPetName(consultation.getPetName());
         entity.setConsultation(consultation);
         Treatment save = treatmentRespository.save(entity);
         return treatmentMapper.toDto(save);

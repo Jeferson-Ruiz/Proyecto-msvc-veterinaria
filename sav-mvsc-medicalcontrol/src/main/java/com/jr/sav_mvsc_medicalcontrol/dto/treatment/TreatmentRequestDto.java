@@ -14,7 +14,7 @@ public class TreatmentRequestDto {
     private Long idConsultation;
 
     @NotBlank
-    private String name;
+    private String nameTreatment;
 
     @NotBlank
     private String description;

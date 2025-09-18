@@ -27,7 +27,10 @@ public class Treatment {
     private Long idTreatment;
 
     @Column(name = "tre_name", nullable = false, length = 100)
-    private String name;
+    private String nameTreatment;
+
+    @Column(name = "pet_name", nullable =  false, length =  50)
+    private String petName;
 
     @Column(name = "tre_description", nullable = false, length = 100)
     private String description;

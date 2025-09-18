@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 public class TreatmentResponseDto {
     private Long idTreatment;
-    private String name;
+    private String nameTreatment;
+    private String petName;
     private String description;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
