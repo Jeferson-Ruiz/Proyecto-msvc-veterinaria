@@ -16,7 +16,7 @@ public class ConsultationRequestDto {
     @NotBlank
     private String reason;
     
-    @NotBlank
+    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime citationDate;
 

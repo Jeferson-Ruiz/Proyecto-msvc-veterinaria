@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationRequestDto;
+import com.jr.sav_mvsc_medicalcontrol.client.VetClient;
+import com.jr.sav_mvsc_medicalcontrol.dto.VetDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationReponseDto;
 import com.jr.sav_mvsc_medicalcontrol.mapper.ConsultationMapper;
 import com.jr.sav_mvsc_medicalcontrol.models.AttendanceStatus;
@@ -19,6 +21,7 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class ConsultationServiceImpl implements ConsultationService {
 
+    private final VetClient vetClient;
     private final PetRepository petRepository;
     private final ConsultationRepository consultationRepository;
     private final ConsultationMapper consultationMapper;
@@ -28,10 +31,11 @@ public class ConsultationServiceImpl implements ConsultationService {
     LocalTime endTime = LocalTime.of(17, 30); // 6:00 PM
 
     public ConsultationServiceImpl(PetRepository petRepository, ConsultationRepository consultationRepository,
-            ConsultationMapper consultationMapper) {
+            ConsultationMapper consultationMapper, VetClient vetClient) {
         this.petRepository = petRepository;
         this.consultationRepository = consultationRepository;
         this.consultationMapper = consultationMapper;
+        this.vetClient = vetClient;
     }
 
     @Override
@@ -46,34 +50,21 @@ public class ConsultationServiceImpl implements ConsultationService {
 
     @Override
     public ConsultationReponseDto findConsultionById(Long idConsultation) {
-        Consultation consultation = consultationRepository.findById(idConsultation)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "No se encontro consulta asociada al id " + idConsultation));
+        Consultation consultation = findById(idConsultation);
         return consultationMapper.toDto(consultation);
     }
 
     @Override
     public ConsultationReponseDto saveConsultation(ConsultationRequestDto consultationDto) {
-        Pet pet = petRepository.findById(consultationDto.getIdPet())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "No se puede generar una consulta para la mascota " + consultationDto.getIdPet()));
-
-        if (!pet.getActive()) {
-            throw new IllegalArgumentException("No se puede generar una consuta el paciente " + consultationDto.getIdPet()
-                    + " se encuentra desactivado");
-        }
-        LocalTime dateTime = consultationDto.getCitationDate().toLocalTime();
-        validarHora(dateTime);
-
+        Pet pet = validPet(consultationDto.getIdPet());
+        VetDto vetDto = validVet(consultationDto.getVeterinaryId());
+        validDate(consultationDto.getCitationDate());
+    
         Consultation consultation = consultationMapper.toEntity(consultationDto);
         consultation.setPet(pet);
         consultation.setPetName(pet.getName());
         consultation.setStatus(AttendanceStatus.PENDING);
         consultation.setRegistrationDate(LocalDateTime.now());
-
-        if (consultation.getCitationDate().toLocalDate().isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("La fecha de la cita no puede ser inferior a la de registro");
-        }
         return consultationMapper.toDto(consultationRepository.save(consultation));
     }
 
@@ -113,23 +104,50 @@ public class ConsultationServiceImpl implements ConsultationService {
     @Override
     @Transactional
     public void updateConsultationDate(Long idConsultation, LocalDateTime newDate) {
-        Consultation consultation = consultationRepository.findById(idConsultation)
-            .orElseThrow(
-                () -> new IllegalArgumentException("No se encontro consulta asocida al id" + idConsultation));
-
-        if (!newDate.isAfter(consultation.getCitationDate())) {
-            throw new IllegalArgumentException("La nueva fecha debe ser posterior a la actual");
-        }
-
-        LocalTime dateTime = newDate.toLocalTime();
-        validarHora(dateTime);
-
+        Consultation consultation = findById(idConsultation);
+        validDate(newDate);
         consultationRepository.updateCitationDate(idConsultation, newDate);
     }    
 
-    private void validarHora(LocalTime date) {
+    // helpers
+    private Consultation findById(Long id){
+        Consultation consultation = consultationRepository.findById(id).orElseThrow(
+            () -> new EntityNotFoundException("No se encontro consulta asociado al id "+ id + " en el sistema"));
+        return consultation;
+    }
+
+
+    private void validHour(LocalTime date) {
         if (date.isBefore(startTime) || date.isAfter(endTime)) {
             throw new RuntimeException("Las cita deben ser programardas entre las " + startTime + " y las " + endTime);
+        }
+    }
+
+    private void validDate(LocalDateTime date) {
+        if (date.toLocalDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("La fecha de la cita no puede ser menor a la actual");
+        }
+        validHour(date.toLocalTime());
+    }
+
+    private Pet validPet (Long idPet) {
+        Pet pet = petRepository.findById(idPet)
+            .orElseThrow(() -> new EntityNotFoundException("No existe la mascota " + idPet));
+        if (!pet.getActive()) {
+            throw new IllegalArgumentException("La mascota " + idPet + " está deshabilitada");
+        }
+        return pet;
+    }
+
+    private VetDto validVet(Long idVet) {
+        try {
+            VetDto vet = vetClient.getVetById(idVet);
+            if (!vet.getActive()) {
+                throw new IllegalArgumentException("El veterinario " + idVet + " está deshabilitado");
+            }
+            return vet;
+        } catch (feign.FeignException.NotFound e) {
+            throw new EntityNotFoundException("No existe el veterinario " + idVet + " en el sistema");
         }
     }
 }
