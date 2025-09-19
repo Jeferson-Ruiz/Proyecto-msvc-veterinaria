@@ -47,7 +47,7 @@ public class Consultation {
     private String observations;
 
     @Column(name = "con_veterinary_id", nullable = false)
-    private Long veterinaryId;
+    private Long vetId;
 
     @Column(name = "con_status", nullable = false)
     @Enumerated(EnumType.STRING)

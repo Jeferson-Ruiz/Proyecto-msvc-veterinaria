@@ -7,9 +7,6 @@ import lombok.Setter;
 @Setter
 public class VetDto {
     private Long employeeId;
-    private String name;
-    private String lastName;
-    private String documentNumber;
+    private String fullName;
     private Boolean active;
-
 }

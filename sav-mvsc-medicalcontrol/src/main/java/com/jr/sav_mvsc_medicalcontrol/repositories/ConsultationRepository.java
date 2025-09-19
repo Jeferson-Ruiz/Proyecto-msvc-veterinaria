@@ -26,4 +26,7 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
 
     @Query("SELECT c FROM Consultation c WHERE c.citationDate BETWEEN :start AND :end")
     List<Consultation> findByCitationDateBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    @Query("SELECT c FROM Consultation c WHERE c.vetId =:vetId" )
+    List<Consultation> findByVetId(@Param("vetId") Long vetId);
 }

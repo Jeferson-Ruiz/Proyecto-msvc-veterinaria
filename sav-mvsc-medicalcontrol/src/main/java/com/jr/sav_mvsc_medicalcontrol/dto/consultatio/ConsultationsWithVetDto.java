@@ -6,9 +6,10 @@ import com.jr.sav_mvsc_medicalcontrol.models.AttendanceStatus;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
-public class ConsultationReponseDto {
+@Setter
+public class ConsultationsWithVetDto {
+    
     private Long idConsultation;
     private Long idPet;
     private String petName;
@@ -21,8 +22,7 @@ public class ConsultationReponseDto {
     private LocalDateTime citationDate;
 
     private String observations;
-    //private Long vetId;
-    private String fullName;
 
     private AttendanceStatus status;
+
 }

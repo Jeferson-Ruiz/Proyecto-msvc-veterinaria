@@ -1,19 +1,17 @@
 package com.jr.sav_mvsc_medicalcontrol.controllers;
 
+import com.jr.sav_mvsc_medicalcontrol.dto.VetWithConsultationsDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationDate;
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationDateUpdate;
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationRequestDto;
 import com.jr.sav_mvsc_medicalcontrol.models.AttendanceStatus;
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationReponseDto;
 import com.jr.sav_mvsc_medicalcontrol.services.ConsultationService;
-
 import jakarta.validation.Valid;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("api/sav/consultation")
@@ -58,6 +56,11 @@ public class ConsultationController {
     public ResponseEntity<?> getAllConsultationByDate(@Valid @RequestBody ConsultationDate request){
         List<ConsultationReponseDto> consultations = consultationService.findByDate(request.getDate());
         return ResponseEntity.ok(consultations);
+    }
+
+    @GetMapping("/vet/{vetId}")
+    public ResponseEntity<VetWithConsultationsDto> getVetWithConsultations(@PathVariable Long vetId) {
+        return ResponseEntity.ok(consultationService.findConsultationsByIdVet(vetId));
     }
 
 

@@ -7,8 +7,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationRequestDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationsWithVetDto;
 import com.jr.sav_mvsc_medicalcontrol.client.VetClient;
 import com.jr.sav_mvsc_medicalcontrol.dto.VetDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.VetWithConsultationsDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationReponseDto;
 import com.jr.sav_mvsc_medicalcontrol.mapper.ConsultationMapper;
 import com.jr.sav_mvsc_medicalcontrol.models.AttendanceStatus;
@@ -99,6 +101,22 @@ public class ConsultationServiceImpl implements ConsultationService {
             throw new EntityNotFoundException("No se encontro consultas registradas para el dia "+ date);
         }
         return consultations.stream().map(consultationMapper::toDto).toList();
+    }
+
+    @Override
+    public VetWithConsultationsDto findConsultationsByIdVet(Long vetId){
+        VetDto vet;
+        try {
+            vet = vetClient.getVetById(vetId); 
+        } catch (feign.FeignException.NotFound e) {
+            throw new EntityNotFoundException("No existe el veterinario " + vetId + " en el sistema");
+        }
+
+        List<ConsultationsWithVetDto> consultations = consultationRepository.findByVetId(vetId) 
+            .stream()
+            .map(consultationMapper::toVetDto)
+            .toList();
+        return new VetWithConsultationsDto(vet, consultations);
     }
 
     @Override

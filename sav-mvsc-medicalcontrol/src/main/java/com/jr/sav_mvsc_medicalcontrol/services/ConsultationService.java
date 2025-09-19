@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationRequestDto;
 import com.jr.sav_mvsc_medicalcontrol.models.AttendanceStatus;
+import com.jr.sav_mvsc_medicalcontrol.dto.VetWithConsultationsDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationReponseDto;
 
 public interface ConsultationService {
@@ -20,6 +21,8 @@ public interface ConsultationService {
     List<ConsultationReponseDto> findAllByStatus(AttendanceStatus status);
 
     List<ConsultationReponseDto> findByDate(LocalDate date);
+
+    VetWithConsultationsDto findConsultationsByIdVet(Long vetId);
 
     void updateConsultationDate(Long idConsultation, LocalDateTime newDate);
 
