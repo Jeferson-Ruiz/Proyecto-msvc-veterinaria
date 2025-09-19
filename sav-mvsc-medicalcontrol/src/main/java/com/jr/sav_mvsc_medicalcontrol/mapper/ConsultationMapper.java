@@ -16,6 +16,7 @@ public interface ConsultationMapper {
     @Mapping(target = "fullName", ignore = true)
     ConsultationReponseDto toDto(Consultation entity);
 
+    @Mapping(source = "pet.idPet", target = "idPet")
     ConsultationsWithVetDto toVetDto(Consultation entity);
 
 }

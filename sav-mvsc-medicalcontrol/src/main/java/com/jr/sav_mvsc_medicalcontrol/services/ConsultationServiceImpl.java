@@ -47,13 +47,14 @@ public class ConsultationServiceImpl implements ConsultationService {
             throw new EntityNotFoundException("No se encuentran consultas asociadas en el sistema");
         }
         return consultations.stream()
-                .map(consultationMapper::toDto).toList();
+            .map(this::mapToDtoWithVetName)
+            .toList();
     }
 
     @Override
     public ConsultationReponseDto findConsultionById(Long idConsultation) {
         Consultation consultation = findById(idConsultation);
-        return consultationMapper.toDto(consultation);
+        return mapToDtoWithVetName(consultation);
     }
 
     @Override
@@ -76,7 +77,7 @@ public class ConsultationServiceImpl implements ConsultationService {
         if (consultations.isEmpty()) {
             throw new EntityNotFoundException("No se encontraron consultas asociadas al paciente " + idPet);
         }
-        return consultations.stream().map(consultationMapper::toDto).toList();
+        return consultations.stream().map(this::mapToDtoWithVetName).toList();
     }
 
     @Override
@@ -85,7 +86,7 @@ public class ConsultationServiceImpl implements ConsultationService {
         if (consultations.isEmpty()) {
             throw new EntityNotFoundException("No se encontraron consultas asociadas al estado " + status);
         }
-        return consultations.stream().map(consultationMapper::toDto).toList();
+        return consultations.stream().map(this::mapToDtoWithVetName).toList();
     }
 
     @Override
@@ -100,7 +101,7 @@ public class ConsultationServiceImpl implements ConsultationService {
         if (consultations.isEmpty()) {
             throw new EntityNotFoundException("No se encontro consultas registradas para el dia "+ date);
         }
-        return consultations.stream().map(consultationMapper::toDto).toList();
+        return consultations.stream().map(this::mapToDtoWithVetName).toList();
     }
 
     @Override
@@ -168,4 +169,17 @@ public class ConsultationServiceImpl implements ConsultationService {
             throw new EntityNotFoundException("No existe el veterinario " + idVet + " en el sistema");
         }
     }
+
+
+    private ConsultationReponseDto mapToDtoWithVetName(Consultation consultation) {
+    ConsultationReponseDto dto = consultationMapper.toDto(consultation);
+    try {
+        VetDto vet = vetClient.getVetById(consultation.getVetId());
+        dto.setFullName(vet.getFullName());
+    } catch (feign.FeignException.NotFound e) {
+        dto.setFullName("Veterinario no encontrado");
+    }
+    return dto;
+    }
+
 }
