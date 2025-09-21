@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "medical_consultations")
+@Table(name = "medical_consultations", uniqueConstraints = {@UniqueConstraint(columnNames = {"con_vet_id", "con_citation_date"})})
 public class Consultation {
 
     @Id
@@ -46,7 +47,7 @@ public class Consultation {
     @Column(name = "con_observation", length = 255)
     private String observations;
 
-    @Column(name = "con_veterinary_id", nullable = false)
+    @Column(name = "con_vet_id", nullable = false)
     private Long vetId;
 
     @Column(name = "con_status", nullable = false)

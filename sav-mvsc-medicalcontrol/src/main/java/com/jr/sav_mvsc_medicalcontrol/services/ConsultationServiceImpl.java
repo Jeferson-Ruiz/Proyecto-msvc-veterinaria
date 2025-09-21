@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationRequestDto;
@@ -59,6 +61,7 @@ public class ConsultationServiceImpl implements ConsultationService {
 
     @Override
     public ConsultationReponseDto saveConsultation(ConsultationRequestDto consultationDto) {
+        try{
         Pet pet = validPet(consultationDto.getIdPet());
         VetDto vetDto = validVet(consultationDto.getVetId());
         
@@ -71,6 +74,9 @@ public class ConsultationServiceImpl implements ConsultationService {
         consultation.setStatus(AttendanceStatus.PENDING);
         consultation.setRegistrationDate(LocalDateTime.now());
         return consultationMapper.toDto(consultationRepository.save(consultation));
+        }catch(DataIntegrityViolationException e){
+            throw new IllegalArgumentException("El veterinario ya tiene una cita asignada en ese horario");
+        }
     }
 
     @Override
