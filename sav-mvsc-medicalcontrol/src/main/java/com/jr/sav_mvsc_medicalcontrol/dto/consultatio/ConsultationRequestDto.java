@@ -23,5 +23,5 @@ public class ConsultationRequestDto {
     private String observations;
 
     @NotNull
-    private Long veterinaryId;
+    private Long vetId;
 }

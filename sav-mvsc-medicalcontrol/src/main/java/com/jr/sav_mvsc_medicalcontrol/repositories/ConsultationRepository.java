@@ -29,4 +29,11 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
 
     @Query("SELECT c FROM Consultation c WHERE c.vetId =:vetId" )
     List<Consultation> findByVetId(@Param("vetId") Long vetId);
+
+    @Query("""
+        SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END
+        FROM Consultation c
+        WHERE c.vetId = :vetId
+        AND c.citationDate BETWEEN :start AND :end """)
+    boolean existsByVetAndTimeRange(@Param("vetId") Long vetId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }

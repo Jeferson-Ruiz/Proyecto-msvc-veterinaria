@@ -60,8 +60,10 @@ public class ConsultationServiceImpl implements ConsultationService {
     @Override
     public ConsultationReponseDto saveConsultation(ConsultationRequestDto consultationDto) {
         Pet pet = validPet(consultationDto.getIdPet());
-        VetDto vetDto = validVet(consultationDto.getVeterinaryId());
+        VetDto vetDto = validVet(consultationDto.getVetId());
+        
         validDate(consultationDto.getCitationDate());
+        checkAvailability(consultationDto.getVetId(), consultationDto.getCitationDate());
     
         Consultation consultation = consultationMapper.toEntity(consultationDto);
         consultation.setPet(pet);
@@ -162,7 +164,7 @@ public class ConsultationServiceImpl implements ConsultationService {
         try {
             VetDto vet = vetClient.getVetById(idVet);
             if (!vet.getActive()) {
-                throw new IllegalArgumentException("El veterinario " + idVet + " está deshabilitado");
+                throw new IllegalArgumentException("El veterinario " + idVet + " está deshabilitado del sistema");
             }
             return vet;
         } catch (feign.FeignException.NotFound e) {
@@ -180,6 +182,15 @@ public class ConsultationServiceImpl implements ConsultationService {
         dto.setFullName("Veterinario no encontrado");
     }
     return dto;
+    }
+
+    private void checkAvailability(Long idVet, LocalDateTime appointmentDate){
+        LocalDateTime start = appointmentDate.minusMinutes(30);
+        LocalDateTime end = appointmentDate.plusMinutes(30);
+
+        if (consultationRepository.existsByVetAndTimeRange(idVet, start, end)) {
+            throw new IllegalArgumentException("El veterinario "+ idVet + " ya cuenta cita registrada para el dia " + appointmentDate);
+        }
     }
 
 }
