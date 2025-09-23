@@ -5,16 +5,15 @@ import com.jeferson.msvc_sav_workstaff.dto.AdministrativeRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.AdmistrativeResponseDto;
 import com.jeferson.msvc_sav_workstaff.models.AdministrativeRoles;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
+import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 
 public interface AdministrativeService {
 
     AdmistrativeResponseDto saveAdministrative(AdministrativeRequestDto administrative);
 
-    List<AdmistrativeResponseDto> findAllAdmin();
+    List<?> findAllByStatus(EmployeeStatus status);
 
-    List<AdmistrativeResponseDto> findAllAdminDisabled();
-
-    List<AdmistrativeResponseDto> findAllByRole(AdministrativeRoles administrativeRole);
+    List<?> findAllByRole(AdministrativeRoles administrativeRole, EmployeeStatus status);
     
     AdmistrativeResponseDto findAdminById (Long idEmployee);
     
@@ -28,6 +27,8 @@ public interface AdministrativeService {
     
     void updateRole(Long idEmployee, AdministrativeRoles admiRoles);
 
-    void delete (Long idEmployee);
+    void delete (Long idEmployee, String deleteAt, String reason);
+
+    void suspended(Long idEmployee, String deleteAt, String reason);
 
 }

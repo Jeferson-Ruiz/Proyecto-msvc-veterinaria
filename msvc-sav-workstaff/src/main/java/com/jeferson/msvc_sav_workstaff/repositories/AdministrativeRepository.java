@@ -2,6 +2,7 @@ package com.jeferson.msvc_sav_workstaff.repositories;
 
 import com.jeferson.msvc_sav_workstaff.models.Administrative;
 import com.jeferson.msvc_sav_workstaff.models.AdministrativeRoles;
+import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,14 +15,11 @@ public interface AdministrativeRepository extends JpaRepository<Administrative, 
     @Query("SELECT a FROM Administrative a WHERE a.documentNumber =:documentNumber")
     Optional<Administrative> findByDocumentNumber(@Param("documentNumber") String documentNumber);
 
-    @Query("SELECT a FROM Administrative a WHERE a.active")
-    List<Administrative> findAllActiveAdministrators();
+    @Query("SELECT a FROM Administrative a WHERE a.status =:status")
+    List<Administrative> findAllByStatus(@Param("status") EmployeeStatus status);
 
-    @Query("SELECT a FROM Administrative a WHERE a.active = false")
-    List<Administrative> findAllDisabledAdministrators();
-
-    @Query("SELECT a FROM Administrative a WHERE a.administrativeRoles =:administrativeRoles AND a.active")
-    List<Administrative> findAllByRoles(@Param("administrativeRoles") AdministrativeRoles administrativeRoles);
+    @Query("SELECT a FROM Administrative a WHERE a.administrativeRoles =:administrativeRoles AND a.status =:status")
+    List<Administrative> findAllByRoles(@Param("administrativeRoles") AdministrativeRoles administrativeRoles, @Param("status") EmployeeStatus status);
 
     Boolean existsByProfessionalCard(String professionalCard);
 

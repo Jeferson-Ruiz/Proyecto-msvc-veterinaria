@@ -1,9 +1,11 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
+import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
+import com.jeferson.msvc_sav_workstaff.models.ActionInformation;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +28,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     public AdministrativeServiceImpl(AdministrativeRepository administrativeRepository,
             AdministrativeMapper administrativeMapper,
             EmployeeRepository employeeRepo,
-            EmployeeService employeeServi) {
+            EmployeeService employeeServi, EmployeeService employeeService) {
         this.administrativeRepository = administrativeRepository;
         this.administrativeMapper = administrativeMapper;
         this.employeeRepo = employeeRepo;
@@ -40,55 +42,38 @@ public class AdministrativeServiceImpl implements AdministrativeService {
             throw new RuntimeException("El documento " + administrativeDto.getDocumentNumber()
                     + " ya se encuentra vinculado a un empleado");
         }
-
         Administrative entity = administrativeMapper.toEntity(administrativeDto);
         if (administrativeRepository.existsByProfessionalCard(entity.getProfessionalCard()) && !entity.getProfessionalCard().isEmpty() ) {
             throw new IllegalArgumentException("La tarjeta profesional " + administrativeDto.getProfessionalCard()
                     + " ya se encuentra vinculado en el sistema");
         }
-
         if (entity.getProfessionalCard().isEmpty()) {
             entity.setProfessionalCard(null);
         }
-
         entity.setRegistrationDate(LocalDate.now());
-        entity.setActive(true);
+        entity.setStatus(EmployeeStatus.PROCESS);
         Administrative saved = employeeRepo.save(entity);
         return administrativeMapper.toDto(saved);
     }
 
     @Override
-    public List<AdmistrativeResponseDto> findAllAdmin() {
-        List<Administrative> admistratives = administrativeRepository.findAllActiveAdministrators();
-        if (admistratives.isEmpty()) {
-            throw new EntityNotFoundException("No existen empleados asociadoas al cargo de administrativos");
-        }
-        return admistratives.stream()
-                .map(administrativeMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<AdmistrativeResponseDto> findAllAdminDisabled() {
-        List<Administrative> admistratives = administrativeRepository.findAllDisabledAdministrators();
-        if (admistratives.isEmpty()) {
-            throw new EntityNotFoundException("No se encontraron administrativos desahabilidatos en el sistema");
-        }
-        return admistratives.stream()
-                .map(administrativeMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<AdmistrativeResponseDto> findAllByRole(AdministrativeRoles administrativeRole){
-        List<Administrative> administratives = administrativeRepository.findAllByRoles(administrativeRole);
-
+    public List<?> findAllByStatus(EmployeeStatus status) {
+        employeeServi.validateStatus(status);
+        List<Administrative> administratives = administrativeRepository.findAllByStatus(status);
         if (administratives.isEmpty()) {
-            throw new EntityNotFoundException("No se encontro empelados asociados al rol de " + administrativeRole);    
+            throw new EntityNotFoundException("No existen administrativos asociadoas al estado de "+ status +" en el sistema");
         }
-        return administratives.stream()
-            .map(administrativeMapper::toDto)
-            .toList();
+        return mapAdministrativesByStatus(status, administratives);
+    }
+
+    @Override
+    public List<?> findAllByRole(AdministrativeRoles administrativeRole, EmployeeStatus status){
+        employeeServi.validateStatus(status);
+        List<Administrative> administratives = administrativeRepository.findAllByRoles(administrativeRole, status);
+        if (administratives.isEmpty()) {
+            throw new EntityNotFoundException("No se encontro registro de " + administrativeRole + " asociados al estado de "+ status);    
+        }
+        return mapAdministrativesByStatus(status, administratives);
     }
 
     @Override
@@ -151,22 +136,58 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     }
 
     @Override
-    public void delete(Long idEmployee) {
+    public void delete(Long idEmployee, String deleteAt, String reason) {
         Administrative administrative = validateInfo(idEmployee);
-        administrative.setActive(false);
+        if (administrative.getStatus() == EmployeeStatus.DELETED) {
+            throw new IllegalArgumentException("El empleado administrativo "+ idEmployee + " ya está eliminado del sistema");
+        }
+        administrative.setStatus(EmployeeStatus.DELETED);
+        ActionInformation removal = new ActionInformation();
+        removal.setEmployee(administrative);
+        removal.setDeletedAt(LocalDateTime.now());    
+        removal.setDeletedBy(deleteAt);
+        removal.setReason(reason);
+        administrative.getActionInformations().add(removal);
         employeeRepo.save(administrative);
     }
+
+    @Override
+    public void suspended(Long idEmployee, String deleteBy, String reason){
+        Administrative administrative = validateInfo(idEmployee);
+        if (administrative.getStatus() == EmployeeStatus.SUSPENDED) {
+            throw new IllegalArgumentException("El empleado administrativo"+ idEmployee + " ya se encuentra suspendido del sistema");
+        }
+        administrative.setStatus(EmployeeStatus.SUSPENDED);
+        ActionInformation removal = new ActionInformation();
+        removal.setEmployee(administrative);
+        removal.setDeletedAt(LocalDateTime.now());
+        removal.setDeletedBy(deleteBy);
+        removal.setReason(reason);
+        administrative.getActionInformations().add(removal);
+        employeeRepo.save(administrative);
+    }
+
 
     private Administrative validateInfo(Long idEmployee) {
         Administrative administrative = administrativeRepository.findById(idEmployee)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "No se encontro administrativo asociado al id " + idEmployee));
 
-        if (!administrative.getActive()) {
-            throw new IllegalArgumentException("El empleado " + idEmployee + " se encuentra desactivado del sistema");
+        if (administrative.getStatus() == EmployeeStatus.DELETED) {
+            throw new IllegalArgumentException("El administrativo " + idEmployee + " ya se encuentra desahabilitado permanentemente del sistema");
         }
         return administrative;
     }
 
+    private List<?> mapAdministrativesByStatus(EmployeeStatus status, List<Administrative> admistratives) {
+        return switch (status) {
+            case ACTIVE, PROCESS -> admistratives.stream()
+                .map(administrativeMapper::toDto)
+                .toList();
+            case SUSPENDED, DELETED -> admistratives.stream()
+                .map(administrativeMapper::toDisabledDto)
+                .toList();
+        };
+    }
 
 }

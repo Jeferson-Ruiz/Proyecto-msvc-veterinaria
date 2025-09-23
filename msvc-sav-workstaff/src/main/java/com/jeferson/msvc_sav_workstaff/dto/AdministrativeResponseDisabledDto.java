@@ -1,17 +1,18 @@
 package com.jeferson.msvc_sav_workstaff.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jeferson.msvc_sav_workstaff.models.AdministrativeRoles;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.DocumentType;
-import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class AdmistrativeResponseDto {
+public class AdministrativeResponseDisabledDto {
+    
     private Long employeeId;
     private String fullName;
     private DocumentType documentType;
@@ -31,5 +32,6 @@ public class AdmistrativeResponseDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate registrationDate;
 
-    private EmployeeStatus status;
+    List<ActionInformationsResponseDto> actionInformations;
+
 }

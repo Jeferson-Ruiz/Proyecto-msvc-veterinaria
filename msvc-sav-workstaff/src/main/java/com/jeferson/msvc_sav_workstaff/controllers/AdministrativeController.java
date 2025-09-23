@@ -4,8 +4,10 @@ import com.jeferson.msvc_sav_workstaff.dto.AdministrativeRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.AdmistrativeResponseDto;
 import com.jeferson.msvc_sav_workstaff.dto.EmailRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.PhoneNumberRequestDto;
+import com.jeferson.msvc_sav_workstaff.dto.ActionInformationsRequestDto;
 import com.jeferson.msvc_sav_workstaff.models.AdministrativeRoles;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
+import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 import com.jeferson.msvc_sav_workstaff.services.AdministrativeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -36,19 +38,14 @@ public class AdministrativeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(administrativeDto);
     }
 
-    @GetMapping
-    public ResponseEntity<?> getAllAdministratives(){
-        return ResponseEntity.ok(adminService.findAllAdmin());
+    @GetMapping("/status/{status}")
+    public ResponseEntity<?> getAllAdministratives(@PathVariable EmployeeStatus status){
+        return ResponseEntity.ok(adminService.findAllByStatus(status));
     }
 
-    @GetMapping("/disabled")
-    public ResponseEntity<?> getAllDisabledAdministratives(){
-        return ResponseEntity.ok(adminService.findAllAdminDisabled());
-    }
-
-    @GetMapping("/allrole/{administrativeRole}")
-    public ResponseEntity<?> getAllbyRoles(@PathVariable AdministrativeRoles administrativeRole){
-        return ResponseEntity.ok(adminService.findAllByRole(administrativeRole));
+    @GetMapping("/role/{role}/status/{status}")
+    public ResponseEntity<?> getAllbyRoles(@PathVariable AdministrativeRoles role, @PathVariable EmployeeStatus status){
+        return ResponseEntity.ok(adminService.findAllByRole(role, status));
     }
 
     @GetMapping("/id/{idEmployee}")
@@ -88,8 +85,14 @@ public class AdministrativeController {
     }
 
     @DeleteMapping("/{idEmployee}")
-    public ResponseEntity<?> deleteAdministrative(@PathVariable Long idEmployee) {
-        adminService.delete(idEmployee);
+    public ResponseEntity<?> deleteAdministrative(@PathVariable Long idEmployee, @Valid @RequestBody ActionInformationsRequestDto request ) {
+        adminService.delete(idEmployee, request.getDeletedBy(), request.getReason());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/suspended/{idEmployee}")
+    public ResponseEntity<?> suspendAdministrative(@PathVariable Long idEmployee, @Valid @RequestBody ActionInformationsRequestDto request ) {
+        adminService.suspended(idEmployee, request.getDeletedBy(), request.getReason());
         return ResponseEntity.noContent().build();
     }
 }
