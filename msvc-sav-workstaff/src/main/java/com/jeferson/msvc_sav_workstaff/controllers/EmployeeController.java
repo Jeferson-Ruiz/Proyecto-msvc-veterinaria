@@ -5,9 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc_sav_workstaff.dto.EmployeeResponseDto;
+import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 import com.jeferson.msvc_sav_workstaff.services.EmployeeService;
 
@@ -21,14 +23,9 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<EmployeeResponseDto>> getAllEmployee() {
-        return ResponseEntity.ok(employeeService.findAll());
-    }
-
-    @GetMapping("disabled")
-    public ResponseEntity<List<EmployeeResponseDto>> getAllDisabled(){
-        return ResponseEntity.ok(employeeService.findAllDisabled());
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<EmployeeResponseDto>> getAllEmployee(@PathVariable EmployeeStatus status) {
+        return ResponseEntity.ok(employeeService.findAllByStatus(status));
     }
 
     @GetMapping("id/{idEmployee}")
@@ -43,15 +40,15 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeDto);
     }
 
-    @GetMapping("all/{workArea}")
-    public ResponseEntity<?> getAllEmployeesByArea(@PathVariable WorkArea workArea) {
-        List<EmployeeResponseDto> employeesDto = employeeService.getEmployeesByType(workArea);
+    @GetMapping("all/{workArea}/status/{status}")
+    public ResponseEntity<?> getAllEmployeesByArea(@PathVariable WorkArea workArea, @PathVariable EmployeeStatus status) {
+        List<EmployeeResponseDto> employeesDto = employeeService.getEmployeesByType(workArea, status);
         return ResponseEntity.ok(employeesDto);
     }
 
     @DeleteMapping("id/{idEmployee}")
-    public ResponseEntity<?> deleteInfoEmployee(@PathVariable Long idEmployee) {
-        employeeService.delete(idEmployee);
+    public ResponseEntity<?> deleteInfoEmployee(@PathVariable Long idEmployee, @RequestBody String deleteBy, String reason) {
+        employeeService.delete(idEmployee, deleteBy, reason);
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,6 +1,8 @@
 package com.jeferson.msvc_sav_workstaff.models;
 
 import java.time.LocalDate;
+import java.util.List;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
@@ -12,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -63,7 +66,11 @@ public abstract class Employee {
     private LocalDate registrationDate;
 
     @Column(name = "emp_work_status", nullable = false)
-    private Boolean active;
+    @Enumerated(EnumType.STRING)
+    private EmployeeStatus status;
 
     public abstract WorkArea getArea();
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    private List<ActionInformation> actionInformations;
 }
