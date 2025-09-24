@@ -51,7 +51,7 @@ public class InternServiceImpl implements InternService {
         employeeService.validateStatus(status);
         List<Intern> interns = intRepository.findAllByRole(internRole, status);
         if (interns.isEmpty()) {
-            throw new EntityNotFoundException("No se encontraron pasante asociados al rol de "+ internRole);
+            throw new EntityNotFoundException("No se encontro registro de " + internRole + " asociados al estado de "+ status);
         }
         return mapInternsByStatus(status, interns);
     }
