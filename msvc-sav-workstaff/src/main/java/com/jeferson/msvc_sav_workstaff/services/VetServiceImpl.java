@@ -1,9 +1,11 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
+import com.jeferson.msvc_sav_workstaff.models.ActionInformation;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
+import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import com.jeferson.msvc_sav_workstaff.dto.VetRequestDto;
@@ -40,57 +42,43 @@ public class VetServiceImpl implements VetService {
             throw new IllegalArgumentException("La tarjeta profesional "+ entity.getProfessionalCard() +" ya se encuentra asociado a un veterinario");
         }
         entity.setRegistrationDate(LocalDate.now());
-        entity.setActive(true);
+        entity.setStatus(EmployeeStatus.PROCESS);
         Vet saved = vetRepository.save(entity);
         return vetMapper.toDto(saved);
     }
 
     @Override
-    public List<VetResponseDto> findAllVet(){
-        List<Vet> vets = vetRepository.findAllActiveVets();
+    public List<VetResponseDto> findAllByStatus(EmployeeStatus status){
+        employeeService.validateStatus(status);
+        List<Vet> vets = vetRepository.findAllActiveVets(status);
         if (vets.isEmpty()) {
-            throw new EntityNotFoundException("No se encontro empleados vinculado al cargo de veterinarios");
+            throw new EntityNotFoundException("No se encontraron empleados vinculado al cargo de veterinarios");
         }
-        return vets.stream()
-            .map(vetMapper::toDto)
-            .collect(Collectors.toList());
+        return mapVetsByStatus(status, vets);
     }
 
     @Override
-    public List<VetResponseDto> findAllDisabledVet(){
-        List<Vet> vets = vetRepository.findAllDisabledVets();
+    public List<VetResponseDto> findAllByRole(VetRoles vetRole, EmployeeStatus status){
+        employeeService.validateStatus(status);
+        List<Vet> vets = vetRepository.findAllByRole(vetRole, status);
         if (vets.isEmpty()) {
-            throw new EntityNotFoundException("No se encontraron veterinarios desahabilidtados en el sistema ");
+            throw new EntityNotFoundException("No se encontro registro de " + vetRole + " asociados al estado de "+ status);
         }
-        return vets.stream()
-            .map(vetMapper::toDto)
-            .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<VetResponseDto> findAllByRole(VetRoles vetRole){
-        List<Vet> vets = vetRepository.findAllByRole(vetRole);
-
-        if (vets.isEmpty()) {
-            throw new EntityNotFoundException("No se encontraron veterinarios asociados al rol de "+ vetRole);
-        }
-        return vets.stream()
-            .map(vetMapper::toDto)
-            .toList();
+        return mapVetsByStatus(status, vets);
     }
 
     @Override
     public VetResponseDto findById(Long idEmployee){
         Vet vet = vetRepository.findById(idEmployee)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro veterinario asociado al id "+ idEmployee + " en el sistema"));
-        return vetMapper.toDto(vet);
+        return mapVetByStatus(vet);
     }
 
     @Override
     public VetResponseDto findAdminByDocumentNumber(String documentNumber){
         Vet vet = vetRepository.findByDocumentNumber(documentNumber)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro veterianio asociado al numero de documento " + documentNumber));
-        return vetMapper.toDto(vet);
+        return mapVetByStatus(vet);
     }
 
     @Override
@@ -134,19 +122,61 @@ public class VetServiceImpl implements VetService {
     }
 
     @Override
-    public void delete(Long idEmployee){
+    public void delete(Long idEmployee, String deleteBy, String reason){
         Vet vet = validateInfo(idEmployee);
-        vet.setActive(false);
-        employeeRepo.save(vet);
+        vet.setStatus(EmployeeStatus.DELETED);
+        applyStatusChange(vet, deleteBy, reason);
     }
 
+
+    @Override
+    public void suspended(Long idEmployee, String deleteBy, String reason){
+        Vet vet = validateInfo(idEmployee);
+        if (vet.getStatus() == EmployeeStatus.SUSPENDED) {
+            throw new EntityNotFoundException("El veterinario "+ vet.getName() + " ya se encuentra suspendido del sistema");
+        }
+        vet.setStatus(EmployeeStatus.SUSPENDED);
+        applyStatusChange(vet, deleteBy, reason);
+    }
+
+    //helpers
     private Vet validateInfo(Long idEmployee) {
         Vet vet = vetRepository.findById(idEmployee)
                 .orElseThrow(() -> new EntityNotFoundException("No se encontro veterinario asociado al id " + idEmployee));
-        if (!vet.getActive()) {
-            throw new IllegalArgumentException("El empleado " + idEmployee + " se encuentra desactivado del sistema");
+        if (vet.getStatus() == EmployeeStatus.DELETED) {
+            throw new IllegalArgumentException("El veterinario " + idEmployee + " se encuentra desactivado permanentemente del sistema");
         }
         return vet;
     }
+
+    private List<VetResponseDto> mapVetsByStatus(EmployeeStatus status, List<Vet> vets){
+        return switch (status) {
+            case ACTIVE, PROCESS -> vets.stream()
+                .map(vetMapper::toDto)
+                .toList();
+            case DELETED, SUSPENDED -> vets.stream()
+                .map(vetMapper::toDisabledDto)
+                .map(dto -> (VetResponseDto) dto)
+                .toList(); 
+        };
+    }
+
+    private VetResponseDto mapVetByStatus(Vet vet){
+        EmployeeStatus status = vet.getStatus();
+        return switch (status) {
+            case ACTIVE, PROCESS -> vetMapper.toDto(vet);
+            case SUSPENDED, DELETED -> vetMapper.toDisabledDto(vet);
+        };
+    }
+
+    private void applyStatusChange(Vet vet, String deleteBy, String reason) {
+        ActionInformation actionInf = new ActionInformation();
+        actionInf.setDeletedAt(LocalDateTime.now());
+        actionInf.setDeletedBy(deleteBy);
+        actionInf.setReason(reason);
+        actionInf.setEmployee(vet);
+        vet.getActionInformations().add(actionInf);
+        vetRepository.save(vet);
+    }    
 
 }

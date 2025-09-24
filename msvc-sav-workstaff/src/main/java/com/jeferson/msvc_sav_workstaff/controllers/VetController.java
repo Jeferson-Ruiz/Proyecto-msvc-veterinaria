@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.jeferson.msvc_sav_workstaff.dto.ActionInformationsRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.EmailRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.PhoneNumberRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.VetRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.VetResponseDto;
 import com.jeferson.msvc_sav_workstaff.mapper.VetMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
+import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 import com.jeferson.msvc_sav_workstaff.models.VetRoles;
 import com.jeferson.msvc_sav_workstaff.services.VetService;
 import jakarta.validation.Valid;
@@ -37,25 +39,17 @@ public class VetController {
         return ResponseEntity.status(HttpStatus.CREATED).body(vet);
     }
 
-    @GetMapping
-    public ResponseEntity<?> findAllVets() {
-        List<VetResponseDto> vets = vetService.findAllVet();
+    @GetMapping("/status/{status}")
+    public ResponseEntity<?> findAllByStatus(@PathVariable EmployeeStatus status) {
+        List<VetResponseDto> vets = vetService.findAllByStatus(status);
         return ResponseEntity.ok(vets);
     }
 
-
-    @GetMapping("/disabled")
-    public ResponseEntity<?> findAllDisabledVets() {
-        List<VetResponseDto> vets = vetService.findAllDisabledVet();
+    @GetMapping("/role/{vetRole}/status/{status}")
+    public ResponseEntity<?> findAllByRole(@PathVariable VetRoles vetRole, @PathVariable EmployeeStatus status){
+        List<VetResponseDto> vets = vetService.findAllByRole(vetRole, status);
         return ResponseEntity.ok(vets);
     }
-
-    @GetMapping("/allrole/{vetRole}")
-    public ResponseEntity<?> findAllByRole(@PathVariable VetRoles vetRole){
-        List<VetResponseDto> vets = vetService.findAllByRole(vetRole);
-        return ResponseEntity.ok(vets);
-    }
-
 
     @GetMapping("/id/{idEmployee}")
     public ResponseEntity<?> getVetById(@PathVariable Long idEmployee) {
@@ -94,8 +88,14 @@ public class VetController {
     }
 
     @DeleteMapping("/{idEmployee}")
-    public ResponseEntity<?> deleteVet(@PathVariable Long idEmployee) {
-        vetService.delete(idEmployee);
+    public ResponseEntity<?> deleteVet(@PathVariable Long idEmployee, @Valid @RequestBody ActionInformationsRequestDto request) {
+        vetService.delete(idEmployee, request.getDeletedBy(), request.getReason());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/suspended/{idEmployee}")
+    public ResponseEntity<?> suspendedVet(@PathVariable Long idEmployee, @Valid @RequestBody ActionInformationsRequestDto request) {
+        vetService.suspended(idEmployee, request.getDeletedBy(), request.getReason());
         return ResponseEntity.noContent().build();
     }
 

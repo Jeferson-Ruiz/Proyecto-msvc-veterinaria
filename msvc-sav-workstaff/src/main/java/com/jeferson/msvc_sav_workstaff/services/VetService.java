@@ -4,16 +4,16 @@ import java.util.List;
 import com.jeferson.msvc_sav_workstaff.dto.VetRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.VetResponseDto;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
+import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 import com.jeferson.msvc_sav_workstaff.models.VetRoles;
 
 public interface VetService {
+
     VetResponseDto saveVet(VetRequestDto vetDto);
 
-    List<VetResponseDto> findAllVet();
-
-    List<VetResponseDto> findAllDisabledVet();
+    List<VetResponseDto> findAllByStatus(EmployeeStatus status);
     
-    List<VetResponseDto> findAllByRole(VetRoles vetRole);
+    List<VetResponseDto> findAllByRole(VetRoles vetRole, EmployeeStatus status);
 
     VetResponseDto findById(Long idEmployee);
 
@@ -27,5 +27,7 @@ public interface VetService {
 
     void updateRole(Long idEmployee, VetRoles vetRoles);
 
-    void delete(Long idEmployee);
+    void delete(Long idEmployee, String deleteBy, String reason);
+
+    void suspended(Long idEmployee, String deleteBy, String reason);
 }

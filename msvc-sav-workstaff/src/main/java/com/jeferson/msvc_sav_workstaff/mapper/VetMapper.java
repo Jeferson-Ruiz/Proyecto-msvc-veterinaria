@@ -2,10 +2,14 @@ package com.jeferson.msvc_sav_workstaff.mapper;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import com.jeferson.msvc_sav_workstaff.dto.ActionInformationsResponseDto;
 import com.jeferson.msvc_sav_workstaff.dto.VetRequestDto;
+import com.jeferson.msvc_sav_workstaff.dto.VetResponseDisabledDto;
 import com.jeferson.msvc_sav_workstaff.dto.VetResponseDto;
+import com.jeferson.msvc_sav_workstaff.models.ActionInformation;
 import com.jeferson.msvc_sav_workstaff.models.Vet;
 
 @Mapper(componentModel = "spring")
@@ -13,9 +17,16 @@ public interface VetMapper {
 
     Vet toEntity(VetRequestDto dto);
     
-    @Mapping(target = "fullName", expression = "java(entity.getName() + \" \" + entity.getLastName())")
-    @Mapping(target = "age", expression = "java(calculateAge(entity.getDateOfBirth()))")
-    VetResponseDto toDto(Vet entity);
+    @Mapping(target = "fullName", expression = "java(vet.getName() + \" \" + vet.getLastName())")
+    @Mapping(target = "age", expression = "java(calculateAge(vet.getDateOfBirth()))")
+    VetResponseDto toDto(Vet vet);
+
+    @Mapping(target = "fullName", expression = "java(vet.getName() + \" \" + vet.getLastName())")
+    @Mapping(target = "age", expression = "java(calculateAge(vet.getDateOfBirth()))")
+    @Mapping(target = "actionInformations", source = "actionInformations")
+    VetResponseDisabledDto toDisabledDto(Vet vet);
+
+    List<ActionInformationsResponseDto> toActionInformationsResponseDtos(List<ActionInformation> actionInformations);
 
     default Byte calculateAge(LocalDate dateOfBirth) {
         if (dateOfBirth == null) {

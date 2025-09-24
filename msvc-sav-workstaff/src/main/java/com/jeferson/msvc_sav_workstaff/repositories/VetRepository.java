@@ -1,5 +1,6 @@
 package com.jeferson.msvc_sav_workstaff.repositories;
 
+import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 import com.jeferson.msvc_sav_workstaff.models.Vet;
 import com.jeferson.msvc_sav_workstaff.models.VetRoles;
 import java.util.List;
@@ -16,14 +17,11 @@ public interface VetRepository extends JpaRepository<Vet, Long> {
 
     Boolean existsByProfessionalCard(String professionalCard);
 
-    @Query("SELECT v FROM Vet v WHERE v.active")
-    List<Vet> findAllActiveVets();
+    @Query("SELECT v FROM Vet v WHERE v.status =:status")
+    List<Vet> findAllActiveVets(@Param("status") EmployeeStatus status);
 
-    @Query("SELECT v FROM Vet v WHERE v.active =false")
-    List<Vet> findAllDisabledVets();
-
-    @Query("SELECT v FROM Vet v WHERE v.vetRoles =:vetRole AND v.active")
-    List<Vet> findAllByRole(@Param("vetRole") VetRoles vetRole);
+    @Query("SELECT v FROM Vet v WHERE v.vetRoles =:vetRole AND v.status =:status")
+    List<Vet> findAllByRole(@Param("vetRole") VetRoles vetRole, @Param("status") EmployeeStatus status);
 
     @Modifying
     @Query("update Vet set vetRoles=:vetRoles where employeeId =:employeeId")
