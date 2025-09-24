@@ -11,9 +11,9 @@ public interface AdministrativeService {
 
     AdmistrativeResponseDto saveAdministrative(AdministrativeRequestDto administrative);
 
-    List<?> findAllByStatus(EmployeeStatus status);
+    List<AdmistrativeResponseDto> findAllByStatus(EmployeeStatus status);
 
-    List<?> findAllByRole(AdministrativeRoles administrativeRole, EmployeeStatus status);
+    List<AdmistrativeResponseDto> findAllByRole(AdministrativeRoles administrativeRole, EmployeeStatus status);
     
     AdmistrativeResponseDto findAdminById (Long idEmployee);
     

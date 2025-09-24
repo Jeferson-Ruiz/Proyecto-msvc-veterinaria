@@ -57,7 +57,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     }
 
     @Override
-    public List<?> findAllByStatus(EmployeeStatus status) {
+    public List<AdmistrativeResponseDto> findAllByStatus(EmployeeStatus status) {
         employeeServi.validateStatus(status);
         List<Administrative> administratives = administrativeRepository.findAllByStatus(status);
         if (administratives.isEmpty()) {
@@ -67,7 +67,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     }
 
     @Override
-    public List<?> findAllByRole(AdministrativeRoles administrativeRole, EmployeeStatus status){
+    public List<AdmistrativeResponseDto> findAllByRole(AdministrativeRoles administrativeRole, EmployeeStatus status){
         employeeServi.validateStatus(status);
         List<Administrative> administratives = administrativeRepository.findAllByRoles(administrativeRole, status);
         if (administratives.isEmpty()) {
@@ -80,7 +80,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     public AdmistrativeResponseDto findAdminById(Long idEmployee) {
         Administrative administrative = administrativeRepository.findById(idEmployee)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro administrativo asociado al Id " + idEmployee + " en el sistema"));
-        return administrativeMapper.toDto(administrative);
+        return mapAdministrativeByStatus(administrative);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
         Administrative administrative = administrativeRepository.findByDocumentNumber(documentNumber)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "No se encontro administrativo asociado al numero de documento " + documentNumber));
-        return administrativeMapper.toDto(administrative);
+        return mapAdministrativeByStatus(administrative);
     }
 
     @Override
@@ -142,13 +142,8 @@ public class AdministrativeServiceImpl implements AdministrativeService {
             throw new IllegalArgumentException("El empleado administrativo "+ idEmployee + " ya está eliminado del sistema");
         }
         administrative.setStatus(EmployeeStatus.DELETED);
-        ActionInformation removal = new ActionInformation();
-        removal.setEmployee(administrative);
-        removal.setDeletedAt(LocalDateTime.now());    
-        removal.setDeletedBy(deleteAt);
-        removal.setReason(reason);
-        administrative.getActionInformations().add(removal);
-        employeeRepo.save(administrative);
+        applyStatusChange(administrative, deleteAt, reason);
+        
     }
 
     @Override
@@ -158,16 +153,10 @@ public class AdministrativeServiceImpl implements AdministrativeService {
             throw new IllegalArgumentException("El empleado administrativo"+ idEmployee + " ya se encuentra suspendido del sistema");
         }
         administrative.setStatus(EmployeeStatus.SUSPENDED);
-        ActionInformation removal = new ActionInformation();
-        removal.setEmployee(administrative);
-        removal.setDeletedAt(LocalDateTime.now());
-        removal.setDeletedBy(deleteBy);
-        removal.setReason(reason);
-        administrative.getActionInformations().add(removal);
-        employeeRepo.save(administrative);
+        applyStatusChange(administrative, deleteBy, reason);
     }
 
-
+    //helpers
     private Administrative validateInfo(Long idEmployee) {
         Administrative administrative = administrativeRepository.findById(idEmployee)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -179,15 +168,34 @@ public class AdministrativeServiceImpl implements AdministrativeService {
         return administrative;
     }
 
-    private List<?> mapAdministrativesByStatus(EmployeeStatus status, List<Administrative> admistratives) {
-        return switch (status) {
-            case ACTIVE, PROCESS -> admistratives.stream()
-                .map(administrativeMapper::toDto)
-                .toList();
-            case SUSPENDED, DELETED -> admistratives.stream()
-                .map(administrativeMapper::toDisabledDto)
-                .toList();
+    private List<AdmistrativeResponseDto> mapAdministrativesByStatus( EmployeeStatus status, List<Administrative> administratives) {
+    return switch (status) {
+        case ACTIVE, PROCESS -> administratives.stream()
+            .map(administrativeMapper::toDto)
+            .toList();
+        case SUSPENDED, DELETED -> administratives.stream()
+            .map(administrativeMapper::toDisabledDto)
+            .map(dto -> (AdmistrativeResponseDto) dto) 
+            .toList();
         };
+    }
+
+    private AdmistrativeResponseDto mapAdministrativeByStatus(Administrative administrative){
+        EmployeeStatus status = administrative.getStatus();
+        return switch (status) {
+            case ACTIVE, PROCESS -> administrativeMapper.toDto(administrative);
+            case DELETED, SUSPENDED -> administrativeMapper.toDisabledDto(administrative);
+        };
+    }
+
+    private void applyStatusChange(Administrative administration, String deleteBy, String reason) {
+        ActionInformation actionInf = new ActionInformation();
+        actionInf.setDeletedAt(LocalDateTime.now());
+        actionInf.setDeletedBy(deleteBy);
+        actionInf.setReason(reason);
+        actionInf.setEmployee(administration);
+        administration.getActionInformations().add(actionInf);
+        administrativeRepository.save(administration);
     }
 
 }
