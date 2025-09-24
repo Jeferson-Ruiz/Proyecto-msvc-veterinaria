@@ -17,15 +17,15 @@ public interface InternMapper {
 
     Intern toEntity(InternRequestDto dto);
 
-    @Mapping(target = "fullName", expression = "java(entity.getName() + \" \" + entity.getLastName())")
-    @Mapping(target = "age", expression = "java(calculateAge(entity.getDateOfBirth()))")
-    InternResponseDto toDto(Intern entity);
+    @Mapping(target = "fullName", expression = "java(intern.getName() + \" \" + intern.getLastName())")
+    @Mapping(target = "age", expression = "java(calculateAge(intern.getDateOfBirth()))")
+    InternResponseDto toDto(Intern intern);
 
 
-    @Mapping(target = "fullName", expression = "java(entity.getName() + \" \" + entity.getLastName())")
-    @Mapping(target = "age", expression = "java(calculateAge(entity.getDateOfBirth()))")
+    @Mapping(target = "fullName", expression = "java(intern.getName() + \" \" + intern.getLastName())")
+    @Mapping(target = "age", expression = "java(calculateAge(intern.getDateOfBirth()))")
     @Mapping(target = "actionInformations", source = "actionInformations")
-    InternResponseDisabledDto toDisabledDto(Intern entity);
+    InternResponseDisabledDto toDisabledDto(Intern intern);
 
     List<ActionInformationsResponseDto> toActionInformationsResponseDtos(List<ActionInformation> actionInformations);
 

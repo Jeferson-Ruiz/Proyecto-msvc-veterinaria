@@ -17,14 +17,14 @@ public interface AdministrativeMapper {
 
     Administrative toEntity(AdministrativeRequestDto dto);
     
-    @Mapping(target = "fullName", expression = "java(entity.getName() + \" \" + entity.getLastName())")
-    @Mapping(target = "age", expression = "java(calculateAge(entity.getDateOfBirth()))")
-    AdmistrativeResponseDto toDto(Administrative entity);
+    @Mapping(target = "fullName", expression = "java(administrative.getName() + \" \" + administrative.getLastName())")
+    @Mapping(target = "age", expression = "java(calculateAge(administrative.getDateOfBirth()))")
+    AdmistrativeResponseDto toDto(Administrative administrative);
 
-    @Mapping(target = "fullName", expression = "java(entity.getName() + \" \" + entity.getLastName())")
-    @Mapping(target = "age", expression = "java(calculateAge(entity.getDateOfBirth()))")
+    @Mapping(target = "fullName", expression = "java(administrative.getName() + \" \" + administrative.getLastName())")
+    @Mapping(target = "age", expression = "java(calculateAge(administrative.getDateOfBirth()))")
     @Mapping(target = "actionInformations", source = "actionInformations")
-    AdministrativeResponseDisabledDto toDisabledDto(Administrative entity);
+    AdministrativeResponseDisabledDto toDisabledDto(Administrative administrative);
     
     List<ActionInformationsResponseDto> toRemovalInformationDtos(List<ActionInformation> removalInformations);
 

@@ -19,14 +19,14 @@ public interface AuxiliaryMapper {
 
     Auxiliary toEntity(AuxiliaryRequestDto dto);
 
-    @Mapping(target = "fullName", expression = "java(entity.getName() + \" \" + entity.getLastName())")
-    @Mapping(target = "age", expression = "java(calculateAge(entity.getDateOfBirth()))")
-    AuxiliaryResponseDto toDto(Auxiliary entity);
+    @Mapping(target = "fullName", expression = "java(auxiliary.getName() + \" \" + auxiliary.getLastName())")
+    @Mapping(target = "age", expression = "java(calculateAge(auxiliary.getDateOfBirth()))")
+    AuxiliaryResponseDto toDto(Auxiliary auxiliary);
 
-    @Mapping(target = "fullName", expression = "java(entity.getName() + \" \" + entity.getLastName())")
-    @Mapping(target = "age", expression = "java(calculateAge(entity.getDateOfBirth()))")
+    @Mapping(target = "fullName", expression = "java(auxiliary.getName() + \" \" + auxiliary.getLastName())")
+    @Mapping(target = "age", expression = "java(calculateAge(auxiliary.getDateOfBirth()))")
     @Mapping(target = "actionInformations", source = "actionInformations")
-    AuxiliaryResponseDisabledDto toDisabledDto(Auxiliary entity);
+    AuxiliaryResponseDisabledDto toDisabledDto(Auxiliary auxiliary);
 
     List<ActionInformationsResponseDto> toActionInfoResponseDtos(List<ActionInformation> actionInformations);
 

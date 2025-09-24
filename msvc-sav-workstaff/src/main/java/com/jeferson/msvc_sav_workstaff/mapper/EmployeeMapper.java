@@ -10,9 +10,9 @@ import com.jeferson.msvc_sav_workstaff.models.Employee;
 @Mapper(componentModel = "spring")
 public interface EmployeeMapper {
 
-    @Mapping(target = "fullName", expression = "java(entity.getName() + \" \" + entity.getLastName())")
-    @Mapping(target = "workArea", expression = "java(entity.getArea())")
-    EmployeeResponseDto toDto(Employee entity);
+    @Mapping(target = "fullName", expression = "java(employee.getName() + \" \" + employee.getLastName())")
+    @Mapping(target = "workArea", expression = "java(employee.getArea())")
+    EmployeeResponseDto toDto(Employee employee);
 
     default Byte calculateAge(LocalDate dateOfBirth) {
         if (dateOfBirth == null) {
