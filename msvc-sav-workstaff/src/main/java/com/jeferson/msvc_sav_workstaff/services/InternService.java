@@ -4,18 +4,17 @@ import java.util.List;
 import com.jeferson.msvc_sav_workstaff.dto.InternResponseDto;
 import com.jeferson.msvc_sav_workstaff.dto.InternRequestDto;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
+import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 import com.jeferson.msvc_sav_workstaff.models.InternRoles;
 
 public interface InternService {
 
     InternResponseDto saveIntern(InternRequestDto internDto);
 
-    List<InternResponseDto> findAllInter();
-
-    List<InternResponseDto> findAllDisabledInter();
+    List<InternResponseDto> findAllByStatus(EmployeeStatus status);
     
-    List<InternResponseDto> findAllByRole(InternRoles internRole);
-
+    List<InternResponseDto> findAllByRole(InternRoles internRole, EmployeeStatus status);
+    
     InternResponseDto findById(Long idEmployee);
     
     InternResponseDto findAdminByDocumentNumber(String documentNumber);
@@ -28,5 +27,7 @@ public interface InternService {
 
     void updateRoles(Long idEmployee, InternRoles internRoles);
 
-    void delete (Long idEmployee);
+    void delete(Long idEmployee, String deleteBy, String reason);
+
+    void suspended(Long idEmployee, String deleteBy, String reason);
 }

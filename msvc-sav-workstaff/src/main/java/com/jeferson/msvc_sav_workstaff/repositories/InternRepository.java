@@ -1,5 +1,6 @@
 package com.jeferson.msvc_sav_workstaff.repositories;
 
+import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 import com.jeferson.msvc_sav_workstaff.models.Intern;
 import com.jeferson.msvc_sav_workstaff.models.InternRoles;
 import java.util.List;
@@ -10,17 +11,18 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface InternRepository extends JpaRepository<Intern, Long> {
+
     @Query("SELECT i FROM Intern i WHERE i.documentNumber =:documentNumber")
     Optional<Intern> findByDocumentNumber(@Param("documentNumber") String documentNumber);
 
-    @Query("SELECT i FROM Intern i WHERE i.active")
+    @Query("SELECT i FROM Intern i WHERE i.status =:ACTIVE")
     List<Intern> findAllActiveInterns();
 
-    @Query("SELECT i FROM Intern i WHERE i.active =false")
-    List<Intern> findAllDisabledInterns();
+    @Query("SELECT i FROM Intern i WHERE i.status =:status")
+    List<Intern> findAllByStatus(@Param("status")EmployeeStatus status);
 
-    @Query("SELECT i FROM Intern i WHERE i.internRoles =:internRole AND i.active")
-    List<Intern> findAllByRole(@Param("internRole") InternRoles internRole);
+    @Query("SELECT i FROM Intern i WHERE i.internRoles =:internRole AND i.status =:status")
+    List<Intern> findAllByRole(@Param("internRole") InternRoles internRole, @Param("status") EmployeeStatus status);
 
     @Modifying
     @Query("update Intern set internRoles=:internRoles where employeeId =:employeeId")

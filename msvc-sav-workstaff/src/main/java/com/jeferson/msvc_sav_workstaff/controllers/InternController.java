@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc_sav_workstaff.dto.InternResponseDto;
 import com.jeferson.msvc_sav_workstaff.dto.PhoneNumberRequestDto;
+import com.jeferson.msvc_sav_workstaff.dto.ActionInformationsRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.EmailRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.InternRequestDto;
 import com.jeferson.msvc_sav_workstaff.mapper.InternMapper;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
+import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 import com.jeferson.msvc_sav_workstaff.models.InternRoles;
 import com.jeferson.msvc_sav_workstaff.services.InternService;
-
 import jakarta.validation.Valid;
 
 @RestController
@@ -38,21 +39,15 @@ public class InternController {
         return ResponseEntity.status(HttpStatus.CREATED).body(intern);
     }
 
-    @GetMapping
-    public ResponseEntity<?> getAllInterns() {
-        List<InternResponseDto> interns = intService.findAllInter();
+    @GetMapping("/status/{status}")
+    public ResponseEntity<?> getAllInternsByStatus(@PathVariable EmployeeStatus status) {
+        List<InternResponseDto> interns = intService.findAllByStatus(status);
         return ResponseEntity.ok(interns);
     }
 
-    @GetMapping("/disabled")
-    public ResponseEntity<?> getAllDisabledInterns() {
-        List<InternResponseDto> interns = intService.findAllDisabledInter();
-        return ResponseEntity.ok(interns);
-    }
-
-    @GetMapping("/allrole/{internRole}")
-    public ResponseEntity<?> getAllByRole(@PathVariable InternRoles internRole){
-        List<InternResponseDto> interns = intService.findAllByRole(internRole);
+    @GetMapping("/role/{role}/status/{status}")
+    public ResponseEntity<?> getAllByRole(@PathVariable InternRoles role, @PathVariable EmployeeStatus status){
+        List<InternResponseDto> interns = intService.findAllByRole(role, status);
         return ResponseEntity.ok(interns);
     }
 
@@ -93,8 +88,15 @@ public class InternController {
     }
 
     @DeleteMapping("/{idEmployee}")
-    public ResponseEntity<?> deleteIntern(@PathVariable Long idEmployee) {
-        intService.delete(idEmployee);
+    public ResponseEntity<?> deleteIntern(@PathVariable Long idEmployee, @Valid @RequestBody ActionInformationsRequestDto request ) {
+        intService.delete(idEmployee, request.getDeletedBy(), request.getReason());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/suspended/{idEmployee}")
+    public ResponseEntity<?> suspended(@PathVariable Long idEmployee, @Valid @RequestBody ActionInformationsRequestDto request ) {
+        intService.suspended(idEmployee, request.getDeletedBy(), request.getReason());
         return ResponseEntity.noContent().build();
     }
 }
+    
