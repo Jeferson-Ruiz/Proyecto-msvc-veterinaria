@@ -1,15 +1,17 @@
 package com.jeferson.msvc_sav_workstaff.services;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryResponseDto;
 import com.jeferson.msvc_sav_workstaff.mapper.AuxiliaryMapper;
+import com.jeferson.msvc_sav_workstaff.models.ActionInformation;
 import com.jeferson.msvc_sav_workstaff.models.Auxiliary;
 import com.jeferson.msvc_sav_workstaff.models.AuxiliaryRoles;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
+import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 import com.jeferson.msvc_sav_workstaff.repositories.AuxiliaryRepository;
 import com.jeferson.msvc_sav_workstaff.repositories.EmployeeRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -38,61 +40,48 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
         Boolean employee = employeeRespo.findByDocumentNumber(auxiliaryDto.getDocumentNumber()).isPresent();
         if (employee) {
             throw new RuntimeException(
-                    "El documento " + auxiliaryDto.getDocumentNumber() + " ya se encuentra vinculado a un empleado");
+                    "El documento " + auxiliaryDto.getDocumentNumber() + " ya se encuentra vinculado a un empleado en el sistema");
         }
         Auxiliary entity = auxMapper.toEntity(auxiliaryDto);
         entity.setRegistrationDate(LocalDate.now());
-        entity.setActive(true);
+        entity.setStatus(EmployeeStatus.PROCESS);
         auxRepository.save(entity);
         return auxMapper.toDto(entity);
     }
 
     @Override
-    public List<AuxiliaryResponseDto> findAllAuxiliary() {
-        List<Auxiliary> auxiliaries = auxRepository.findAllActiveAuxiliaries();
+    public List<AuxiliaryResponseDto> findAllByStatus(EmployeeStatus status) {
+        employeeService.validateStatus(status);
+        List<Auxiliary> auxiliaries = auxRepository.findAllByStatus(status);
         if (auxiliaries.isEmpty()) {
-            throw new EntityNotFoundException("No se encontraron empleados asociados al cargo de auxiliar");
+            throw new EntityNotFoundException(" No existen auxiares asociadoas al estado de "+ status +" en el sistem");
         }
-        return auxiliaries.stream()
-                .map(auxMapper::toDto)
-                .collect(Collectors.toList());
+        return mapAuxiliariesByStatus(status, auxiliaries);
     }
 
     @Override
-    public List<AuxiliaryResponseDto> findAllDisabledAuxiliary() {
-        List<Auxiliary> auxiliaries = auxRepository.findAllDisabledAuxiliaries();
+    public List<AuxiliaryResponseDto> findAllByRoles(AuxiliaryRoles auxiliaryRole, EmployeeStatus status){
+        employeeService.validateStatus(status);
+        List<Auxiliary> auxiliaries = auxRepository.findByRoles(auxiliaryRole, status);
         if (auxiliaries.isEmpty()) {
-            throw new EntityNotFoundException("No se encontraron auxiliares desahabilidatos en el sistema");
+            throw new EntityNotFoundException("No se encontro registro de " + auxiliaryRole + " asociados al estado de "+ status);
         }
-        return auxiliaries.stream()
-                .map(auxMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<AuxiliaryResponseDto> findAllByRoles(AuxiliaryRoles auxiliaryRole){
-        List<Auxiliary> auxiliaries = auxRepository.findByRoles(auxiliaryRole);
-        if (auxiliaries.isEmpty()) {
-            throw new EntityNotFoundException("No se encontraron auxiliaries asociados al rol de "+ auxiliaryRole);
-        }
-        return auxiliaries.stream()
-            .map(auxMapper::toDto)
-            .toList();
+        return mapAuxiliariesByStatus(status, auxiliaries);
     }
 
     @Override
     public AuxiliaryResponseDto findById(Long idEmployee) {
         Auxiliary auxiliary = auxRepository.findById(idEmployee)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro auxiliar asociado al id " + idEmployee));
-        return auxMapper.toDto(auxiliary);
+        return mapAuxiliaryByStatus(auxiliary);
     }
 
     @Override
     public AuxiliaryResponseDto findAdminByDocumentNumber(String documentNumber) {
         Auxiliary auxiliary = auxRepository.findByDocumentNumber(documentNumber)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "No se encontro veterianio asociado al numero de documento " + documentNumber));
-        return auxMapper.toDto(auxiliary);
+                        "No se encontro auxiliar asociado al numero de documento " + documentNumber));
+        return mapAuxiliaryByStatus(auxiliary);
     }
 
     @Override
@@ -140,18 +129,64 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
     }
 
     @Override
-    public void delete(Long idEmployee) {
+    public void delete(Long idEmployee, String deleteBy, String reason) {
         Auxiliary auxiliary = validateInfo(idEmployee);
-        auxiliary.setActive(false);
-        employeeRespo.save(auxiliary);
+        if (auxiliary.getStatus() == EmployeeStatus.DELETED) {
+            throw new IllegalArgumentException("El auxiliar "+ idEmployee + " ya está eliminado del sistema");
+        }
+        auxiliary.setStatus(EmployeeStatus.DELETED);
+        applyStatusChange(auxiliary, deleteBy, reason);
     }
 
+    @Override
+    public void suspended(Long idEmployee, String deleteBy, String reason){
+        Auxiliary auxiliary = validateInfo(idEmployee);
+        if (auxiliary.getStatus() == EmployeeStatus.SUSPENDED) {
+            throw new IllegalArgumentException("El auxiliar"+ idEmployee + "ya se encuentra suspendido del sistema");
+        }
+        auxiliary.setStatus(EmployeeStatus.SUSPENDED);
+        applyStatusChange(auxiliary, deleteBy, reason);
+    }
+
+
+
+    // helpers
     private Auxiliary validateInfo(Long idEmployee) {
         Auxiliary auxiliary = auxRepository.findById(idEmployee)
                 .orElseThrow(() -> new EntityNotFoundException("No se encontro auxiliar asociado al id " + idEmployee));
-        if (!auxiliary.getActive()) {
-            throw new IllegalArgumentException("El empelado " + idEmployee + " se encuentra deshabilitado del sistema");
+        if (auxiliary.getStatus() == EmployeeStatus.DELETED) {
+            throw new IllegalArgumentException("El auxiliar " + idEmployee + " se encuentra deshabilitado permanentemente del sistema");
         }
         return auxiliary;
+    }
+
+    private List<AuxiliaryResponseDto> mapAuxiliariesByStatus(EmployeeStatus status, List<Auxiliary> auxiliaries) {
+        return switch (status) {
+            case ACTIVE, PROCESS -> auxiliaries.stream()
+                .map(auxMapper::toDto)
+                .toList();
+            case SUSPENDED, DELETED -> auxiliaries.stream()
+                .map(auxMapper::toDisabledDto)
+                .map(dto -> (AuxiliaryResponseDto)dto)
+                .toList();
+        };
+    }
+
+    private AuxiliaryResponseDto mapAuxiliaryByStatus(Auxiliary auxiliary){
+        EmployeeStatus status = auxiliary.getStatus();
+        return switch (status) {
+            case ACTIVE, PROCESS -> auxMapper.toDto(auxiliary);
+            case SUSPENDED, DELETED -> auxMapper.toDisabledDto(auxiliary);
+        };
+    }
+
+    private void applyStatusChange(Auxiliary auxiliary, String deleteBy, String reason) {
+        ActionInformation actionInf = new ActionInformation();
+        actionInf.setDeletedAt(LocalDateTime.now());
+        actionInf.setDeletedBy(deleteBy);
+        actionInf.setReason(reason);
+        actionInf.setEmployee(auxiliary);
+        auxiliary.getActionInformations().add(actionInf);
+        auxRepository.save(auxiliary);
     }
 }

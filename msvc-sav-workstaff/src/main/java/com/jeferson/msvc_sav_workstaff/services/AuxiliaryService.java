@@ -5,16 +5,15 @@ import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryResponseDto;
 import com.jeferson.msvc_sav_workstaff.models.AuxiliaryRoles;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
+import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 
 public interface AuxiliaryService {
 
     AuxiliaryResponseDto saveAuxiliary(AuxiliaryRequestDto auxiliaryDto);
 
-    List<AuxiliaryResponseDto> findAllAuxiliary();
+    List<AuxiliaryResponseDto> findAllByStatus(EmployeeStatus status);
 
-    List<AuxiliaryResponseDto> findAllDisabledAuxiliary();
-
-    List<AuxiliaryResponseDto> findAllByRoles(AuxiliaryRoles auxiliaryRole);
+    List<AuxiliaryResponseDto> findAllByRoles(AuxiliaryRoles auxiliaryRole, EmployeeStatus status);
 
     AuxiliaryResponseDto findById(Long idEmployee);
 
@@ -28,6 +27,8 @@ public interface AuxiliaryService {
 
     void updateRole(Long idEmployee, AuxiliaryRoles auxiliaryRole);
 
-    void delete (Long idEmployee);
+    void delete(Long idEmployee, String deleteBy, String reason);
+
+    void suspended(Long idEmployee, String deleteBy, String reason);
 
 }

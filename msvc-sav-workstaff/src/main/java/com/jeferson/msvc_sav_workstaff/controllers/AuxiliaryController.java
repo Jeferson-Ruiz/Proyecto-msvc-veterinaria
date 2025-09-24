@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.jeferson.msvc_sav_workstaff.dto.ActionInformationsRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryRequestDto;
 import com.jeferson.msvc_sav_workstaff.dto.AuxiliaryResponseDto;
 import com.jeferson.msvc_sav_workstaff.dto.EmailRequestDto;
@@ -18,6 +19,7 @@ import com.jeferson.msvc_sav_workstaff.dto.PhoneNumberRequestDto;
 import com.jeferson.msvc_sav_workstaff.mapper.AuxiliaryMapper;
 import com.jeferson.msvc_sav_workstaff.models.AuxiliaryRoles;
 import com.jeferson.msvc_sav_workstaff.models.ContractType;
+import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 import com.jeferson.msvc_sav_workstaff.services.AuxiliaryService;
 import jakarta.validation.Valid;
 
@@ -37,25 +39,17 @@ public class AuxiliaryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(auxiliary);
     }
 
-    @GetMapping
-    public ResponseEntity<?> getAllAuxiliary() {
-        List<AuxiliaryResponseDto> auxiliaries = auxService.findAllAuxiliary();
+    @GetMapping("/status/{status}")
+    public ResponseEntity<?> getAllAuxiliary(@PathVariable EmployeeStatus status) {
+        List<?> auxiliaries = auxService.findAllByStatus(status);
         return ResponseEntity.ok(auxiliaries);
     }
 
-    @GetMapping("/disabled")
-    public ResponseEntity<?> getAllDisabledAuxiliary() {
-        List<AuxiliaryResponseDto> auxiliaries = auxService.findAllDisabledAuxiliary();
+    @GetMapping("/role/{role}/status/{status}")
+    public ResponseEntity<?> getAllByRole(@PathVariable AuxiliaryRoles role, @PathVariable EmployeeStatus status){
+        List<?> auxiliaries = auxService.findAllByRoles(role, status);
         return ResponseEntity.ok(auxiliaries);
     }
-
-
-    @GetMapping("/allrole/{auxiliaryRole}")
-    public ResponseEntity<?> getAllByRole(@PathVariable AuxiliaryRoles auxiliaryRole){
-        List<AuxiliaryResponseDto> auxiliaries = auxService.findAllByRoles(auxiliaryRole);
-        return ResponseEntity.ok(auxiliaries);
-    }
-
 
     @GetMapping("/id/{idEmployee}")
     public ResponseEntity<?> getAuxiliaryById(@PathVariable Long idEmployee) {
@@ -63,7 +57,6 @@ public class AuxiliaryController {
         return ResponseEntity.ok(auxiliaryDto);
     }
 
-    // error
     @GetMapping("/document/{documentNumber}")
     public ResponseEntity<?> getAuxiliaryDocumentNumber(@PathVariable String documentNumber) {
         AuxiliaryResponseDto auxiliaryDto = auxService.findAdminByDocumentNumber(documentNumber);
@@ -83,8 +76,7 @@ public class AuxiliaryController {
     }
 
     @PatchMapping("/update-contract/{idEmployee}")
-    public ResponseEntity<?> updInfoContractType(@PathVariable Long idEmployee,
-            @RequestBody ContractType contractType) {
+    public ResponseEntity<?> updInfoContractType(@PathVariable Long idEmployee,@RequestBody ContractType contractType) {
         auxService.updateContractType(idEmployee, contractType);
         return ResponseEntity.noContent().build();
     }
@@ -96,8 +88,14 @@ public class AuxiliaryController {
     }
 
     @DeleteMapping("/{idEmployee}")
-    public ResponseEntity<?> deleteAuxiliary(@PathVariable Long idEmployee) {
-        auxService.delete(idEmployee);
+    public ResponseEntity<?> deleteAuxiliary(@PathVariable Long idEmployee, @Valid @RequestBody ActionInformationsRequestDto request ) {
+        auxService.delete(idEmployee, request.getDeletedBy(), request.getReason());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/suspended/{idEmployee}")
+    public ResponseEntity<?> suspended(@PathVariable Long idEmployee, @Valid @RequestBody ActionInformationsRequestDto request ) {
+        auxService.suspended(idEmployee, request.getDeletedBy(), request.getReason());
         return ResponseEntity.noContent().build();
     }
 }

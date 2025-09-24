@@ -2,6 +2,7 @@ package com.jeferson.msvc_sav_workstaff.repositories;
 
 import com.jeferson.msvc_sav_workstaff.models.Auxiliary;
 import com.jeferson.msvc_sav_workstaff.models.AuxiliaryRoles;
+import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,14 +15,11 @@ public interface AuxiliaryRepository  extends JpaRepository<Auxiliary, Long> {
     @Query("SELECT a FROM Auxiliary a WHERE a.documentNumber =:documentNumber")
     Optional<Auxiliary> findByDocumentNumber(@Param("documentNumber") String documentNumber);
 
-    @Query("SELECT a FROM Auxiliary a WHERE a.active")
-    List<Auxiliary> findAllActiveAuxiliaries();
+    @Query("SELECT a FROM Auxiliary a WHERE a.status =:status")
+    List<Auxiliary> findAllByStatus(@Param("status") EmployeeStatus status);
 
-    @Query("SELECT a FROM Auxiliary a WHERE a.active = false")
-    List<Auxiliary> findAllDisabledAuxiliaries();
-
-    @Query("SELECT a FROM Auxiliary a WHERE a.auxiliaryRoles =:auxiliaryRole AND a.active")
-    List<Auxiliary> findByRoles(@Param("auxiliaryRole") AuxiliaryRoles auxiliaryRole);
+    @Query("SELECT a FROM Auxiliary a WHERE a.auxiliaryRoles =:auxiliaryRole AND a.status =:status")
+    List<Auxiliary> findByRoles(@Param("auxiliaryRole") AuxiliaryRoles auxiliaryRole, @Param("status") EmployeeStatus status);
 
     @Modifying
     @Query("update Auxiliary set auxiliaryRoles=:auxiliaryRoles where employeeId =:employeeId")
