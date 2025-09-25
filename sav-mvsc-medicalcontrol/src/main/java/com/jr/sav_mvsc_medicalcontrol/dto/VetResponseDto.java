@@ -5,8 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class VetDto {
+public class VetResponseDto {
     private Long employeeId;
     private String fullName;
-    private Boolean active;
+    private String status;
 }

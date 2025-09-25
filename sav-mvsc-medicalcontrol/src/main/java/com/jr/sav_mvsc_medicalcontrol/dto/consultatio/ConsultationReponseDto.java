@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ConsultationReponseDto {
-    private Long idConsultation;
+    private Long idConsultation; 
     private Long idPet;
     private String petName;
     private String reason;

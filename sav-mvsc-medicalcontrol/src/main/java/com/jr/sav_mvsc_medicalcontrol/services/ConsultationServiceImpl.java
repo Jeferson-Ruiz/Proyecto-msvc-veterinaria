@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationRequestDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationsWithVetDto;
 import com.jr.sav_mvsc_medicalcontrol.client.VetClient;
-import com.jr.sav_mvsc_medicalcontrol.dto.VetDto;
+import com.jr.sav_mvsc_medicalcontrol.dto.VetResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.VetWithConsultationsDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationReponseDto;
 import com.jr.sav_mvsc_medicalcontrol.mapper.ConsultationMapper;
@@ -63,7 +63,7 @@ public class ConsultationServiceImpl implements ConsultationService {
     public ConsultationReponseDto saveConsultation(ConsultationRequestDto consultationDto) {
         try{
         Pet pet = validPet(consultationDto.getIdPet());
-        VetDto vetDto = validVet(consultationDto.getVetId());
+        VetResponseDto vetDto = validVet(consultationDto.getVetId());
         
         validDate(consultationDto.getCitationDate());
         checkAvailability(consultationDto.getVetId(), consultationDto.getCitationDate());
@@ -73,7 +73,8 @@ public class ConsultationServiceImpl implements ConsultationService {
         consultation.setPetName(pet.getName());
         consultation.setStatus(AttendanceStatus.PENDING);
         consultation.setRegistrationDate(LocalDateTime.now());
-        return consultationMapper.toDto(consultationRepository.save(consultation));
+        Consultation saved = consultationRepository.save(consultation);
+        return mapToDtoWithVetName(saved);
         }catch(DataIntegrityViolationException e){
             throw new IllegalArgumentException("El veterinario ya tiene una cita asignada en ese horario");
         }
@@ -114,7 +115,7 @@ public class ConsultationServiceImpl implements ConsultationService {
 
     @Override
     public VetWithConsultationsDto findConsultationsByIdVet(Long vetId){
-        VetDto vet;
+        VetResponseDto vet;
         try {
             vet = vetClient.getVetById(vetId); 
         } catch (feign.FeignException.NotFound e) {
@@ -166,10 +167,10 @@ public class ConsultationServiceImpl implements ConsultationService {
         return pet;
     }
 
-    private VetDto validVet(Long idVet) {
+    private VetResponseDto validVet(Long idVet) {
         try {
-            VetDto vet = vetClient.getVetById(idVet);
-            if (!vet.getActive()) {
+            VetResponseDto vet = vetClient.getVetById(idVet);
+            if (!"ACTIVE".equalsIgnoreCase(vet.getStatus())) {
                 throw new IllegalArgumentException("El veterinario " + idVet + " está deshabilitado del sistema");
             }
             return vet;
@@ -182,7 +183,7 @@ public class ConsultationServiceImpl implements ConsultationService {
     private ConsultationReponseDto mapToDtoWithVetName(Consultation consultation) {
     ConsultationReponseDto dto = consultationMapper.toDto(consultation);
     try {
-        VetDto vet = vetClient.getVetById(consultation.getVetId());
+        VetResponseDto vet = vetClient.getVetById(consultation.getVetId());
         dto.setFullName(vet.getFullName());
     } catch (feign.FeignException.NotFound e) {
         dto.setFullName("Veterinario no encontrado");

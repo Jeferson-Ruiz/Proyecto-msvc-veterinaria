@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VetWithConsultationsDto {
-    private VetDto vet;
+    private VetResponseDto vet;
     private List<ConsultationsWithVetDto> consultations;
 
 }
