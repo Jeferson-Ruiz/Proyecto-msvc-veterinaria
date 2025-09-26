@@ -8,7 +8,7 @@ import com.jr.sav_mvsc_medicalcontrol.dto.VetResponseDto;
 @FeignClient(name = "msvc-sav-workstaff")
 public interface VetClient {
 
-    @GetMapping("api/sav/employee/vet/id/{idEmployee}")
+    @GetMapping("vet/id/{idEmployee}")
     VetResponseDto getVetById(@PathVariable("idEmployee") Long idEmployee);
 
 }

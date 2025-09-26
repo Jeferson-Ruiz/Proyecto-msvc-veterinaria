@@ -20,7 +20,7 @@ import com.jr.sav_mvsc_medicalcontrol.services.OwnerService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/sav/owner")
+@RequestMapping("owner")
 public class OwnerController {
     
     private final OwnerService ownerService;

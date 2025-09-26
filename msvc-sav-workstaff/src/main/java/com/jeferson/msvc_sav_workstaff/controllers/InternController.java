@@ -24,7 +24,7 @@ import com.jeferson.msvc_sav_workstaff.services.InternService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/sav/employee/intern")
+@RequestMapping("intern")
 public class InternController {
 
     private final InternService intService;

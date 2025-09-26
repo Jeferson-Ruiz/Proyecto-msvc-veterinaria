@@ -17,7 +17,7 @@ import com.jr.sav_mvsc_medicalcontrol.services.VaccineService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/sav/vaccine")
+@RequestMapping("vaccine")
 public class VaccineController {
 
     private final VaccineService vaccineService;

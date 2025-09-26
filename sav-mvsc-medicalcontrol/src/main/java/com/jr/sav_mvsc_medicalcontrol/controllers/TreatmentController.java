@@ -15,7 +15,7 @@ import com.jr.sav_mvsc_medicalcontrol.services.TreatmentService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/sav/treatment")
+@RequestMapping("treatment")
 public class TreatmentController {
 
     private final TreatmentService treatmentService;

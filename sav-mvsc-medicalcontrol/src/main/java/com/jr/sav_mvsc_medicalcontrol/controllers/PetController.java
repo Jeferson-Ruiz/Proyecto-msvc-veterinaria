@@ -20,7 +20,7 @@ import com.jr.sav_mvsc_medicalcontrol.services.PetService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/sav/pet")
+@RequestMapping("pet")
 public class PetController {
     
     private final PetService petService;

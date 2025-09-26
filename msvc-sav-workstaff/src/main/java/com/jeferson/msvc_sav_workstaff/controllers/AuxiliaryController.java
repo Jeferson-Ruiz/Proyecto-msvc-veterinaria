@@ -24,7 +24,7 @@ import com.jeferson.msvc_sav_workstaff.services.AuxiliaryService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/sav/employee/auxiliary")
+@RequestMapping("auxiliary")
 public class AuxiliaryController {
 
     private final AuxiliaryService auxService;

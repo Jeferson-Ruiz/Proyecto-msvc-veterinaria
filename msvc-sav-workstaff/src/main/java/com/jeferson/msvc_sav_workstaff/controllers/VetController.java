@@ -24,7 +24,7 @@ import com.jeferson.msvc_sav_workstaff.services.VetService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/sav/employee/vet")
+@RequestMapping("vet")
 public class VetController {
 
     private final VetService vetService;
