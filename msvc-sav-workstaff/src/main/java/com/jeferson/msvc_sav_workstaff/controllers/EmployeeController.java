@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,8 @@ import com.jeferson.msvc_sav_workstaff.dto.EmployeeResponseDto;
 import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 import com.jeferson.msvc_sav_workstaff.services.EmployeeService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("api/sav/employee")
@@ -49,6 +52,12 @@ public class EmployeeController {
     @DeleteMapping("id/{idEmployee}")
     public ResponseEntity<?> deleteInfoEmployee(@PathVariable Long idEmployee, @RequestBody String deleteBy, String reason) {
         employeeService.delete(idEmployee, deleteBy, reason);
+        return ResponseEntity.noContent().build();
+    }
+    
+    @PatchMapping("/update-status/{idEmployee}")
+    public ResponseEntity<?> updateStatus(@PathVariable Long idEmployee, @Valid @RequestBody EmployeeStatus status ) {
+        employeeService.updateEmployeeStatus(idEmployee, status);
         return ResponseEntity.noContent().build();
     }
 }

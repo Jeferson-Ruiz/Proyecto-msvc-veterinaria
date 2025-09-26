@@ -31,4 +31,6 @@ public interface AuxiliaryService {
 
     void suspended(Long idEmployee, String deleteBy, String reason);
 
+    void updateEmployeeStatus(Long idEmployee, EmployeeStatus employeeStatus);
+
 }

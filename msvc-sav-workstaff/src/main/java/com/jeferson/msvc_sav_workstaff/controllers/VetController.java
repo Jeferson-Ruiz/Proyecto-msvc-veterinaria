@@ -99,4 +99,9 @@ public class VetController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/update-status/{idEmployee}")
+    public ResponseEntity<?> updateStatus(@PathVariable Long idEmployee, @Valid @RequestBody EmployeeStatus status ) {
+        vetService.updateEmployeeStatus(idEmployee, status);
+        return ResponseEntity.noContent().build();
+    }
 }

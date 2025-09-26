@@ -4,7 +4,6 @@ import com.jeferson.msvc_sav_workstaff.dto.EmployeeResponseDto;
 import com.jeferson.msvc_sav_workstaff.mapper.EmployeeMapper;
 import com.jeferson.msvc_sav_workstaff.models.Administrative;
 import com.jeferson.msvc_sav_workstaff.models.Auxiliary;
-import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.Employee;
 import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 import com.jeferson.msvc_sav_workstaff.models.Intern;
@@ -59,8 +58,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeResponseDto findById(Long idEmployee) {
-        Employee employee = employeeRepository.findById(idEmployee)
-                .orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al Id " + idEmployee));
+        Employee employee = findEmployeeById(idEmployee);
         return employeeMapper.toDto(employee);
     }
 
@@ -94,26 +92,29 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    @Transactional
-    public void updateEmail(Long idEmployee, String email) {
-        employeeRepository.updateEmail(idEmployee, email);
+    public void updateEmployeeStatus(Long idEmployee, EmployeeStatus employeeStatus){
+        Employee employee = findEmployeeById(idEmployee);
+        validateUpdateStatus(employeeStatus, employee);
+        employeeRepository.save(employee);
     }
 
-    @Override
-    @Transactional
-    public void updateNumberPhone(Long idEmployee, String phoneNumber) {
-        employeeRepository.updatePhoneNumber(idEmployee, phoneNumber);
-    }
-
-    @Override
-    @Transactional
-    public void updateContractType(Long idEmployee, ContractType contractType) {
-        employeeRepository.updateContractType(idEmployee, contractType);
-    }
-
-    @Override
-    public EmployeeStatus validateStatus(EmployeeStatus status){
+    private EmployeeStatus validateStatus(EmployeeStatus status){
         return status != null ? status : EmployeeStatus.ACTIVE;
     }
+
+
+    private Employee findEmployeeById(Long id){
+        Employee employee = employeeRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al id"+ id));
+        return employee;
+    }
+
+    private void validateUpdateStatus(EmployeeStatus status, Employee employee){
+        if (status == EmployeeStatus.DELETED) {
+            throw new IllegalArgumentException("No se puede eliminar un usuario desde el panel de actualizacion de estado");}
+        if (status == employee.getStatus()) {
+            throw new IllegalArgumentException("El empleado ya se encuentra vinculado al estado de "+ status);}
+    }
+
 
 }

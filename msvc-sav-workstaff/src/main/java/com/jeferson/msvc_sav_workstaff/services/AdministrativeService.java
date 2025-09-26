@@ -31,4 +31,6 @@ public interface AdministrativeService {
 
     void suspended(Long idEmployee, String deleteAt, String reason);
 
+    void updateEmployeeStatus(Long idEmployee, EmployeeStatus employeeStatus);
+
 }

@@ -98,5 +98,12 @@ public class InternController {
         intService.suspended(idEmployee, request.getDeletedBy(), request.getReason());
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/update-status/{idEmployee}")
+    public ResponseEntity<?> updateStatus(@PathVariable Long idEmployee, @Valid @RequestBody EmployeeStatus status ) {
+        intService.updateEmployeeStatus(idEmployee, status);
+        return ResponseEntity.noContent().build();
+    }
+    
 }
     

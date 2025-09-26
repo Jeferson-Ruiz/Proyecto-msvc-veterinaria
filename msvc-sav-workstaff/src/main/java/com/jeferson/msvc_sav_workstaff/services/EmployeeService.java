@@ -2,7 +2,6 @@ package com.jeferson.msvc_sav_workstaff.services;
 
 import java.util.List;
 import com.jeferson.msvc_sav_workstaff.dto.EmployeeResponseDto;
-import com.jeferson.msvc_sav_workstaff.models.ContractType;
 import com.jeferson.msvc_sav_workstaff.models.EmployeeStatus;
 import com.jeferson.msvc_sav_workstaff.models.WorkArea;
 
@@ -18,12 +17,6 @@ public interface EmployeeService {
 
     void delete(Long idEmployee, String deleteBy, String reason);
 
-    void updateEmail(Long idEmployee, String email);
-
-    void updateNumberPhone(Long idEmployee, String phoneNumber);
-
-    void updateContractType(Long idEmployee, ContractType contractType);
-
-    EmployeeStatus validateStatus(EmployeeStatus status);
+    void updateEmployeeStatus(Long idEmployee, EmployeeStatus employeeStatus);
 
 }

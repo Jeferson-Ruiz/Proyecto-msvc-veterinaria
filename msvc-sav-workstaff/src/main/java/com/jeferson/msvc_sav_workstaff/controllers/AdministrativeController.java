@@ -95,4 +95,10 @@ public class AdministrativeController {
         adminService.suspended(idEmployee, request.getDeletedBy(), request.getReason());
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/update-status/{idEmployee}")
+    public ResponseEntity<?> updateStatus(@PathVariable Long idEmployee, @Valid @RequestBody EmployeeStatus status ) {
+        adminService.updateEmployeeStatus(idEmployee, status);
+        return ResponseEntity.noContent().build();
+    }
 }

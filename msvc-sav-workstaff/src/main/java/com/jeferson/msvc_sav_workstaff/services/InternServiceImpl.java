@@ -22,14 +22,12 @@ public class InternServiceImpl implements InternService {
 
     private final InternRepository intRepository;
     private final InternMapper intMapper;
-    private final EmployeeService employeeService;
     private final EmployeeRepository employeeRepo;
 
     public InternServiceImpl(InternRepository intRepository, InternMapper intMapper,
-            EmployeeService employeeService, EmployeeRepository employeeRepo) {
+            EmployeeRepository employeeRepo) {
         this.intRepository = intRepository;
         this.intMapper = intMapper;
-        this.employeeService = employeeService;
         this.employeeRepo = employeeRepo;
     }
 
@@ -48,7 +46,7 @@ public class InternServiceImpl implements InternService {
 
     @Override
     public List<InternResponseDto> findAllByRole(InternRoles internRole, EmployeeStatus status){
-        employeeService.validateStatus(status);
+        validateStatus(status);
         List<Intern> interns = intRepository.findAllByRole(internRole, status);
         if (interns.isEmpty()) {
             throw new EntityNotFoundException("No se encontro registro de " + internRole + " asociados al estado de "+ status);
@@ -58,7 +56,7 @@ public class InternServiceImpl implements InternService {
 
     @Override
     public List<InternResponseDto> findAllByStatus(EmployeeStatus status){
-        employeeService.validateStatus(status);
+        validateStatus(status);
         List<Intern> interns = intRepository.findAllByStatus(status);
         if (interns.isEmpty()) {
             throw new EntityNotFoundException("No se encontraron pasante asociados al estado laboral de "+ status );
@@ -89,7 +87,7 @@ public class InternServiceImpl implements InternService {
             throw new IllegalArgumentException(
                     "El email " + email + " ya se encuentra asociado al pasante " + idEmployee);
         }
-        employeeService.updateEmail(idEmployee, email);
+        employeeRepo.updateEmail(idEmployee, email);
     }
 
     @Override
@@ -100,7 +98,7 @@ public class InternServiceImpl implements InternService {
             throw new IllegalArgumentException(
                     "El telefono " + phoneNumber + " ya se encuentra asociado al pasante " + idEmployee);
         }
-        employeeService.updateNumberPhone(idEmployee, phoneNumber);
+        employeeRepo.updatePhoneNumber(idEmployee, phoneNumber);
     }
 
     @Override
@@ -111,7 +109,7 @@ public class InternServiceImpl implements InternService {
             throw new IllegalArgumentException(
                     "El contrato " + contractType + " ya se encuentra asociado al pasante " + idEmployee);
         }
-        employeeService.updateContractType(idEmployee, contractType);
+        employeeRepo.updateContractType(idEmployee, contractType);
     }
 
     @Override
@@ -142,6 +140,13 @@ public class InternServiceImpl implements InternService {
         applyStatusChange(intern, deleteBy, reason);
     }
 
+    @Override
+    public void updateEmployeeStatus(Long idEmployee, EmployeeStatus status){
+        Intern intern = validateInfo(idEmployee);
+        validateUpdateStatus(status, intern);
+        intern.setStatus(status);
+        intRepository.save(intern);
+    }
 
     //helper
     private Intern validateInfo(Long idEmployee) {
@@ -180,6 +185,17 @@ public class InternServiceImpl implements InternService {
         actionInf.setEmployee(intern);
         intern.getActionInformations().add(actionInf);
         intRepository.save(intern);
+    }
+
+    private void validateUpdateStatus(EmployeeStatus status, Intern intern){
+        if (status == EmployeeStatus.DELETED) {
+            throw new IllegalArgumentException("No se puede eliminar un usuario desde el panel de actualizacion de estado");}
+        if (status == intern.getStatus()) {
+            throw new IllegalArgumentException("El empleado ya se encuentra vinculado al estado de "+ status);}
+    }
+
+    private EmployeeStatus validateStatus(EmployeeStatus status){
+        return status != null ? status : EmployeeStatus.ACTIVE;
     }
 
 }

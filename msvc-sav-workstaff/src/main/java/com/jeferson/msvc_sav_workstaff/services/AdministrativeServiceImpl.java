@@ -23,16 +23,13 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     private final AdministrativeRepository administrativeRepository;
     private final AdministrativeMapper administrativeMapper;
     private final EmployeeRepository employeeRepo;
-    private final EmployeeService employeeServi;
 
     public AdministrativeServiceImpl(AdministrativeRepository administrativeRepository,
             AdministrativeMapper administrativeMapper,
-            EmployeeRepository employeeRepo,
-            EmployeeService employeeServi, EmployeeService employeeService) {
+            EmployeeRepository employeeRepo) {
         this.administrativeRepository = administrativeRepository;
         this.administrativeMapper = administrativeMapper;
         this.employeeRepo = employeeRepo;
-        this.employeeServi = employeeServi;
     }
 
     @Override
@@ -58,7 +55,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
 
     @Override
     public List<AdmistrativeResponseDto> findAllByStatus(EmployeeStatus status) {
-        employeeServi.validateStatus(status);
+        validateStatus(status);
         List<Administrative> administratives = administrativeRepository.findAllByStatus(status);
         if (administratives.isEmpty()) {
             throw new EntityNotFoundException("No existen administrativos asociadoas al estado de "+ status +" en el sistema");
@@ -68,7 +65,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
 
     @Override
     public List<AdmistrativeResponseDto> findAllByRole(AdministrativeRoles administrativeRole, EmployeeStatus status){
-        employeeServi.validateStatus(status);
+        validateStatus(status);
         List<Administrative> administratives = administrativeRepository.findAllByRoles(administrativeRole, status);
         if (administratives.isEmpty()) {
             throw new EntityNotFoundException("No se encontro registro de " + administrativeRole + " asociados al estado de "+ status);    
@@ -99,7 +96,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
             throw new IllegalArgumentException(
                     "El email " + email + " ya se encuentra vinculado al administrativo " + idEmployee);
         }
-        employeeServi.updateEmail(idEmployee, email);
+        employeeRepo.updateEmail(idEmployee, email);
     }
 
     @Override
@@ -110,7 +107,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
             throw new IllegalArgumentException(
                     "El telefono " + phoneNumber + " ya se encuentra vinculado al administrativo " + idEmployee);
         }
-        employeeServi.updateNumberPhone(idEmployee, phoneNumber);
+        employeeRepo.updatePhoneNumber(idEmployee, phoneNumber);
     }
 
     @Override
@@ -121,7 +118,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
             throw new IllegalArgumentException(
                     "El contrato " + contractType + " ya se encuentra vinculado al administrativo " + idEmployee);
         }
-        employeeServi.updateContractType(idEmployee, contractType);
+        employeeRepo.updateContractType(idEmployee, contractType);
     }
 
     @Override
@@ -143,7 +140,6 @@ public class AdministrativeServiceImpl implements AdministrativeService {
         }
         administrative.setStatus(EmployeeStatus.DELETED);
         applyStatusChange(administrative, deleteAt, reason);
-        
     }
 
     @Override
@@ -156,6 +152,14 @@ public class AdministrativeServiceImpl implements AdministrativeService {
         applyStatusChange(administrative, deleteBy, reason);
     }
 
+    @Override
+    public void updateEmployeeStatus(Long idEmployee, EmployeeStatus status){
+        Administrative administrative = validateInfo(idEmployee);
+        validateUpdateStatus(status, administrative);
+        administrative.setStatus(status);
+        administrativeRepository.save(administrative);
+    }
+
     //helpers
     private Administrative validateInfo(Long idEmployee) {
         Administrative administrative = administrativeRepository.findById(idEmployee)
@@ -163,7 +167,7 @@ public class AdministrativeServiceImpl implements AdministrativeService {
                         "No se encontro administrativo asociado al id " + idEmployee));
 
         if (administrative.getStatus() == EmployeeStatus.DELETED) {
-            throw new IllegalArgumentException("El administrativo " + idEmployee + " ya se encuentra desahabilitado permanentemente del sistema");
+            throw new IllegalArgumentException("El administrativo " + idEmployee + " ya se encuentra Eliminado, no se puede efectuar ninguna actualizacion");
         }
         return administrative;
     }
@@ -196,6 +200,17 @@ public class AdministrativeServiceImpl implements AdministrativeService {
         actionInf.setEmployee(administration);
         administration.getActionInformations().add(actionInf);
         administrativeRepository.save(administration);
+    }
+
+    private void validateUpdateStatus(EmployeeStatus status, Administrative administrative){
+        if (status == EmployeeStatus.DELETED) {
+            throw new IllegalArgumentException("No se puede eliminar un usuario desde el panel de actualizacion de estado");}
+        if (status == administrative.getStatus()) {
+            throw new IllegalArgumentException("El empleado ya se encuentra vinculado al estado de "+ status);}
+    }
+
+    private EmployeeStatus validateStatus(EmployeeStatus status){
+        return status != null ? status : EmployeeStatus.ACTIVE;
     }
 
 }

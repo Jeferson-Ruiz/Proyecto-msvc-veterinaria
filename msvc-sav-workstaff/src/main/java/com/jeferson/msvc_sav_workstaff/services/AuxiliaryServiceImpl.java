@@ -22,16 +22,13 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
 
     private final AuxiliaryRepository auxRepository;
     private final AuxiliaryMapper auxMapper;
-    private final EmployeeService employeeService;
     private final EmployeeRepository employeeRespo;
 
     public AuxiliaryServiceImpl(AuxiliaryRepository auxRepository,
             AuxiliaryMapper auxMapper,
-            EmployeeService employeeService,
             EmployeeRepository employeeRespo) {
         this.auxRepository = auxRepository;
         this.auxMapper = auxMapper;
-        this.employeeService = employeeService;
         this.employeeRespo = employeeRespo;
     }
 
@@ -51,7 +48,7 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
 
     @Override
     public List<AuxiliaryResponseDto> findAllByStatus(EmployeeStatus status) {
-        employeeService.validateStatus(status);
+        validateStatus(status);
         List<Auxiliary> auxiliaries = auxRepository.findAllByStatus(status);
         if (auxiliaries.isEmpty()) {
             throw new EntityNotFoundException(" No existen auxiares asociadoas al estado de "+ status +" en el sistem");
@@ -61,7 +58,7 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
 
     @Override
     public List<AuxiliaryResponseDto> findAllByRoles(AuxiliaryRoles auxiliaryRole, EmployeeStatus status){
-        employeeService.validateStatus(status);
+        validateStatus(status);
         List<Auxiliary> auxiliaries = auxRepository.findByRoles(auxiliaryRole, status);
         if (auxiliaries.isEmpty()) {
             throw new EntityNotFoundException("No se encontro registro de " + auxiliaryRole + " asociados al estado de "+ status);
@@ -92,7 +89,7 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
             throw new IllegalArgumentException(
                     "El email " + email + " ya se encuentra vinculado al auxiliar " + idEmployee);
         }
-        employeeService.updateEmail(idEmployee, email);
+        employeeRespo.updateEmail(idEmployee, email);
     }
 
     @Override
@@ -103,7 +100,7 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
             throw new IllegalArgumentException(
                     "El telefono " + phoneNumber + " ya se encuentra vinculado al auxiliar " + idEmployee);
         }
-        employeeService.updateNumberPhone(idEmployee, phoneNumber);
+        employeeRespo.updatePhoneNumber(idEmployee, phoneNumber);
     }
 
     @Override
@@ -148,6 +145,13 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
         applyStatusChange(auxiliary, deleteBy, reason);
     }
 
+    @Override
+    public void updateEmployeeStatus(Long idEmployee, EmployeeStatus employeeStatus){
+        Auxiliary auxiliary = validateInfo(idEmployee);
+        validateUpdateStatus(employeeStatus, auxiliary);
+        auxiliary.setStatus(employeeStatus);
+        auxRepository.save(auxiliary);
+    }
 
 
     // helpers
@@ -188,5 +192,16 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
         actionInf.setEmployee(auxiliary);
         auxiliary.getActionInformations().add(actionInf);
         auxRepository.save(auxiliary);
+    }
+
+    private void validateUpdateStatus(EmployeeStatus status, Auxiliary auxiliary){
+        if (status == EmployeeStatus.DELETED) {
+            throw new IllegalArgumentException("No se puede eliminar un usuario desde el panel de actualizacion de estado");}
+        if (status == auxiliary.getStatus()) {
+            throw new IllegalArgumentException("El empleado ya se encuentra vinculado al estado de "+ status);}
+    }
+
+    private EmployeeStatus validateStatus(EmployeeStatus status){
+        return status != null ? status : EmployeeStatus.ACTIVE;
     }
 }

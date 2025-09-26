@@ -22,12 +22,10 @@ public class VetServiceImpl implements VetService {
 
     private final EmployeeRepository employeeRepo;
     private final VetRepository vetRepository;
-    private final EmployeeService employeeService;
     private final VetMapper vetMapper;
 
-    public VetServiceImpl(VetRepository vetRepository, EmployeeService empRespository, VetMapper vetMapper, EmployeeRepository employeeRepo) {
+    public VetServiceImpl(VetRepository vetRepository, VetMapper vetMapper, EmployeeRepository employeeRepo) {
         this.vetRepository = vetRepository;
-        this.employeeService = empRespository;
         this.vetMapper = vetMapper;
         this.employeeRepo = employeeRepo;
     }
@@ -49,7 +47,7 @@ public class VetServiceImpl implements VetService {
 
     @Override
     public List<VetResponseDto> findAllByStatus(EmployeeStatus status){
-        employeeService.validateStatus(status);
+        validateStatus(status);
         List<Vet> vets = vetRepository.findAllActiveVets(status);
         if (vets.isEmpty()) {
             throw new EntityNotFoundException("No se encontraron empleados vinculado al cargo de veterinarios");
@@ -59,7 +57,7 @@ public class VetServiceImpl implements VetService {
 
     @Override
     public List<VetResponseDto> findAllByRole(VetRoles vetRole, EmployeeStatus status){
-        employeeService.validateStatus(status);
+        validateStatus(status);
         List<Vet> vets = vetRepository.findAllByRole(vetRole, status);
         if (vets.isEmpty()) {
             throw new EntityNotFoundException("No se encontro registro de " + vetRole + " asociados al estado de "+ status);
@@ -88,7 +86,7 @@ public class VetServiceImpl implements VetService {
         if (vet.getEmail().equals(email)) {
             throw new IllegalArgumentException("El email "+ email+ " ya se encuentra asociado al veterinario "+ idEmployee);
         }
-        employeeService.updateEmail(idEmployee, email);
+        employeeRepo.updateEmail(idEmployee, email);
     }
 
     @Override
@@ -98,7 +96,7 @@ public class VetServiceImpl implements VetService {
         if (vet.getPhoneNumber().equals(phoneNumber)) {
             throw new IllegalArgumentException("El telefono "+ phoneNumber + " ya se encuentra asociado al veterinario "+ idEmployee);
         }
-        employeeService.updateNumberPhone(idEmployee, phoneNumber);
+        employeeRepo.updatePhoneNumber(idEmployee, phoneNumber);
     }
 
     @Override
@@ -108,7 +106,7 @@ public class VetServiceImpl implements VetService {
         if (vet.getContractType().equals(contractType)) {
             throw new IllegalArgumentException("El contrato "+ contractType + " ya se encuentra asociado al veterinario "+ idEmployee);
         }        
-        employeeService.updateContractType(idEmployee, contractType);
+        employeeRepo.updateContractType(idEmployee, contractType);
     }
 
     @Override
@@ -137,6 +135,14 @@ public class VetServiceImpl implements VetService {
         }
         vet.setStatus(EmployeeStatus.SUSPENDED);
         applyStatusChange(vet, deleteBy, reason);
+    }
+
+    @Override
+    public void updateEmployeeStatus(Long idEmployee, EmployeeStatus status){
+        Vet vet = validateInfo(idEmployee);
+        validateUpdateStatus(status, vet);
+        vet.setStatus(status);
+        vetRepository.save(vet);
     }
 
     //helpers
@@ -177,6 +183,17 @@ public class VetServiceImpl implements VetService {
         actionInf.setEmployee(vet);
         vet.getActionInformations().add(actionInf);
         vetRepository.save(vet);
-    }    
+    }
+
+    private EmployeeStatus validateStatus(EmployeeStatus status){
+        return status != null ? status : EmployeeStatus.ACTIVE;
+    }
+
+    private void validateUpdateStatus(EmployeeStatus status, Vet vet){
+        if (status == EmployeeStatus.DELETED) {
+            throw new IllegalArgumentException("No se puede eliminar un usuario desde el panel de actualizacion de estado");}
+        if (status == vet.getStatus()) {
+            throw new IllegalArgumentException("El empleado ya se encuentra vinculado al estado de "+ status);}
+    }
 
 }

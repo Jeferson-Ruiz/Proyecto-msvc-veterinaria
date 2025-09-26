@@ -30,4 +30,6 @@ public interface VetService {
     void delete(Long idEmployee, String deleteBy, String reason);
 
     void suspended(Long idEmployee, String deleteBy, String reason);
+
+    void updateEmployeeStatus(Long idEmployee, EmployeeStatus status);
 }
