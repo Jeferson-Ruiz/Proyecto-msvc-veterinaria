@@ -1,0 +1,16 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: msvc-sav-workstaff
+        uri: lb://msvc-sav-workstaff
+        predicates:
+        - Path=/api/sav/workstaff/**
+        filters:
+        - StripPrefix=3
+      - id: sav-mvsc-medicalcontrol
+        uri: lb://sav-mvsc-medicalcontrol
+        predicates:
+        - Path=/api/sav/medical/**
+        filters:
+        - StripPrefix=3
