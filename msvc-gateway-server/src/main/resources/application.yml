@@ -2,6 +2,12 @@ spring:
   cloud:
     gateway:
       routes:
+      - id: msvc-users
+        uri: lb://msvc-users
+        predicates:
+        - Path=/api/sav/users/**
+        filters:
+        - StripPrefix=3
       - id: msvc-sav-workstaff
         uri: lb://msvc-sav-workstaff
         predicates:
