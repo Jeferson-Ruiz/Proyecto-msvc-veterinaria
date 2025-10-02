@@ -1,5 +1,8 @@
 package com.jeferson.msvc.users.entities;
 
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,7 +23,11 @@ public class UserStatusReason {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "status_reason")
     private String reason;
+
+    @Column(name = "status_deactivation_date", nullable = false)
+    private LocalDateTime deactivationDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

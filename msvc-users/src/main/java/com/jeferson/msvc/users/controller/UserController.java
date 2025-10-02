@@ -2,6 +2,7 @@ package com.jeferson.msvc.users.controller;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc.users.dto.EmailDto;
 import com.jeferson.msvc.users.dto.PasswordDto;
-import com.jeferson.msvc.users.dto.ReasonDto;
+import com.jeferson.msvc.users.dto.UpdateStatusDto;
+import com.jeferson.msvc.users.dto.UserDeleteRequestDto;
+import com.jeferson.msvc.users.dto.UpdateRolesDto;
 import com.jeferson.msvc.users.dto.UserRequestDto;
 import com.jeferson.msvc.users.dto.UserResponseDto;
 import com.jeferson.msvc.users.entities.Roles;
@@ -42,6 +45,11 @@ public class UserController {
         return ResponseEntity.ok(userService.findAll());
     }
 
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<UserResponseDto>> getAllUsersByStatus(@PathVariable UserStatus status){
+        return ResponseEntity.ok(userService.findAllByStatus(status));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.findById(id));
@@ -68,21 +76,24 @@ public class UserController {
 
 
     @PatchMapping("/update/roles/{id}")
-    public ResponseEntity<?> updateRoles(@PathVariable Long id, @RequestBody Set<Roles> roles){
+    public ResponseEntity<?> updateRoles(@PathVariable Long id, @RequestBody UpdateRolesDto request){
+        Set<Roles> roles = request.getRoles()
+                              .stream()
+                              .map(Roles::valueOf)
+                              .collect(Collectors.toSet());
         userService.updateRoles(id, roles);
         return ResponseEntity.noContent().build();
     }
 
 
-
     @PatchMapping("/update/status/{id}")
-    public ResponseEntity<?> updateStatus(@PathVariable Long id, @RequestBody UserStatus status, @RequestBody ReasonDto request){
-        userService.updateStatus(id, status, request.getReason());
+    public ResponseEntity<?> updateStatus(@PathVariable Long id, @Valid @RequestBody UpdateStatusDto request){
+        userService.updateStatus(id, request.getStatus(), request.getReason());
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id, @RequestBody ReasonDto request) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id, @Valid @RequestBody UserDeleteRequestDto request) {
         userService.delete(id, request.getReason());
         return ResponseEntity.noContent().build();
     }

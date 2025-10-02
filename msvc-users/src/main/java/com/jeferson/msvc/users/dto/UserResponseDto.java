@@ -11,9 +11,9 @@ import lombok.Setter;
 public class UserResponseDto {
     private String username;
     private String email;
-    private UserStatus status;
-        
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime registrationDate;
-
+    
+    private UserStatus status;
 }

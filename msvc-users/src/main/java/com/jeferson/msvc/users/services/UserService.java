@@ -16,6 +16,8 @@ public interface UserService {
     UserResponseDto findByUsername(String userName);
 
     List<UserResponseDto> findAll();
+
+    List<UserResponseDto> findAllByStatus(UserStatus status);
     
     void updateEmail(Long id, String email);
 

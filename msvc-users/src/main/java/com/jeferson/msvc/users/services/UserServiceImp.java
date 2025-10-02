@@ -59,6 +59,20 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    public List<UserResponseDto> findAllByStatus(UserStatus status){
+        List<User> users = userRepository.findAllByStatus(status);
+        return switch (status) {
+            case ACTIVE -> users.stream()
+                .map(userMapper::toDto)
+                .toList();
+            case DELETED,DISABLED,BANNED -> users.stream()
+                .map(userMapper::toDisabledDto)
+                .map(dto ->(UserResponseDto) dto)
+                .toList();
+        };  
+    }
+
+    @Override
     public UserResponseDto findById(Long id){
         User user = findUserById(id);
         return mapperByStatus(user);
@@ -126,10 +140,14 @@ public class UserServiceImp implements UserService {
     @Transactional
     public void delete(Long id, String reason){
         User user = findUserById(id);
+        if (user.getStatus() == UserStatus.DELETED) {
+            throw new IllegalArgumentException("El usuario ya se encuentra eliminado definitivamente del sistema");
+        }
         user.setStatus(UserStatus.DELETED);
         
         UserStatusReason statusReason = new UserStatusReason();
         statusReason.setReason(reason);
+        statusReason.setDeactivationDate(LocalDateTime.now());
         statusReason.setUser(user);
         user.getUserStatusReason().add(statusReason);
         userRepository.save(user);
@@ -172,7 +190,7 @@ public class UserServiceImp implements UserService {
         UserStatus status = user.getStatus();
 
         if (status.equals(UserStatus.BANNED) || status.equals(UserStatus.DELETED) || status.equals(UserStatus.DISABLED)) {
-            throw new IllegalArgumentException("No se puede actualizar la infroamcion de un usuario desahabilitado");
+            throw new IllegalArgumentException("No se puede actualizar la informacion de un usuario desahabilitado");
         }
     }
 
@@ -203,6 +221,7 @@ public class UserServiceImp implements UserService {
         }
         UserStatusReason statusReason = new UserStatusReason();
         statusReason.setReason(reason);
+        statusReason.setDeactivationDate(LocalDateTime.now());
         statusReason.setUser(user);
         user.getUserStatusReason().add(statusReason);
     }

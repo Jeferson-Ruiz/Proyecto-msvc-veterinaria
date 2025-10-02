@@ -1,5 +1,6 @@
 package com.jeferson.msvc.users.mapper;
 
+import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 import com.jeferson.msvc.users.dto.UserDisabledDto;
 import com.jeferson.msvc.users.dto.UserRequestDto;
@@ -28,8 +29,8 @@ public class UserMapperImp implements UserMapper {
         UserResponseDto dto = new UserResponseDto();
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
-        dto.setStatus(user.getStatus());
         dto.setRegistrationDate(user.getRegistrationDate());
+        dto.setStatus(user.getStatus());
 
         return dto;
     }
@@ -45,11 +46,18 @@ public class UserMapperImp implements UserMapper {
         dto.setRegistrationDate(user.getRegistrationDate());
 
         String reason = user.getUserStatusReason().stream()
-        .reduce((first, second) -> second) 
-        .map(UserStatusReason::getReason)
-        .orElse("No registrado");
+            .reduce((first, second) -> second) 
+            .map(UserStatusReason::getReason)
+            .orElse("No registrado");
+
+        LocalDateTime deactivationDate = user.getUserStatusReason().stream()
+            .reduce((first, second) -> second) 
+            .map(UserStatusReason::getDeactivationDate)
+            .orElse(null);
+
 
         dto.setReason(reason);
+        dto.setDeactivationDate(deactivationDate);
 
         return dto;
     }

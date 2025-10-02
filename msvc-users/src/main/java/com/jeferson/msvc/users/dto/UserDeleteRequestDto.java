@@ -2,11 +2,12 @@ package com.jeferson.msvc.users.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-public class ReasonDto {
-    
-    @NotBlank(message = "La razon no puede ser nula")
+@Setter
+public class UserDeleteRequestDto {
+    @NotBlank(message = "La razon del cambio de estado no puede ser nula")
     private String reason;
 
 }
