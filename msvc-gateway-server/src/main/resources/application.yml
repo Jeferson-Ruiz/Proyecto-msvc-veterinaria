@@ -2,6 +2,12 @@ spring:
   cloud:
     gateway:
       routes:
+      - id: msvc-oauth
+        uri: lb://msvc-oauth
+        predicates:
+        - Path=/api/sav/security/**
+        filters:
+        - StripPrefix=3
       - id: msvc-users
         uri: lb://msvc-users
         predicates:
