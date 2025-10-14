@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDisabledDto extends UserResponseDto{
+public class UserDisabledDto extends UserRespondeDto{
     private String reason;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")

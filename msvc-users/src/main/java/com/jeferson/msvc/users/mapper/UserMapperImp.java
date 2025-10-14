@@ -1,10 +1,14 @@
 package com.jeferson.msvc.users.mapper;
 
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 import com.jeferson.msvc.users.dto.UserDisabledDto;
 import com.jeferson.msvc.users.dto.UserRequestDto;
-import com.jeferson.msvc.users.dto.UserResponseDto;
+import com.jeferson.msvc.users.dto.UserRespondeDto;
+import com.jeferson.msvc.users.dto.RoleDto;
+import com.jeferson.msvc.users.dto.UserDetailsDto;
 import com.jeferson.msvc.users.entities.User;
 import com.jeferson.msvc.users.entities.UserStatusReason;
 
@@ -23,16 +27,49 @@ public class UserMapperImp implements UserMapper {
     }
 
     @Override
-    public UserResponseDto toDto(User user) {
+    public UserDetailsDto toDto(User user) {
         if (user == null) return null;
 
-        UserResponseDto dto = new UserResponseDto();
+        UserDetailsDto dto = new UserDetailsDto();
+        dto.setUsername(user.getUsername());
+        dto.setEmail(user.getEmail());
+        dto.setPassword(user.getPassword());
+        dto.setRegistrationDate(user.getRegistrationDate());
+        dto.setStatus(user.getStatus());
+
+        if (user.getRoles() != null) {
+            Set<RoleDto> roleDtos = user.getRoles().stream()
+            .map(role -> {
+                RoleDto r = new RoleDto();
+                r.setName(role.getName().name());
+                return r;
+            })
+            .collect(Collectors.toSet());
+            dto.setRoles(roleDtos);
+        }
+        return dto;
+    }
+    
+    @Override
+    public UserRespondeDto toRespondeDto(User user){
+        if (user == null) return null;
+
+        UserRespondeDto dto = new UserRespondeDto();
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
         dto.setRegistrationDate(user.getRegistrationDate());
         dto.setStatus(user.getStatus());
 
-        return dto;
+        dto.setRoles(
+        user.getRoles().stream()
+            .map(role -> {
+                RoleDto r = new RoleDto();
+                r.setName(role.getName().name());
+                return r;
+            })
+            .collect(Collectors.toSet())
+         );
+    return dto;
     }
 
     @Override

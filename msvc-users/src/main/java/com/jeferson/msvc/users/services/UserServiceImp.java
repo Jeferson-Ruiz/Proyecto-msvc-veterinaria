@@ -7,7 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.jeferson.msvc.users.dto.UserRequestDto;
-import com.jeferson.msvc.users.dto.UserResponseDto;
+import com.jeferson.msvc.users.dto.UserRespondeDto;
+import com.jeferson.msvc.users.dto.UserDetailsDto;
 import com.jeferson.msvc.users.entities.Role;
 import com.jeferson.msvc.users.entities.Roles;
 import com.jeferson.msvc.users.entities.User;
@@ -38,7 +39,7 @@ public class UserServiceImp implements UserService {
  
     @Override
     @Transactional
-    public UserResponseDto save(UserRequestDto userDto){
+    public UserRespondeDto save(UserRequestDto userDto){
         existUsername(userDto.getUsername());
         existEmail(userDto.getEmail());
         
@@ -49,40 +50,40 @@ public class UserServiceImp implements UserService {
         user.setStatus(UserStatus.ACTIVE);
         user.setRoles(roles);
         user.setRegistrationDate(LocalDateTime.now());
-        return userMapper.toDto(userRepository.save(user));
+        return userMapper.toRespondeDto(userRepository.save(user));
     }
 
     @Override
-    public List<UserResponseDto> findAll(){
+    public List<UserRespondeDto> findAll(){
         List<User> users = userRepository.findAll();
-        return users.stream().map(userMapper::toDto).toList();
+        return users.stream().map(userMapper::toRespondeDto).toList();
     }
 
     @Override
-    public List<UserResponseDto> findAllByStatus(UserStatus status){
+    public List<UserRespondeDto> findAllByStatus(UserStatus status){
         List<User> users = userRepository.findAllByStatus(status);
         return switch (status) {
             case ACTIVE -> users.stream()
-                .map(userMapper::toDto)
+                .map(userMapper::toRespondeDto)
                 .toList();
             case DELETED,DISABLED,BANNED -> users.stream()
                 .map(userMapper::toDisabledDto)
-                .map(dto ->(UserResponseDto) dto)
+                .map(dto ->(UserRespondeDto) dto)
                 .toList();
         };  
     }
 
     @Override
-    public UserResponseDto findById(Long id){
+    public UserRespondeDto findById(Long id){
         User user = findUserById(id);
         return mapperByStatus(user);
     }
 
     @Override
-    public UserResponseDto findByUsername(String userName){
+    public UserDetailsDto findByUsername(String userName){
         User user = userRepository.findByUsername(userName)
             .orElseThrow(() -> new EntityNotFoundException("No se encontro el usuario "+ userName));
-        return mapperByStatus(user);
+        return userMapper.toDto(user);
     }
 
     @Override
@@ -203,10 +204,10 @@ public class UserServiceImp implements UserService {
         }
     }
 
-    private UserResponseDto mapperByStatus(User user){
+    private UserRespondeDto mapperByStatus(User user){
         UserStatus status = user.getStatus();
         return switch (status){
-            case ACTIVE -> userMapper.toDto(user);
+            case ACTIVE -> userMapper.toRespondeDto(user);
             case DELETED, DISABLED, BANNED -> userMapper.toDisabledDto(user);
         };
     }

@@ -3,21 +3,22 @@ package com.jeferson.msvc.users.services;
 import java.util.List;
 import java.util.Set;
 import com.jeferson.msvc.users.dto.UserRequestDto;
-import com.jeferson.msvc.users.dto.UserResponseDto;
+import com.jeferson.msvc.users.dto.UserRespondeDto;
+import com.jeferson.msvc.users.dto.UserDetailsDto;
 import com.jeferson.msvc.users.entities.Roles;
 import com.jeferson.msvc.users.entities.UserStatus;
 
 public interface UserService {
 
-    UserResponseDto save(UserRequestDto userDto);
+    UserRespondeDto save(UserRequestDto userDto);
 
-    UserResponseDto findById(Long id);
+    UserRespondeDto findById(Long id);
 
-    UserResponseDto findByUsername(String userName);
+    UserDetailsDto findByUsername(String userName);
 
-    List<UserResponseDto> findAll();
+    List<UserRespondeDto> findAll();
 
-    List<UserResponseDto> findAllByStatus(UserStatus status);
+    List<UserRespondeDto> findAllByStatus(UserStatus status);
     
     void updateEmail(Long id, String email);
 

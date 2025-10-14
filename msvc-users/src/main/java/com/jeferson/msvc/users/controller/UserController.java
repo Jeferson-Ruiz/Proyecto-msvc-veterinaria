@@ -17,7 +17,7 @@ import com.jeferson.msvc.users.dto.UpdateStatusDto;
 import com.jeferson.msvc.users.dto.UserDeleteRequestDto;
 import com.jeferson.msvc.users.dto.UpdateRolesDto;
 import com.jeferson.msvc.users.dto.UserRequestDto;
-import com.jeferson.msvc.users.dto.UserResponseDto;
+import com.jeferson.msvc.users.dto.UserRespondeDto;
 import com.jeferson.msvc.users.entities.Roles;
 import com.jeferson.msvc.users.entities.UserStatus;
 import com.jeferson.msvc.users.services.UserService;
@@ -34,17 +34,17 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody UserRequestDto user) {
-        UserResponseDto savedUser = userService.save(user);
+        UserRespondeDto savedUser = userService.save(user);
         return ResponseEntity.ok(savedUser);
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponseDto>> getAllUsers() {
+    public ResponseEntity<List<UserRespondeDto>> getAllUsers() {
         return ResponseEntity.ok(userService.findAll());
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<UserResponseDto>> getAllUsersByStatus(@PathVariable UserStatus status){
+    public ResponseEntity<List<UserRespondeDto>> getAllUsersByStatus(@PathVariable UserStatus status){
         return ResponseEntity.ok(userService.findAllByStatus(status));
     }
 
