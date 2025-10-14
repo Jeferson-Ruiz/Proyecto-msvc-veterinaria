@@ -46,10 +46,6 @@ public class UsersService implements UserDetailsService {
                                                 .collect(Collectors.toList());
             
             boolean enabled = user.getStatus() == UserStatus.ACTIVE;
-
-            System.out.println(roles); 
-            System.out.println(username);
-            System.out.println(user.getPassword());
             
             return new org.springframework.security.core.userdetails.User(user.getUsername(),
                                                                     user.getPassword(),
