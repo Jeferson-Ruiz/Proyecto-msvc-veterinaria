@@ -26,30 +26,32 @@ public class SecurityConfig {
             authz.pathMatchers("/authorized", "/logout").permitAll()
                 
             //modulo users
-            .pathMatchers(HttpMethod.GET, "api/sav/users", 
-                                        "api/sav/users/**")
+            .pathMatchers(HttpMethod.GET,"api/sav/users", 
+                                         "api/sav/users/**")
                                         .hasAnyRole("MANAGER","ADMINISTRATIVE")
             .pathMatchers("api/sav/users/**").hasRole("MANAGER")
 
             //modulo workstaff
-            .pathMatchers(HttpMethod.GET, "api/sav/workstaff/status/**",
-                                            "api/sav/workstaff/id/**",
-                                            "api/sav/workstaff/document/**",
-                                            "api/sav/workstaff/all")
-                                            .hasAnyRole("RRHH", "MANAGER", "ADMINISTRATIVE")
+            .pathMatchers(HttpMethod.GET,"api/sav/workstaff/status/**",
+                                         "api/sav/workstaff/id/**",
+                                         "api/sav/workstaff/document/**",
+                                         "api/sav/workstaff/all")
+                                         .hasAnyRole("RRHH", "MANAGER", "ADMINISTRATIVE")
             .pathMatchers("api/sav/workstaff/**").hasAnyRole("MANAGER","RRHH")
 
             //Modulo MEDIACAL
-            .pathMatchers(HttpMethod.GET, "api/sav/medical/pet/**",
-                                            "api/sav/medical/owner",
-                                            "api/sav/medical/owner/**",
-                                            "api/sav/medical/consultation",
-                                            "api/sav/medical/consultation/**")
-                                            .hasAnyRole("USER", "MEDICAL", "ADMINISTRATIVE", "RRHH", "MANAGER")
-            .pathMatchers(HttpMethod.GET, "api/sav/medical", 
-                                            "api/sav/medical/**")
-                                            .hasAnyRole("MEDICAL", "ADMINISTRATIVE")
+            .pathMatchers(HttpMethod.GET,"api/sav/medical/pet/**",
+                                         "api/sav/medical/owner",
+                                         "api/sav/medical/owner/**",
+                                         "api/sav/medical/consultation",
+                                         "api/sav/medical/consultation/**")
+                                         .hasAnyRole("USER", "MEDICAL", "ADMINISTRATIVE", "MANAGER")
+
+            .pathMatchers(HttpMethod.GET,"api/sav/medical", 
+                                         "api/sav/medical/**")
+                                         .hasAnyRole("MEDICAL", "ADMINISTRATIVE")
             .pathMatchers("api/sav/medical/**").hasRole("MEDICAL")
+            
                 .anyExchange().authenticated();
         }).cors(csrf -> csrf.disable())
             .oauth2Login(withDefaults())
