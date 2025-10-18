@@ -6,8 +6,9 @@ import com.jr.sav_mvsc_medicalcontrol.dto.consultatio.ConsultationReponseDto;
 import com.jr.sav_mvsc_medicalcontrol.models.Consultation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ConsultationMapper {
     
     Consultation toEntity(ConsultationRequestDto dto);
@@ -16,7 +17,6 @@ public interface ConsultationMapper {
     @Mapping(target = "fullName", ignore = true)
     ConsultationReponseDto toDto(Consultation entity);
 
-    @Mapping(source = "idConsultation", target = "idConsultation")
     @Mapping(source = "pet.idPet", target = "idPet")
     ConsultationsWithVetDto toVetDto(Consultation entity);
 

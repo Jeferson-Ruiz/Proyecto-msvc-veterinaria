@@ -5,8 +5,9 @@ import com.jr.sav_mvsc_medicalcontrol.dto.VaccineResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.models.Vaccine;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface VaccineMapper {
     Vaccine toEntity (VaccineRequestDto dto);
 

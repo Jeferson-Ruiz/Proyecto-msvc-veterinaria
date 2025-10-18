@@ -6,6 +6,7 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 import com.jr.sav_mvsc_medicalcontrol.dto.RemovalInfoResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetRequestDto;
 import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetResponseDisableDto;
@@ -14,7 +15,7 @@ import com.jr.sav_mvsc_medicalcontrol.dto.pet.PetResponseDto;
 import com.jr.sav_mvsc_medicalcontrol.models.Pet;
 import com.jr.sav_mvsc_medicalcontrol.models.RemovalInformation;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PetMapper {
 
     Pet toEntity(PetRequestDto dto);
