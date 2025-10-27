@@ -1,0 +1,108 @@
+package com.jeferson.msvc.workstaff.controllers;
+
+import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.jeferson.msvc.workstaff.dto.AuxiliaryRequestDto;
+import com.jeferson.msvc.workstaff.dto.AuxiliaryResponseDto;
+import com.jeferson.msvc.workstaff.dto.EmailRequestDto;
+import com.jeferson.msvc.workstaff.dto.ActionInformationsRequestDto;
+import com.jeferson.msvc.workstaff.dto.PhoneNumberRequestDto;
+import com.jeferson.msvc.workstaff.mapper.AuxiliaryMapper;
+import com.jeferson.msvc.workstaff.models.AuxiliaryRoles;
+import com.jeferson.msvc.workstaff.models.ContractType;
+import com.jeferson.msvc.workstaff.models.EmployeeStatus;
+import com.jeferson.msvc.workstaff.services.AuxiliaryService;
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("auxiliary")
+public class AuxiliaryController {
+
+    private final AuxiliaryService auxService;
+
+    public AuxiliaryController(AuxiliaryService auxService, AuxiliaryMapper auxMapper) {
+        this.auxService = auxService;
+    }
+
+    @PostMapping
+    public ResponseEntity<?> saveInfoAuxiliary(@Valid @RequestBody AuxiliaryRequestDto auxiliaryDto) {
+        AuxiliaryResponseDto auxiliary = auxService.saveAuxiliary(auxiliaryDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(auxiliary);
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<?> getAllAuxiliary(@PathVariable EmployeeStatus status) {
+        List<?> auxiliaries = auxService.findAllByStatus(status);
+        return ResponseEntity.ok(auxiliaries);
+    }
+
+    @GetMapping("/role/{role}/status/{status}")
+    public ResponseEntity<?> getAllByRole(@PathVariable AuxiliaryRoles role, @PathVariable EmployeeStatus status){
+        List<?> auxiliaries = auxService.findAllByRoles(role, status);
+        return ResponseEntity.ok(auxiliaries);
+    }
+
+    @GetMapping("/id/{idEmployee}")
+    public ResponseEntity<?> getAuxiliaryById(@PathVariable Long idEmployee) {
+        AuxiliaryResponseDto auxiliaryDto = auxService.findById(idEmployee);
+        return ResponseEntity.ok(auxiliaryDto);
+    }
+
+    @GetMapping("/document/{documentNumber}")
+    public ResponseEntity<?> getAuxiliaryDocumentNumber(@PathVariable String documentNumber) {
+        AuxiliaryResponseDto auxiliaryDto = auxService.findAdminByDocumentNumber(documentNumber);
+        return ResponseEntity.ok(auxiliaryDto);
+    }
+
+    @PatchMapping("/update-email/{idEmployee}")
+    public ResponseEntity<?> uptInfoEmail(@PathVariable Long idEmployee, @Valid @RequestBody EmailRequestDto request) {
+        auxService.updateEmail(idEmployee, request.getEmail());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/update-number/{idEmployee}")
+    public ResponseEntity<?> uptInfoPhoneNumber(@PathVariable Long idEmployee, @Valid @RequestBody PhoneNumberRequestDto request) {
+        auxService.updatePhoneNumber(idEmployee, request.getPhoneNumber());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/update-contract/{idEmployee}")
+    public ResponseEntity<?> updInfoContractType(@PathVariable Long idEmployee,@RequestBody ContractType contractType) {
+        auxService.updateContractType(idEmployee, contractType);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/update-area/{idEmployee}")
+    public ResponseEntity<?> updWorkArea(@PathVariable Long idEmployee, @RequestBody AuxiliaryRoles auxiliaryRole) {
+        auxService.updateRole(idEmployee, auxiliaryRole);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{idEmployee}")
+    public ResponseEntity<?> deleteAuxiliary(@PathVariable Long idEmployee, @Valid @RequestBody ActionInformationsRequestDto request ) {
+        auxService.delete(idEmployee, request.getDeletedBy(), request.getReason());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/suspended/{idEmployee}")
+    public ResponseEntity<?> suspended(@PathVariable Long idEmployee, @Valid @RequestBody ActionInformationsRequestDto request ) {
+        auxService.suspended(idEmployee, request.getDeletedBy(), request.getReason());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/update-status/{idEmployee}")
+    public ResponseEntity<?> updateStatus(@PathVariable Long idEmployee, @Valid @RequestBody EmployeeStatus status ) {
+        auxService.updateEmployeeStatus(idEmployee, status);
+        return ResponseEntity.noContent().build();
+    }
+}

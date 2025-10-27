@@ -38,7 +38,7 @@ public class UsersService implements UserDetailsService {
         params.put("username", username);
 
         try {
-            User user = client.build().get().uri("username/{username}", params)
+            User user = client.build().get().uri("/username/{username}", params)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(User.class)
@@ -50,6 +50,11 @@ public class UsersService implements UserDetailsService {
                                                 .collect(Collectors.toList());
             
             boolean enabled = user.getStatus() == UserStatus.ACTIVE;
+
+            System.out.println("Informacion que llega");
+            System.out.println(username);
+            System.out.println(roles);
+            System.out.println(passwordEncoder);
             
             return new org.springframework.security.core.userdetails.User(user.getUsername(),
                                                                     user.getPassword(),

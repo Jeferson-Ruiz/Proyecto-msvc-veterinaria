@@ -1,0 +1,104 @@
+package com.jeferson.msvc.workstaff.controllers;
+
+import com.jeferson.msvc.workstaff.dto.AdministrativeRequestDto;
+import com.jeferson.msvc.workstaff.dto.AdmistrativeResponseDto;
+import com.jeferson.msvc.workstaff.dto.EmailRequestDto;
+import com.jeferson.msvc.workstaff.dto.PhoneNumberRequestDto;
+import com.jeferson.msvc.workstaff.dto.ActionInformationsRequestDto;
+import com.jeferson.msvc.workstaff.models.AdministrativeRoles;
+import com.jeferson.msvc.workstaff.models.ContractType;
+import com.jeferson.msvc.workstaff.models.EmployeeStatus;
+import com.jeferson.msvc.workstaff.services.AdministrativeService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("administrative")
+public class AdministrativeController {
+
+
+    private final AdministrativeService adminService;
+
+    public AdministrativeController(AdministrativeService adminService) {
+        this.adminService = adminService;
+    }
+
+    @PostMapping
+    public ResponseEntity<?> saveInfoAdministrative(@Valid @RequestBody AdministrativeRequestDto administrative) {
+        AdmistrativeResponseDto administrativeDto =  adminService.saveAdministrative(administrative);
+        return ResponseEntity.status(HttpStatus.CREATED).body(administrativeDto);
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<?> getAllAdministratives(@PathVariable EmployeeStatus status){
+        return ResponseEntity.ok(adminService.findAllByStatus(status));
+    }
+
+    @GetMapping("/role/{role}/status/{status}")
+    public ResponseEntity<?> getAllbyRoles(@PathVariable AdministrativeRoles role, @PathVariable EmployeeStatus status){
+        return ResponseEntity.ok(adminService.findAllByRole(role, status));
+    }
+
+    @GetMapping("/id/{idEmployee}")
+    public ResponseEntity<?> getAdministrativeById(@PathVariable Long idEmployee) {
+        AdmistrativeResponseDto adminDto = adminService.findAdminById(idEmployee);
+        return ResponseEntity.ok(adminDto);
+    }
+
+    @GetMapping("/document/{documentNumber}")
+    public ResponseEntity<?> getAdministrativeByDocument(@PathVariable String documentNumber) {
+        AdmistrativeResponseDto adminDto = adminService.findAdminByDocumentNumber(documentNumber);
+        return ResponseEntity.ok(adminDto);
+    }
+
+    @PatchMapping("/update-email/{idEmployee}")
+    public ResponseEntity<?> updInfoEmail(@PathVariable Long idEmployee, @Valid @RequestBody EmailRequestDto request) {
+        adminService.updateEmail(idEmployee, request.getEmail());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/update-number/{idEmployee}")
+    public ResponseEntity<?> updInfoNumberPhone(@PathVariable Long idEmployee, @Valid @RequestBody PhoneNumberRequestDto request) {
+        adminService.updateNumberPhone(idEmployee, request.getPhoneNumber());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/update-contract/{idEmployee}")
+    public ResponseEntity<?> updInfoContractType(@PathVariable Long idEmployee, @RequestBody ContractType contractType) {
+        adminService.updateContractType(idEmployee, contractType);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/update-area/{idEmployee}")
+    public ResponseEntity<?> updworkArea(@PathVariable Long idEmployee, @RequestBody AdministrativeRoles admiRoles) {
+        adminService.updateRole(idEmployee, admiRoles);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{idEmployee}")
+    public ResponseEntity<?> deleteAdministrative(@PathVariable Long idEmployee, @Valid @RequestBody ActionInformationsRequestDto request ) {
+        adminService.delete(idEmployee, request.getDeletedBy(), request.getReason());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/suspended/{idEmployee}")
+    public ResponseEntity<?> suspendAdministrative(@PathVariable Long idEmployee, @Valid @RequestBody ActionInformationsRequestDto request ) {
+        adminService.suspended(idEmployee, request.getDeletedBy(), request.getReason());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/update-status/{idEmployee}")
+    public ResponseEntity<?> updateStatus(@PathVariable Long idEmployee, @Valid @RequestBody EmployeeStatus status ) {
+        adminService.updateEmployeeStatus(idEmployee, status);
+        return ResponseEntity.noContent().build();
+    }
+}
