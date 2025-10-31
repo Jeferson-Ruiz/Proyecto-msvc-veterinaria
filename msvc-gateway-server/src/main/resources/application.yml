@@ -34,14 +34,14 @@ spring:
         - Path=/api/sav/users/**
         filters:
         - StripPrefix=3
-      - id: msvc-sav-workstaff
-        uri: lb://msvc-sav-workstaff
+      - id: msvc-workstaff
+        uri: lb://msvc-workstaff
         predicates:
         - Path=/api/sav/workstaff/**
         filters:
         - StripPrefix=3
-      - id: sav-mvsc-medicalcontrol
-        uri: lb://sav-mvsc-medicalcontrol
+      - id: msvc-medicalcontrol
+        uri: lb://msvc-medicalcontrol
         predicates:
         - Path=/api/sav/medical/**
         filters:
