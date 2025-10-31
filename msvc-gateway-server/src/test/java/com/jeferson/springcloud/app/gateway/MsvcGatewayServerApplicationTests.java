@@ -1,4 +1,4 @@
-package com.jeferson.springcloud.app.gateway.msvc_gateway_server;
+package com.jeferson.springcloud.app.gateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
