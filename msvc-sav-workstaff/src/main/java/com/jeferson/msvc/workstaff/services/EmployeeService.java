@@ -11,12 +11,12 @@ public interface EmployeeService {
 
     List<EmployeeResponseDto> getEmployeesByType(WorkArea workArea, EmployeeStatus status);
 
-    EmployeeResponseDto findById(Long idEmployee);
+    EmployeeResponseDto findByEmployeeCode(String code);
 
     EmployeeResponseDto findByDocumentNumber(String documentNumber);
 
-    void delete(Long idEmployee, String deleteBy, String reason);
+    void delete(String employeeCode, String deleteBy, String reason);
 
-    void updateEmployeeStatus(Long idEmployee, EmployeeStatus employeeStatus);
+    void updateEmployeeStatus(String employeeCode, EmployeeStatus employeeStatus);
 
 }

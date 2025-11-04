@@ -1,9 +1,7 @@
 package com.jeferson.msvc.workstaff.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import com.jeferson.msvc.workstaff.models.ContractType;
 import com.jeferson.msvc.workstaff.models.Employee;
 import com.jeferson.msvc.workstaff.models.EmployeeStatus;
 import org.springframework.data.repository.query.Param;
@@ -20,16 +18,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query("SELECT e FROM Employee e WHERE TYPE(e) = :clazz AND e.status =:status")
     List<Employee> findByType(Class<? extends Employee> clazz, @Param("status") EmployeeStatus status);
 
-    @Modifying
-    @Query("update Employee set email=:email where employeeId=:employeeId")
-    void updateEmail(@Param("employeeId") Long employeeId, @Param("email") String email);
-
-    @Modifying
-    @Query("update Employee set phoneNumber=:phoneNumber where employeeId=:employeeId")
-    void updatePhoneNumber(@Param("employeeId") Long employeeId, @Param("phoneNumber") String phoneNumber);
-
-    @Modifying
-    @Query("update Employee set contractType=:contractType where employeeId=:employeeId")
-    void updateContractType(@Param("employeeId") Long employeeId, @Param("contractType") ContractType contractType);
+    @Query("SELECT e FROM Employee e WHERE e.employeeCode=:employeeCode")
+    Optional<Employee> findByEmployeeCode(@Param("employeeCode") String employeeCode);
 
 }

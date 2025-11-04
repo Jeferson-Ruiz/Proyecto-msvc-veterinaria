@@ -36,6 +36,9 @@ public abstract class Employee {
     @Column(name = "emp_id")
     private Long employeeId;
 
+    @Column(name = "emp_code", nullable = false, unique = true)
+    private String employeeCode;
+
     @Column(name = "emp_name", length = 20, nullable = false)
     private String name;
 

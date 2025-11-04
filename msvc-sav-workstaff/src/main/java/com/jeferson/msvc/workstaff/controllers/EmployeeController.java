@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc.workstaff.dto.EmployeeResponseDto;
 import com.jeferson.msvc.workstaff.models.EmployeeStatus;
@@ -28,9 +29,9 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.findAllByStatus(status));
     }
 
-    @GetMapping("id/{idEmployee}")
-    public ResponseEntity<?> getEmployeeById(@PathVariable Long idEmployee) {
-        EmployeeResponseDto employeeDto = employeeService.findById(idEmployee);
+    @GetMapping("/code/{code}")
+    public ResponseEntity<?> getEmployeeByCode(@PathVariable String code){
+        EmployeeResponseDto employeeDto = employeeService.findByEmployeeCode(code);
         return ResponseEntity.ok(employeeDto);
     }
 
@@ -46,15 +47,15 @@ public class EmployeeController {
         return ResponseEntity.ok(employeesDto);
     }
 
-    @DeleteMapping("id/{idEmployee}")
-    public ResponseEntity<?> deleteInfoEmployee(@PathVariable Long idEmployee, @RequestBody String deleteBy, String reason) {
-        employeeService.delete(idEmployee, deleteBy, reason);
+    @DeleteMapping("/{employeeCode}")
+    public ResponseEntity<?> deleteInfoEmployee(@PathVariable String employeeCode, @RequestBody String deleteBy, String reason) {
+        employeeService.delete(employeeCode, deleteBy, reason);
         return ResponseEntity.noContent().build();
     }
     
-    @PatchMapping("/update-status/{idEmployee}")
-    public ResponseEntity<?> updateStatus(@PathVariable Long idEmployee, @Valid @RequestBody EmployeeStatus status ) {
-        employeeService.updateEmployeeStatus(idEmployee, status);
+    @PatchMapping("/update-status/{employeeCode}")
+    public ResponseEntity<?> updateStatus(@RequestParam String employeeCode, @Valid @RequestBody EmployeeStatus status ) {
+        employeeService.updateEmployeeStatus(employeeCode, status);
         return ResponseEntity.noContent().build();
     }
 }

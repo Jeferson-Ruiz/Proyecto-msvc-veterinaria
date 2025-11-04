@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class EmployeeResponseDto {
-    private Long employeeId;
+    private String employeeCode;
     private String fullName;
     private DocumentType documentType;
     private String documentNumber;

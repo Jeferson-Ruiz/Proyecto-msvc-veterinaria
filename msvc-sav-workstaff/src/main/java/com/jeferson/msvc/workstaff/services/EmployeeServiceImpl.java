@@ -57,9 +57,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeResponseDto findById(Long idEmployee) {
-        Employee employee = findEmployeeById(idEmployee);
-        return employeeMapper.toDto(employee);
+    public EmployeeResponseDto findByEmployeeCode(String code){
+        Employee employee = employeeRepository.findByEmployeeCode(code).
+            orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al codigo "+ code));
+            return employeeMapper.toDto(employee);
     }
 
     @Override
@@ -72,13 +73,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public void delete(Long idEmployee, String deleteBy, String reason) {
-        Employee employee = employeeRepository.findById(idEmployee).orElseThrow(() -> 
-            new EntityNotFoundException("No se encontro empleado asociado al Id "+ idEmployee));
+    public void delete(String employeeCode, String deleteBy, String reason) {
+        Employee employee = employeeRepository.findByEmployeeCode(employeeCode).orElseThrow(() -> 
+            new EntityNotFoundException("No se encontro empleado asociado al Id"));
 
         if (employee.getStatus() == EmployeeStatus.DELETED) {
             throw new IllegalArgumentException(
-                    "El empleado " + idEmployee + " ya se encuentra desahabilitado del sistema");
+                    "El empleado " + employee.getName() + " ya se encuentra desahabilitado del sistema");
         }
         employee.setStatus(EmployeeStatus.DELETED);
 
@@ -92,9 +93,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void updateEmployeeStatus(Long idEmployee, EmployeeStatus employeeStatus){
-        Employee employee = findEmployeeById(idEmployee);
+    public void updateEmployeeStatus(String employeeCode, EmployeeStatus employeeStatus){
+        Employee employee = findEmployeeCode(employeeCode);
         validateUpdateStatus(employeeStatus, employee);
+        employee.setStatus(employeeStatus);
         employeeRepository.save(employee);
     }
 
@@ -103,9 +105,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
 
-    private Employee findEmployeeById(Long id){
-        Employee employee = employeeRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al id"+ id));
+    private Employee findEmployeeCode(String code){
+        Employee employee = employeeRepository.findByEmployeeCode(code)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al codigo "+ code));
         return employee;
     }
 
@@ -115,6 +117,5 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (status == employee.getStatus()) {
             throw new IllegalArgumentException("El empleado ya se encuentra vinculado al estado de "+ status);}
     }
-
 
 }
