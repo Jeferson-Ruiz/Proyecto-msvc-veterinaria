@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("administrative")
+@RequestMapping("/administrative")
 public class AdministrativeController {
 
 
@@ -48,9 +48,9 @@ public class AdministrativeController {
         return ResponseEntity.ok(adminService.findAllByRole(role, status));
     }
 
-    @GetMapping("/id/{idEmployee}")
-    public ResponseEntity<?> getAdministrativeById(@PathVariable Long idEmployee) {
-        AdmistrativeResponseDto adminDto = adminService.findAdminById(idEmployee);
+    @GetMapping("/code/{employeeCode}")
+    public ResponseEntity<?> getAdministrativeByCode(@PathVariable String employeeCode) {
+        AdmistrativeResponseDto adminDto = adminService.findAdminByCode(employeeCode);
         return ResponseEntity.ok(adminDto);
     }
 
@@ -60,45 +60,45 @@ public class AdministrativeController {
         return ResponseEntity.ok(adminDto);
     }
 
-    @PatchMapping("/update-email/{idEmployee}")
-    public ResponseEntity<?> updInfoEmail(@PathVariable Long idEmployee, @Valid @RequestBody EmailRequestDto request) {
-        adminService.updateEmail(idEmployee, request.getEmail());
+    @PatchMapping("/update-email/{employeeCode}")
+    public ResponseEntity<?> updInfoEmail(@PathVariable String employeeCode, @Valid @RequestBody EmailRequestDto request) {
+        adminService.updateEmail(employeeCode, request.getEmail());
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/update-number/{idEmployee}")
-    public ResponseEntity<?> updInfoNumberPhone(@PathVariable Long idEmployee, @Valid @RequestBody PhoneNumberRequestDto request) {
-        adminService.updateNumberPhone(idEmployee, request.getPhoneNumber());
+    @PatchMapping("/update-number/{employeeCode}")
+    public ResponseEntity<?> updInfoNumberPhone(@PathVariable String employeeCode, @Valid @RequestBody PhoneNumberRequestDto request) {
+        adminService.updateNumberPhone(employeeCode, request.getPhoneNumber());
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/update-contract/{idEmployee}")
-    public ResponseEntity<?> updInfoContractType(@PathVariable Long idEmployee, @RequestBody ContractType contractType) {
-        adminService.updateContractType(idEmployee, contractType);
+    @PatchMapping("/update-contract/{employeeCode}")
+    public ResponseEntity<?> updInfoContractType(@PathVariable String employeeCode, @RequestBody ContractType contractType) {
+        adminService.updateContractType(employeeCode, contractType);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/update-area/{idEmployee}")
-    public ResponseEntity<?> updworkArea(@PathVariable Long idEmployee, @RequestBody AdministrativeRoles admiRoles) {
-        adminService.updateRole(idEmployee, admiRoles);
+    @PatchMapping("/update-area/{employeeCode}")
+    public ResponseEntity<?> updworkArea(@PathVariable String employeeCode, @RequestBody AdministrativeRoles admiRoles) {
+        adminService.updateRole(employeeCode, admiRoles);
+        return ResponseEntity.noContent().build();
+    }
+    
+    @PatchMapping("/update-status/{employeeCode}")
+    public ResponseEntity<?> updateStatus(@PathVariable String employeeCode, @Valid @RequestBody EmployeeStatus status ) {
+        adminService.updateEmployeeStatus(employeeCode, status);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{idEmployee}")
-    public ResponseEntity<?> deleteAdministrative(@PathVariable Long idEmployee, @Valid @RequestBody ActionInformationsRequestDto request ) {
-        adminService.delete(idEmployee, request.getDeletedBy(), request.getReason());
+    @PatchMapping("/suspended/{employeeCode}")
+    public ResponseEntity<?> suspendAdministrative(@PathVariable String employeeCode, @Valid @RequestBody ActionInformationsRequestDto request ) {
+        adminService.suspended(employeeCode, request.getDeletedBy(), request.getReason());
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/suspended/{idEmployee}")
-    public ResponseEntity<?> suspendAdministrative(@PathVariable Long idEmployee, @Valid @RequestBody ActionInformationsRequestDto request ) {
-        adminService.suspended(idEmployee, request.getDeletedBy(), request.getReason());
-        return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/update-status/{idEmployee}")
-    public ResponseEntity<?> updateStatus(@PathVariable Long idEmployee, @Valid @RequestBody EmployeeStatus status ) {
-        adminService.updateEmployeeStatus(idEmployee, status);
+    @DeleteMapping("/{employeeCode}")
+    public ResponseEntity<?> deleteAdministrative(@PathVariable String employeeCode, @Valid @RequestBody ActionInformationsRequestDto request ) {
+        adminService.delete(employeeCode, request.getDeletedBy(), request.getReason());
         return ResponseEntity.noContent().build();
     }
 }

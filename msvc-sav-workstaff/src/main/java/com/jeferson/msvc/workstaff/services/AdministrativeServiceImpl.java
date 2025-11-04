@@ -18,18 +18,17 @@ import com.jeferson.msvc.workstaff.repositories.AdministrativeRepository;
 import com.jeferson.msvc.workstaff.repositories.EmployeeRepository;
 
 @Service
-public class AdministrativeServiceImpl implements AdministrativeService {
+public class AdministrativeServiceImpl extends CodeEmployeeService implements AdministrativeService {
 
     private final AdministrativeRepository administrativeRepository;
     private final AdministrativeMapper administrativeMapper;
-    private final EmployeeRepository employeeRepo;
 
     public AdministrativeServiceImpl(AdministrativeRepository administrativeRepository,
             AdministrativeMapper administrativeMapper,
             EmployeeRepository employeeRepo) {
+        super(employeeRepo);
         this.administrativeRepository = administrativeRepository;
         this.administrativeMapper = administrativeMapper;
-        this.employeeRepo = employeeRepo;
     }
 
     @Override
@@ -47,6 +46,8 @@ public class AdministrativeServiceImpl implements AdministrativeService {
         if (entity.getProfessionalCard().isEmpty()) {
             entity.setProfessionalCard(null);
         }
+        String codee = generateEmployeeCode("AD", entity);
+        entity.setEmployeeCode(codee);
         entity.setRegistrationDate(LocalDate.now());
         entity.setStatus(EmployeeStatus.PROCESS);
         Administrative saved = employeeRepo.save(entity);
@@ -74,13 +75,6 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     }
 
     @Override
-    public AdmistrativeResponseDto findAdminById(Long idEmployee) {
-        Administrative administrative = administrativeRepository.findById(idEmployee)
-            .orElseThrow(() -> new EntityNotFoundException("No se encontro administrativo asociado al Id " + idEmployee + " en el sistema"));
-        return mapAdministrativeByStatus(administrative);
-    }
-
-    @Override
     public AdmistrativeResponseDto findAdminByDocumentNumber(String documentNumber) {
         Administrative administrative = administrativeRepository.findByDocumentNumber(documentNumber)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -89,85 +83,98 @@ public class AdministrativeServiceImpl implements AdministrativeService {
     }
 
     @Override
+    public AdmistrativeResponseDto findAdminByCode(String employeeCode) {
+        Administrative administrative = administrativeRepository.findByEmployeeCode(employeeCode)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "No se encontro administrativo asociado al codigo " + employeeCode));
+        return mapAdministrativeByStatus(administrative);
+    }
+
+    @Override
     @Transactional
-    public void updateEmail(Long idEmployee, String email) {
-        Administrative administrative = validateInfo(idEmployee);
+    public void updateEmail(String employeeCode, String email) {
+        Administrative administrative = validateInfo(employeeCode);
         if (administrative.getEmail().equals(email)) {
             throw new IllegalArgumentException(
-                    "El email " + email + " ya se encuentra vinculado al administrativo " + idEmployee);
+                    "El email " + email + " ya se encuentra vinculado al administrativo " + administrative.getName());
         }
-        employeeRepo.updateEmail(idEmployee, email);
+        administrative.setEmail(email);
+        administrativeRepository.save(administrative);
     }
 
     @Override
     @Transactional
-    public void updateNumberPhone(long idEmployee, String phoneNumber) {
-        Administrative administrative = validateInfo(idEmployee);
+    public void updateNumberPhone(String employeeCode, String phoneNumber) {
+        Administrative administrative = validateInfo(employeeCode);
         if (administrative.getPhoneNumber().equals(phoneNumber)) {
             throw new IllegalArgumentException(
-                    "El telefono " + phoneNumber + " ya se encuentra vinculado al administrativo " + idEmployee);
+                    "El telefono " + phoneNumber + " ya se encuentra vinculado al administrativo " + administrative.getName());
         }
-        employeeRepo.updatePhoneNumber(idEmployee, phoneNumber);
+        administrative.setPhoneNumber(phoneNumber);
+        administrativeRepository.save(administrative);
     }
 
     @Override
     @Transactional
-    public void updateContractType(Long idEmployee, ContractType contractType) {
-        Administrative administrative = validateInfo(idEmployee);
+    public void updateContractType(String employeeCode, ContractType contractType) {
+        Administrative administrative = validateInfo(employeeCode);
         if (administrative.getContractType().equals(contractType)) {
             throw new IllegalArgumentException(
-                    "El contrato " + contractType + " ya se encuentra vinculado al administrativo " + idEmployee);
+                    "El contrato " + contractType + " ya se encuentra vinculado al administrativo " + administrative.getName());
         }
-        employeeRepo.updateContractType(idEmployee, contractType);
+        administrative.setContractType(contractType);
+        administrativeRepository.save(administrative);
     }
 
     @Override
     @Transactional
-    public void updateRole(Long idEmployee, AdministrativeRoles admiRoles) {
-        Administrative administrative = validateInfo(idEmployee);
+    public void updateRole(String employeeCode, AdministrativeRoles admiRoles) {
+        Administrative administrative = validateInfo(employeeCode);
         if (administrative.getAdministrativeRoles().equals(admiRoles)) {
             throw new IllegalArgumentException(
-                    "El area de trabajo " + admiRoles + " ya se encuentra vinculado al administrativo " + idEmployee);
+                    "El area de trabajo " + admiRoles + " ya se encuentra vinculado al administrativo " + administrative.getName());
         }
-        administrativeRepository.updateRole(idEmployee, admiRoles);
+        administrative.setAdministrativeRoles(admiRoles);
+        administrativeRepository.save(administrative);
     }
 
     @Override
-    public void delete(Long idEmployee, String deleteAt, String reason) {
-        Administrative administrative = validateInfo(idEmployee);
-        if (administrative.getStatus() == EmployeeStatus.DELETED) {
-            throw new IllegalArgumentException("El empleado administrativo "+ idEmployee + " ya está eliminado del sistema");
-        }
-        administrative.setStatus(EmployeeStatus.DELETED);
-        applyStatusChange(administrative, deleteAt, reason);
+    public void updateEmployeeStatus(String employeeCode, EmployeeStatus status){
+        Administrative administrative = validateInfo(employeeCode);
+        validateUpdateStatus(status, administrative);
+        administrative.setStatus(status);
+        administrativeRepository.save(administrative);
     }
 
     @Override
-    public void suspended(Long idEmployee, String deleteBy, String reason){
-        Administrative administrative = validateInfo(idEmployee);
+    public void suspended(String employeeCode, String deleteBy, String reason){
+        Administrative administrative = validateInfo(employeeCode);
         if (administrative.getStatus() == EmployeeStatus.SUSPENDED) {
-            throw new IllegalArgumentException("El empleado administrativo"+ idEmployee + " ya se encuentra suspendido del sistema");
+            throw new IllegalArgumentException("El empleado administrativo "+administrative.getName() +" ya se encuentra suspendido del sistema");
         }
         administrative.setStatus(EmployeeStatus.SUSPENDED);
         applyStatusChange(administrative, deleteBy, reason);
     }
 
     @Override
-    public void updateEmployeeStatus(Long idEmployee, EmployeeStatus status){
-        Administrative administrative = validateInfo(idEmployee);
-        validateUpdateStatus(status, administrative);
-        administrative.setStatus(status);
-        administrativeRepository.save(administrative);
+    public void delete(String employeeCode, String deleteAt, String reason) {
+        Administrative administrative = validateInfo(employeeCode);
+        if (administrative.getStatus() == EmployeeStatus.DELETED) {
+            throw new IllegalArgumentException("El empleado administrativo "+ employeeCode + " ya está eliminado del sistema");
+        }
+        administrative.setStatus(EmployeeStatus.DELETED);
+        applyStatusChange(administrative, deleteAt, reason);
     }
 
+
     //helpers
-    private Administrative validateInfo(Long idEmployee) {
-        Administrative administrative = administrativeRepository.findById(idEmployee)
+    private Administrative validateInfo(String employeeCode) {
+        Administrative administrative = administrativeRepository.findByEmployeeCode(employeeCode)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "No se encontro administrativo asociado al id " + idEmployee));
+                        "No se encontro administrativo asociado al codigo" + employeeCode));
 
         if (administrative.getStatus() == EmployeeStatus.DELETED) {
-            throw new IllegalArgumentException("El administrativo " + idEmployee + " ya se encuentra Eliminado, no se puede efectuar ninguna actualizacion");
+            throw new IllegalArgumentException("El administrativo " +administrative.getName()+ " ya se encuentra Eliminado, no se puede efectuar ninguna actualizacion");
         }
         return administrative;
     }

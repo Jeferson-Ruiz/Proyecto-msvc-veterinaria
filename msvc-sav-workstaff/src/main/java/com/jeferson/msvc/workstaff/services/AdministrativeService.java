@@ -14,23 +14,24 @@ public interface AdministrativeService {
     List<AdmistrativeResponseDto> findAllByStatus(EmployeeStatus status);
 
     List<AdmistrativeResponseDto> findAllByRole(AdministrativeRoles administrativeRole, EmployeeStatus status);
-    
-    AdmistrativeResponseDto findAdminById (Long idEmployee);
-    
+        
     AdmistrativeResponseDto findAdminByDocumentNumber(String documentNumber);
 
-    void updateEmail(Long idEmployee, String email);
+    AdmistrativeResponseDto findAdminByCode(String employeeCode);
 
-    void updateNumberPhone(long idEmployee, String phoneNumber);
+    void updateEmail(String employeeCode, String email);
 
-    void updateContractType(Long idEmployee, ContractType contractType);
+    void updateNumberPhone(String employeeCode, String phoneNumber);
+
+    void updateContractType(String employeeCode, ContractType contractType);
     
-    void updateRole(Long idEmployee, AdministrativeRoles admiRoles);
+    void updateRole(String employeeCode, AdministrativeRoles admiRoles);
 
-    void delete (Long idEmployee, String deleteAt, String reason);
+    void updateEmployeeStatus(String employeeCode, EmployeeStatus employeeStatus);
 
-    void suspended(Long idEmployee, String deleteAt, String reason);
+    void suspended(String employeeCode, String deleteAt, String reason);
 
-    void updateEmployeeStatus(Long idEmployee, EmployeeStatus employeeStatus);
+    void delete (String employeeCode, String deleteAt, String reason);
+
 
 }
