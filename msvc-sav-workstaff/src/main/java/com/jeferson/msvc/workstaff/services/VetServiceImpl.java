@@ -18,16 +18,15 @@ import com.jeferson.msvc.workstaff.repositories.VetRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class VetServiceImpl implements VetService {
+public class VetServiceImpl extends CodeEmployeeService implements VetService {
 
-    private final EmployeeRepository employeeRepo;
     private final VetRepository vetRepository;
     private final VetMapper vetMapper;
 
     public VetServiceImpl(VetRepository vetRepository, VetMapper vetMapper, EmployeeRepository employeeRepo) {
+        super(employeeRepo);
         this.vetRepository = vetRepository;
         this.vetMapper = vetMapper;
-        this.employeeRepo = employeeRepo;
     }
 
     @Override
@@ -39,6 +38,10 @@ public class VetServiceImpl implements VetService {
         if (vetRepository.existsByProfessionalCard(entity.getProfessionalCard()) && !entity.getProfessionalCard().isEmpty()) {
             throw new IllegalArgumentException("La tarjeta profesional "+ entity.getProfessionalCard() +" ya se encuentra asociado a un veterinario");
         }
+
+        String code = generateEmployeeCode("VT", entity);
+        entity.setEmployeeCode(code);
+
         entity.setRegistrationDate(LocalDate.now());
         entity.setStatus(EmployeeStatus.PROCESS);
         Vet saved = vetRepository.save(entity);
@@ -48,7 +51,7 @@ public class VetServiceImpl implements VetService {
     @Override
     public List<VetResponseDto> findAllByStatus(EmployeeStatus status){
         validateStatus(status);
-        List<Vet> vets = vetRepository.findAllActiveVets(status);
+        List<Vet> vets = vetRepository.findAllByStatus(status);
         if (vets.isEmpty()) {
             throw new EntityNotFoundException("No se encontraron empleados vinculado al cargo de veterinarios");
         }
@@ -56,7 +59,7 @@ public class VetServiceImpl implements VetService {
     }
 
     @Override
-    public List<VetResponseDto> findAllByRole(VetRoles vetRole, EmployeeStatus status){
+    public List<VetResponseDto> findAllByRoleAndStatus(VetRoles vetRole, EmployeeStatus status){
         validateStatus(status);
         List<Vet> vets = vetRepository.findAllByRole(vetRole, status);
         if (vets.isEmpty()) {
@@ -66,9 +69,9 @@ public class VetServiceImpl implements VetService {
     }
 
     @Override
-    public VetResponseDto findById(Long idEmployee){
-        Vet vet = vetRepository.findById(idEmployee)
-            .orElseThrow(() -> new EntityNotFoundException("No se encontro veterinario asociado al id "+ idEmployee + " en el sistema"));
+    public VetResponseDto findByCode(String employeeCode){
+        Vet vet = vetRepository.findByCode(employeeCode)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro veterinario asociado al codigo "+ employeeCode+ " en el sistema"));
         return mapVetByStatus(vet);
     }
 
@@ -81,55 +84,59 @@ public class VetServiceImpl implements VetService {
 
     @Override
     @Transactional
-    public void updateEmail (Long idEmployee, String email){
-        Vet vet = validateInfo(idEmployee);
+    public void updateEmail (String employeeCode, String email){
+        Vet vet = validateInfo(employeeCode);
         if (vet.getEmail().equals(email)) {
-            throw new IllegalArgumentException("El email "+ email+ " ya se encuentra asociado al veterinario "+ idEmployee);
+            throw new IllegalArgumentException("El email "+ email+ " ya se encuentra asociado al veterinario "+ vet.getName());
         }
-        employeeRepo.updateEmail(idEmployee, email);
+        vet.setEmail(email);
+        vetRepository.save(vet);
     }
 
     @Override
     @Transactional
-    public void updateNumberPhone(Long idEmployee, String phoneNumber){
-        Vet vet = validateInfo(idEmployee);
+    public void updateNumberPhone(String employeeCode, String phoneNumber){
+        Vet vet = validateInfo(employeeCode);
         if (vet.getPhoneNumber().equals(phoneNumber)) {
-            throw new IllegalArgumentException("El telefono "+ phoneNumber + " ya se encuentra asociado al veterinario "+ idEmployee);
+            throw new IllegalArgumentException("El telefono "+ phoneNumber + " ya se encuentra asociado al veterinario "+ vet.getName());
         }
-        employeeRepo.updatePhoneNumber(idEmployee, phoneNumber);
+        vet.setPhoneNumber(phoneNumber);
+        vetRepository.save(vet);
     }
 
     @Override
     @Transactional
-    public void updateContractType(Long idEmployee, ContractType contractType){
-        Vet vet = validateInfo(idEmployee);
+    public void updateContractType(String employeeCode, ContractType contractType){
+        Vet vet = validateInfo(employeeCode);
         if (vet.getContractType().equals(contractType)) {
-            throw new IllegalArgumentException("El contrato "+ contractType + " ya se encuentra asociado al veterinario "+ idEmployee);
+            throw new IllegalArgumentException("El contrato "+ contractType + " ya se encuentra asociado al veterinario "+ vet.getName());
         }        
-        employeeRepo.updateContractType(idEmployee, contractType);
+        vet.setContractType(contractType);
+        vetRepository.save(vet);
     }
 
     @Override
     @Transactional
-    public void updateRole(Long idEmployee, VetRoles vetRoles){
-        Vet vet = validateInfo(idEmployee);
+    public void updateRole(String employeeCode, VetRoles vetRoles){
+        Vet vet = validateInfo(employeeCode);
         if (vet.getVetRoles().equals(vetRoles)) {
-            throw new IllegalArgumentException("El area de trabajo "+ vetRoles + " ya se encuentra asociado al veterinario "+ idEmployee);
+            throw new IllegalArgumentException("El area de trabajo "+ vetRoles + " ya se encuentra asociado al veterinario "+ vet.getName());
         }
-        vetRepository.updateRole(idEmployee, vetRoles);
+        vet.setVetRoles(vetRoles);
+        vetRepository.save(vet);
     }
 
     @Override
-    public void delete(Long idEmployee, String deleteBy, String reason){
-        Vet vet = validateInfo(idEmployee);
-        vet.setStatus(EmployeeStatus.DELETED);
-        applyStatusChange(vet, deleteBy, reason);
+    public void updateEmployeeStatus(String employeeCode, EmployeeStatus status){
+        Vet vet = validateInfo(employeeCode);
+        validateUpdateStatus(status, vet);
+        vet.setStatus(status);
+        vetRepository.save(vet);
     }
 
-
     @Override
-    public void suspended(Long idEmployee, String deleteBy, String reason){
-        Vet vet = validateInfo(idEmployee);
+    public void suspended(String employeeCode, String deleteBy, String reason){
+        Vet vet = validateInfo(employeeCode);
         if (vet.getStatus() == EmployeeStatus.SUSPENDED) {
             throw new EntityNotFoundException("El veterinario "+ vet.getName() + " ya se encuentra suspendido del sistema");
         }
@@ -138,19 +145,18 @@ public class VetServiceImpl implements VetService {
     }
 
     @Override
-    public void updateEmployeeStatus(Long idEmployee, EmployeeStatus status){
-        Vet vet = validateInfo(idEmployee);
-        validateUpdateStatus(status, vet);
-        vet.setStatus(status);
-        vetRepository.save(vet);
+    public void delete(String employeeCode, String deleteBy, String reason){
+        Vet vet = validateInfo(employeeCode);
+        vet.setStatus(EmployeeStatus.DELETED);
+        applyStatusChange(vet, deleteBy, reason);
     }
 
     //helpers
-    private Vet validateInfo(Long idEmployee) {
-        Vet vet = vetRepository.findById(idEmployee)
-                .orElseThrow(() -> new EntityNotFoundException("No se encontro veterinario asociado al id " + idEmployee));
+    private Vet validateInfo(String employeeCode) {
+        Vet vet = vetRepository.findByCode(employeeCode)
+                .orElseThrow(() -> new EntityNotFoundException("No se encontro veterinario asociado al codigo " + employeeCode));
         if (vet.getStatus() == EmployeeStatus.DELETED) {
-            throw new IllegalArgumentException("El veterinario " + idEmployee + " se encuentra desactivado permanentemente del sistema");
+            throw new IllegalArgumentException("El veterinario " + employeeCode + " se encuentra desactivado permanentemente del sistema");
         }
         return vet;
     }

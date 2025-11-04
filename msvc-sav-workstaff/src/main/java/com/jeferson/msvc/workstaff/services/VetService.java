@@ -13,23 +13,23 @@ public interface VetService {
 
     List<VetResponseDto> findAllByStatus(EmployeeStatus status);
     
-    List<VetResponseDto> findAllByRole(VetRoles vetRole, EmployeeStatus status);
+    List<VetResponseDto> findAllByRoleAndStatus(VetRoles vetRole, EmployeeStatus status);
 
-    VetResponseDto findById(Long idEmployee);
+    VetResponseDto findByCode(String employeeCode);
 
     VetResponseDto findAdminByDocumentNumber(String documentNumber);
 
-    void updateEmail(Long idEmployee, String email);
+    void updateEmail(String employeeCode, String email);
 
-    void updateNumberPhone(Long idEmployee, String phoneNumber);
+    void updateNumberPhone(String employeeCode, String phoneNumber);
 
-    void updateContractType(Long idEmployee, ContractType contractType);
+    void updateContractType(String employeeCode, ContractType contractType);
 
-    void updateRole(Long idEmployee, VetRoles vetRoles);
+    void updateRole(String employeeCode, VetRoles vetRoles);
 
-    void delete(Long idEmployee, String deleteBy, String reason);
-
-    void suspended(Long idEmployee, String deleteBy, String reason);
-
-    void updateEmployeeStatus(Long idEmployee, EmployeeStatus status);
+    void updateEmployeeStatus(String employeeCode, EmployeeStatus status);
+    
+    void suspended(String employeeCode, String deleteBy, String reason);
+    
+    void delete(String employeeCode, String deleteBy, String reason);
 }
