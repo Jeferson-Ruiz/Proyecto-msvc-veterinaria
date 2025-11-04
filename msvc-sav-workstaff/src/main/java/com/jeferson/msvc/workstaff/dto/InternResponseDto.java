@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class InternResponseDto {
 
-    private Long employeeId;
+    private String employeeCode;
     private String fullName;
     private DocumentType documentType;
     private String documentNumber;

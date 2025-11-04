@@ -24,7 +24,7 @@ import com.jeferson.msvc.workstaff.services.InternService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("intern")
+@RequestMapping("/intern")
 public class InternController {
 
     private final InternService intService;
@@ -47,13 +47,13 @@ public class InternController {
 
     @GetMapping("/role/{role}/status/{status}")
     public ResponseEntity<?> getAllByRole(@PathVariable InternRoles role, @PathVariable EmployeeStatus status){
-        List<InternResponseDto> interns = intService.findAllByRole(role, status);
+        List<InternResponseDto> interns = intService.findAllByRoleAndStatus(role, status);
         return ResponseEntity.ok(interns);
     }
 
-    @GetMapping("/id/{idEmployee}")
-    public ResponseEntity<?> getInternById(@PathVariable Long idEmployee) {
-        InternResponseDto intern = intService.findById(idEmployee);
+    @GetMapping("/code/{employeeCode}")
+    public ResponseEntity<?> getInternByCode(@PathVariable String employeeCode) {
+        InternResponseDto intern = intService.findByCode(employeeCode);
         return ResponseEntity.ok(intern);
     }
 
@@ -63,45 +63,45 @@ public class InternController {
         return ResponseEntity.ok(intern);
     }
 
-    @PatchMapping("/update-email/{idEmployee}")
-    public ResponseEntity<?> updInfoEmail(@PathVariable Long idEmployee, @Valid @RequestBody EmailRequestDto request) {
-        intService.updateEmail(idEmployee, request.getEmail());
+    @PatchMapping("/update-email/{employeeCode}")
+    public ResponseEntity<?> updInfoEmail(@PathVariable String employeeCode, @Valid @RequestBody EmailRequestDto request) {
+        intService.updateEmail(employeeCode, request.getEmail());
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/update-number/{idEmployee}")
-    public ResponseEntity<?> updInfoNumberPhone(@PathVariable Long idEmployee, @Valid @RequestBody PhoneNumberRequestDto request) {
-        intService.updateNumberPhone(idEmployee, request.getPhoneNumber());
+    @PatchMapping("/update-number/{employeeCode}")
+    public ResponseEntity<?> updInfoNumberPhone(@PathVariable String employeeCode, @Valid @RequestBody PhoneNumberRequestDto request) {
+        intService.updateNumberPhone(employeeCode, request.getPhoneNumber());
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/update-contract/{idEmployee}")
-    public ResponseEntity<?> updContractType(@PathVariable Long idEmployee, @RequestBody ContractType contract) {
-        intService.updateContractType(idEmployee, contract);
+    @PatchMapping("/update-contract/{employeeCode}")
+    public ResponseEntity<?> updContractType(@PathVariable String employeeCode, @RequestBody ContractType contract) {
+        intService.updateContractType(employeeCode, contract);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/update-area/{idEmployee}")
-    public ResponseEntity<?> updWorkArea(@PathVariable Long idEmployee, @RequestBody InternRoles internRoles) {
-        intService.updateRoles(idEmployee, internRoles);
+    @PatchMapping("/update-area/{employeeCode}")
+    public ResponseEntity<?> updWorkArea(@PathVariable String employeeCode, @RequestBody InternRoles internRoles) {
+        intService.updateRoles(employeeCode, internRoles);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{idEmployee}")
-    public ResponseEntity<?> deleteIntern(@PathVariable Long idEmployee, @Valid @RequestBody ActionInformationsRequestDto request ) {
-        intService.delete(idEmployee, request.getDeletedBy(), request.getReason());
+    @PatchMapping("/update-status/{employeeCode}")
+    public ResponseEntity<?> updateStatus(@PathVariable String employeeCode, @Valid @RequestBody EmployeeStatus status ) {
+        intService.updateEmployeeStatus(employeeCode, status);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/suspended/{idEmployee}")
-    public ResponseEntity<?> suspended(@PathVariable Long idEmployee, @Valid @RequestBody ActionInformationsRequestDto request ) {
-        intService.suspended(idEmployee, request.getDeletedBy(), request.getReason());
+    @PatchMapping("/suspended/{employeeCode}")
+    public ResponseEntity<?> suspended(@PathVariable String employeeCode, @Valid @RequestBody ActionInformationsRequestDto request ) {
+        intService.suspended(employeeCode, request.getDeletedBy(), request.getReason());
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/update-status/{idEmployee}")
-    public ResponseEntity<?> updateStatus(@PathVariable Long idEmployee, @Valid @RequestBody EmployeeStatus status ) {
-        intService.updateEmployeeStatus(idEmployee, status);
+    @DeleteMapping("/{employeeCode}")
+    public ResponseEntity<?> deleteIntern(@PathVariable String employeeCode, @Valid @RequestBody ActionInformationsRequestDto request ) {
+        intService.delete(employeeCode, request.getDeletedBy(), request.getReason());
         return ResponseEntity.noContent().build();
     }
     

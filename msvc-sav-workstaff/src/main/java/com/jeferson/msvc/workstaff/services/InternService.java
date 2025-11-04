@@ -13,23 +13,23 @@ public interface InternService {
 
     List<InternResponseDto> findAllByStatus(EmployeeStatus status);
     
-    List<InternResponseDto> findAllByRole(InternRoles internRole, EmployeeStatus status);
-    
-    InternResponseDto findById(Long idEmployee);
+    List<InternResponseDto> findAllByRoleAndStatus(InternRoles internRole, EmployeeStatus status);
     
     InternResponseDto findAdminByDocumentNumber(String documentNumber);
+    
+    InternResponseDto findByCode(String employeeCode);
 
-    void updateEmail(Long idEmployee, String email);
+    void updateEmail(String employeeCode, String email);
 
-    void updateNumberPhone(Long idEmployee, String phoneNumber);
+    void updateNumberPhone(String employeeCode, String phoneNumber);
 
-    void updateContractType(Long idEmployee, ContractType contractType);
+    void updateContractType(String employeeCode, ContractType contractType);
 
-    void updateRoles(Long idEmployee, InternRoles internRoles);
+    void updateRoles(String employeeCode, InternRoles internRoles);
 
-    void delete(Long idEmployee, String deleteBy, String reason);
-
-    void suspended(Long idEmployee, String deleteBy, String reason);
-
-    void updateEmployeeStatus(Long idEmployee, EmployeeStatus status);
+    void updateEmployeeStatus(String employeeCode, EmployeeStatus status);
+    
+    void suspended(String employeeCode, String deleteBy, String reason);
+    
+    void delete(String employeeCode, String deleteBy, String reason);
 }

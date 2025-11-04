@@ -15,8 +15,8 @@ public interface InternRepository extends JpaRepository<Intern, Long> {
     @Query("SELECT i FROM Intern i WHERE i.documentNumber =:documentNumber")
     Optional<Intern> findByDocumentNumber(@Param("documentNumber") String documentNumber);
 
-    @Query("SELECT i FROM Intern i WHERE i.status =:ACTIVE")
-    List<Intern> findAllActiveInterns();
+    @Query("SELECT i FROM Intern i WHERE i.employeeCode =:employeeCode")
+    Optional<Intern> findByCode(@Param("employeeCode") String employeeCode);
 
     @Query("SELECT i FROM Intern i WHERE i.status =:status")
     List<Intern> findAllByStatus(@Param("status")EmployeeStatus status);
@@ -25,7 +25,7 @@ public interface InternRepository extends JpaRepository<Intern, Long> {
     List<Intern> findAllByRole(@Param("internRole") InternRoles internRole, @Param("status") EmployeeStatus status);
 
     @Modifying
-    @Query("update Intern set internRoles=:internRoles where employeeId =:employeeId")
-    void updateRole(@Param("employeeId") Long employeeId, @Param("internRoles") InternRoles internRoles);
+    @Query("update Intern set internRoles=:internRoles where employeeCode =:employeeCode")
+    void updateRole(@Param("employeeCode") String employeeCode, @Param("internRoles") InternRoles internRoles);
 
 }

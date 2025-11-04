@@ -18,17 +18,16 @@ import com.jeferson.msvc.workstaff.repositories.InternRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class InternServiceImpl implements InternService {
+public class InternServiceImpl extends CodeEmployeeService implements InternService {
 
     private final InternRepository intRepository;
     private final InternMapper intMapper;
-    private final EmployeeRepository employeeRepo;
 
     public InternServiceImpl(InternRepository intRepository, InternMapper intMapper,
             EmployeeRepository employeeRepo) {
+        super(employeeRepo);
         this.intRepository = intRepository;
         this.intMapper = intMapper;
-        this.employeeRepo = employeeRepo;
     }
 
     @Override
@@ -38,20 +37,14 @@ public class InternServiceImpl implements InternService {
                     "El documento " + internDto.getDocumentNumber() + " ya se encuentra vinculado a un empleado");
         }
         Intern entity = intMapper.toEntity(internDto);
+
+        String code = generateEmployeeCode("IN", entity);
+        entity.setEmployeeCode(code);
+        
         entity.setRegistrationDate(LocalDate.now());
         entity.setStatus(EmployeeStatus.PROCESS);
         Intern saved = intRepository.save(entity);
         return intMapper.toDto(saved);
-    }
-
-    @Override
-    public List<InternResponseDto> findAllByRole(InternRoles internRole, EmployeeStatus status){
-        validateStatus(status);
-        List<Intern> interns = intRepository.findAllByRole(internRole, status);
-        if (interns.isEmpty()) {
-            throw new EntityNotFoundException("No se encontro registro de " + internRole + " asociados al estado de "+ status);
-        }
-        return mapInternsByStatus(status, interns);
     }
 
     @Override
@@ -64,11 +57,14 @@ public class InternServiceImpl implements InternService {
         return mapInternsByStatus(status, interns);
     }
 
-    @Override
-    public InternResponseDto findById(Long idEmployee) {
-        Intern intern = intRepository.findById(idEmployee)
-            .orElseThrow(() -> new EntityNotFoundException("No se encontro pasante asociado al id "+ idEmployee));
-        return mapInternByStatus(intern);
+        @Override
+    public List<InternResponseDto> findAllByRoleAndStatus(InternRoles internRole, EmployeeStatus status){
+        validateStatus(status);
+        List<Intern> interns = intRepository.findAllByRole(internRole, status);
+        if (interns.isEmpty()) {
+            throw new EntityNotFoundException("No se encontro registro de " + internRole + " asociados al estado de "+ status);
+        }
+        return mapInternsByStatus(status, interns);
     }
 
     @Override
@@ -80,80 +76,91 @@ public class InternServiceImpl implements InternService {
     }
 
     @Override
+    public InternResponseDto findByCode(String employeeCode) {
+        Intern intern = intRepository.findByCode(employeeCode)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro pasante asociado al codigo "+ employeeCode));
+        return mapInternByStatus(intern);
+    }
+
+    @Override
     @Transactional
-    public void updateEmail(Long idEmployee, String email) {
-        Intern intern = validateInfo(idEmployee);
+    public void updateEmail(String employeeCode, String email) {
+        Intern intern = validateInfo(employeeCode);
         if (intern.getEmail().equals(email)) {
             throw new IllegalArgumentException(
-                    "El email " + email + " ya se encuentra asociado al pasante " + idEmployee);
+                    "El email " + email + " ya se encuentra asociado al pasante " + intern.getName());
         }
-        employeeRepo.updateEmail(idEmployee, email);
+        intern.setEmail(email);
+        intRepository.save(intern);
     }
 
     @Override
     @Transactional
-    public void updateNumberPhone(Long idEmployee, String phoneNumber) {
-        Intern intern = validateInfo(idEmployee);
+    public void updateNumberPhone(String employeeCode, String phoneNumber) {
+        Intern intern = validateInfo(employeeCode);
         if (intern.getPhoneNumber().equals(phoneNumber)) {
             throw new IllegalArgumentException(
-                    "El telefono " + phoneNumber + " ya se encuentra asociado al pasante " + idEmployee);
+                    "El telefono " + phoneNumber + " ya se encuentra asociado al pasante " + intern.getName());
         }
-        employeeRepo.updatePhoneNumber(idEmployee, phoneNumber);
+        intern.setPhoneNumber(phoneNumber);
+        intRepository.save(intern);
     }
 
     @Override
     @Transactional
-    public void updateContractType(Long idEmployee, ContractType contractType) {
-        Intern intern = validateInfo(idEmployee);
+    public void updateContractType(String employeeCode, ContractType contractType) {
+        Intern intern = validateInfo(employeeCode);
         if (intern.getContractType().equals(contractType)) {
             throw new IllegalArgumentException(
-                    "El contrato " + contractType + " ya se encuentra asociado al pasante " + idEmployee);
+                    "El contrato " + contractType + " ya se encuentra asociado al pasante " + intern.getName());
         }
-        employeeRepo.updateContractType(idEmployee, contractType);
+        intern.setContractType(contractType);
+        intRepository.save(intern);
     }
 
     @Override
     @Transactional
-    public void updateRoles(Long idEmployee, InternRoles internRoles) {
-        Intern intern = validateInfo(idEmployee);
+    public void updateRoles(String employeeCode, InternRoles internRoles) {
+        Intern intern = validateInfo(employeeCode);
         if (intern.getInternRoles().equals(internRoles)) {
             throw new IllegalArgumentException(
-                    "El area de trabajo " + internRoles + " ya se encuentra asociado al pasante " + idEmployee);
+                    "El area de trabajo " + internRoles + " ya se encuentra asociado al pasante " + intern.getName());
         }
-        intRepository.updateRole(idEmployee, internRoles);
+        intRepository.updateRole(employeeCode, internRoles);
     }
 
     @Override
-    public void delete(Long idEmployee, String deleteBy, String reason) {
-        Intern intern = validateInfo(idEmployee);
-        intern.setStatus(EmployeeStatus.DELETED);
-        applyStatusChange(intern, deleteBy, reason);
+    public void updateEmployeeStatus(String employeeCode, EmployeeStatus status){
+        Intern intern = validateInfo(employeeCode);
+        validateUpdateStatus(status, intern);
+        intern.setStatus(status);
+        intRepository.save(intern);
     }
 
     @Override
-    public void suspended(Long idEmployee, String deleteBy, String reason) {
-        Intern intern = validateInfo(idEmployee);
+    public void suspended(String employeeCode, String deleteBy, String reason) {
+        Intern intern = validateInfo(employeeCode);
         if (intern.getStatus() == EmployeeStatus.SUSPENDED) {
-            throw new IllegalArgumentException("El practicante ya se encuentra suspendido del sistema");
+            throw new IllegalArgumentException("El practicante "+ intern.getName()+" ya se encuentra suspendido del sistema");
         }
         intern.setStatus(EmployeeStatus.SUSPENDED);
         applyStatusChange(intern, deleteBy, reason);
     }
 
     @Override
-    public void updateEmployeeStatus(Long idEmployee, EmployeeStatus status){
-        Intern intern = validateInfo(idEmployee);
-        validateUpdateStatus(status, intern);
-        intern.setStatus(status);
-        intRepository.save(intern);
+    public void delete(String employeeCode, String deleteBy, String reason) {
+        Intern intern = validateInfo(employeeCode);
+        intern.setStatus(EmployeeStatus.DELETED);
+        applyStatusChange(intern, deleteBy, reason);
     }
 
+
     //helper
-    private Intern validateInfo(Long idEmployee) {
-        Intern intern = intRepository.findById(idEmployee)
-                .orElseThrow(() -> new EntityNotFoundException("No se encontro pasante asociado al id " + idEmployee));
+    private Intern validateInfo(String employeeCode) {
+        Intern intern = intRepository.findByCode(employeeCode)
+                .orElseThrow(() -> new EntityNotFoundException("No se encontro pasante asociado al codigo " + employeeCode));
         if (intern.getStatus() == EmployeeStatus.DELETED) {
-            throw new IllegalArgumentException("El pasante " + idEmployee + " se encuentra deshabilitado permanentemente del sistema");
+            throw new IllegalArgumentException("El pasante " + employeeCode+ " se encuentra deshabilitado permanentemente del sistema");
         }
         return intern;
     }
