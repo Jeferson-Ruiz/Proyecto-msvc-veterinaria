@@ -15,6 +15,9 @@ public interface AuxiliaryRepository  extends JpaRepository<Auxiliary, Long> {
     @Query("SELECT a FROM Auxiliary a WHERE a.documentNumber =:documentNumber")
     Optional<Auxiliary> findByDocumentNumber(@Param("documentNumber") String documentNumber);
 
+    @Query("SELECT a FROM Auxiliary a WHERE a.employeeCode =:employeeCode")
+    Optional<Auxiliary> findByCode(@Param("employeeCode") String employeeCode);
+
     @Query("SELECT a FROM Auxiliary a WHERE a.status =:status")
     List<Auxiliary> findAllByStatus(@Param("status") EmployeeStatus status);
 
@@ -22,6 +25,6 @@ public interface AuxiliaryRepository  extends JpaRepository<Auxiliary, Long> {
     List<Auxiliary> findByRoles(@Param("auxiliaryRole") AuxiliaryRoles auxiliaryRole, @Param("status") EmployeeStatus status);
 
     @Modifying
-    @Query("update Auxiliary set auxiliaryRoles=:auxiliaryRoles where employeeId =:employeeId")
-    void updateRole(@Param ("employeeId") Long employeeId, @Param("auxiliaryRoles") AuxiliaryRoles auxiliaryRoles);
+    @Query("update Auxiliary set auxiliaryRoles=:auxiliaryRoles where employeeCode =:employeeCode")
+    void updateRole(@Param ("employeeCode") String employeeCode, @Param("auxiliaryRoles") AuxiliaryRoles auxiliaryRoles);
 }

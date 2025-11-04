@@ -18,28 +18,30 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
-public class AuxiliaryServiceImpl implements AuxiliaryService {
+public class AuxiliaryServiceImpl extends CodeEmployeeService implements AuxiliaryService {
 
     private final AuxiliaryRepository auxRepository;
     private final AuxiliaryMapper auxMapper;
-    private final EmployeeRepository employeeRespo;
 
     public AuxiliaryServiceImpl(AuxiliaryRepository auxRepository,
             AuxiliaryMapper auxMapper,
-            EmployeeRepository employeeRespo) {
+            EmployeeRepository employeeRepo) {
+        super(employeeRepo);
         this.auxRepository = auxRepository;
         this.auxMapper = auxMapper;
-        this.employeeRespo = employeeRespo;
     }
 
     @Override
     public AuxiliaryResponseDto saveAuxiliary(AuxiliaryRequestDto auxiliaryDto) {
-        Boolean employee = employeeRespo.findByDocumentNumber(auxiliaryDto.getDocumentNumber()).isPresent();
+        Boolean employee = employeeRepo.findByDocumentNumber(auxiliaryDto.getDocumentNumber()).isPresent();
         if (employee) {
             throw new RuntimeException(
                     "El documento " + auxiliaryDto.getDocumentNumber() + " ya se encuentra vinculado a un empleado en el sistema");
         }
         Auxiliary entity = auxMapper.toEntity(auxiliaryDto);
+
+        String code = generateEmployeeCode("AX", entity);
+        entity.setEmployeeCode(code);
         entity.setRegistrationDate(LocalDate.now());
         entity.setStatus(EmployeeStatus.PROCESS);
         auxRepository.save(entity);
@@ -67,13 +69,6 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
     }
 
     @Override
-    public AuxiliaryResponseDto findById(Long idEmployee) {
-        Auxiliary auxiliary = auxRepository.findById(idEmployee)
-            .orElseThrow(() -> new EntityNotFoundException("No se encontro auxiliar asociado al id " + idEmployee));
-        return mapAuxiliaryByStatus(auxiliary);
-    }
-
-    @Override
     public AuxiliaryResponseDto findAdminByDocumentNumber(String documentNumber) {
         Auxiliary auxiliary = auxRepository.findByDocumentNumber(documentNumber)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -82,84 +77,94 @@ public class AuxiliaryServiceImpl implements AuxiliaryService {
     }
 
     @Override
+    public AuxiliaryResponseDto findAdminByCode(String employeeCode) {
+        Auxiliary auxiliary = auxRepository.findByCode(employeeCode)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "No se encontro auxiliar asociado al codigo " + employeeCode));
+        return mapAuxiliaryByStatus(auxiliary);
+    }
+
+    @Override
     @Transactional
-    public void updateEmail(Long idEmployee, String email) {
-        Auxiliary auxiliary = validateInfo(idEmployee);
+    public void updateEmail(String employeeCode, String email) {
+        Auxiliary auxiliary = validateInfo(employeeCode);
         if (auxiliary.getEmail().equals(email)) {
             throw new IllegalArgumentException(
-                    "El email " + email + " ya se encuentra vinculado al auxiliar " + idEmployee);
+                    "El email " + email + " ya se encuentra vinculado al auxiliar " + auxiliary.getName());
         }
-        employeeRespo.updateEmail(idEmployee, email);
+        auxiliary.setEmail(email);
+        auxRepository.save(auxiliary);
     }
 
     @Override
     @Transactional
-    public void updatePhoneNumber(Long idEmployee, String phoneNumber) {
-        Auxiliary auxiliary = validateInfo(idEmployee);
+    public void updatePhoneNumber(String employeeCode, String phoneNumber) {
+        Auxiliary auxiliary = validateInfo(employeeCode);
         if (auxiliary.getPhoneNumber().equals(phoneNumber)) {
             throw new IllegalArgumentException(
-                    "El telefono " + phoneNumber + " ya se encuentra vinculado al auxiliar " + idEmployee);
+                    "El telefono " + phoneNumber + " ya se encuentra vinculado al auxiliar " + auxiliary.getName());
         }
-        employeeRespo.updatePhoneNumber(idEmployee, phoneNumber);
+        auxiliary.setPhoneNumber(phoneNumber);
+        auxRepository.save(auxiliary);
     }
 
     @Override
     @Transactional
-    public void updateContractType(Long idEmployee, ContractType contractType) {
-        Auxiliary auxiliary = validateInfo(idEmployee);
+    public void updateContractType(String employeeCode, ContractType contractType) {
+        Auxiliary auxiliary = validateInfo(employeeCode);
         if (auxiliary.getContractType().equals(contractType)) {
             throw new IllegalArgumentException(
-                    "El contrato " + contractType + " ya se encuentra vinculado al auxiliar " + idEmployee);
+                    "El contrato " + contractType + " ya se encuentra vinculado al auxiliar " + auxiliary.getName());
         }
-        employeeRespo.updateContractType(idEmployee, contractType);
+        auxiliary.setContractType(contractType);
+        auxRepository.save(auxiliary);
     }
 
     @Override
     @Transactional
-    public void updateRole(Long idEmployee, AuxiliaryRoles auxiliaryRoles) {
-        Auxiliary auxiliary = validateInfo(idEmployee);
+    public void updateRole(String employeeCode, AuxiliaryRoles auxiliaryRoles) {
+        Auxiliary auxiliary = validateInfo(employeeCode);
         if (auxiliary.getAuxiliaryRoles().equals(auxiliaryRoles)) {
             throw new IllegalArgumentException(
-                    "El area de trabajo " + auxiliaryRoles + " ya se encuentra vinculado al auxiliar " + idEmployee);
+                    "El area de trabajo " + auxiliaryRoles + " ya se encuentra vinculado al auxiliar " + auxiliary.getName());
         }
-        auxRepository.updateRole(idEmployee, auxiliaryRoles);
+        auxRepository.updateRole(employeeCode, auxiliaryRoles);
     }
 
     @Override
-    public void delete(Long idEmployee, String deleteBy, String reason) {
-        Auxiliary auxiliary = validateInfo(idEmployee);
+    public void delete(String employeeCode, String deleteBy, String reason) {
+        Auxiliary auxiliary = validateInfo(employeeCode);
         if (auxiliary.getStatus() == EmployeeStatus.DELETED) {
-            throw new IllegalArgumentException("El auxiliar "+ idEmployee + " ya está eliminado del sistema");
+            throw new IllegalArgumentException("El auxiliar "+ auxiliary.getName() + " ya está eliminado del sistema");
         }
         auxiliary.setStatus(EmployeeStatus.DELETED);
         applyStatusChange(auxiliary, deleteBy, reason);
     }
 
     @Override
-    public void suspended(Long idEmployee, String deleteBy, String reason){
-        Auxiliary auxiliary = validateInfo(idEmployee);
+    public void suspended(String employeeCode, String deleteBy, String reason){
+        Auxiliary auxiliary = validateInfo(employeeCode);
         if (auxiliary.getStatus() == EmployeeStatus.SUSPENDED) {
-            throw new IllegalArgumentException("El auxiliar"+ idEmployee + "ya se encuentra suspendido del sistema");
+            throw new IllegalArgumentException("El auxiliar "+ auxiliary.getName() + "ya se encuentra suspendido del sistema");
         }
         auxiliary.setStatus(EmployeeStatus.SUSPENDED);
         applyStatusChange(auxiliary, deleteBy, reason);
     }
 
     @Override
-    public void updateEmployeeStatus(Long idEmployee, EmployeeStatus employeeStatus){
-        Auxiliary auxiliary = validateInfo(idEmployee);
+    public void updateEmployeeStatus(String employeeCode, EmployeeStatus employeeStatus){
+        Auxiliary auxiliary = validateInfo(employeeCode);
         validateUpdateStatus(employeeStatus, auxiliary);
         auxiliary.setStatus(employeeStatus);
         auxRepository.save(auxiliary);
     }
 
-
     // helpers
-    private Auxiliary validateInfo(Long idEmployee) {
-        Auxiliary auxiliary = auxRepository.findById(idEmployee)
-                .orElseThrow(() -> new EntityNotFoundException("No se encontro auxiliar asociado al id " + idEmployee));
+    private Auxiliary validateInfo(String employeeCode) {
+        Auxiliary auxiliary = auxRepository.findByCode(employeeCode)
+                .orElseThrow(() -> new EntityNotFoundException("No se encontro auxiliar asociado al codigo "+ employeeCode));
         if (auxiliary.getStatus() == EmployeeStatus.DELETED) {
-            throw new IllegalArgumentException("El auxiliar " + idEmployee + " se encuentra deshabilitado permanentemente del sistema");
+            throw new IllegalArgumentException("El auxiliar " + employeeCode + " se encuentra deshabilitado permanentemente del sistema");
         }
         return auxiliary;
     }

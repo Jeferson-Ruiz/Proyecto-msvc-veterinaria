@@ -15,22 +15,22 @@ public interface AuxiliaryService {
 
     List<AuxiliaryResponseDto> findAllByRoles(AuxiliaryRoles auxiliaryRole, EmployeeStatus status);
 
-    AuxiliaryResponseDto findById(Long idEmployee);
-
     AuxiliaryResponseDto findAdminByDocumentNumber(String documentNumber);
 
-    void updateEmail(Long idEmployee, String email);
+    AuxiliaryResponseDto findAdminByCode(String employeeCode);
 
-    void updatePhoneNumber(Long idEmployee, String phoneNumber);
+    void updateEmail(String employeeCode, String email);
 
-    void updateContractType(Long idEmployee, ContractType contractType);
+    void updatePhoneNumber(String employeeCode, String phoneNumber);
 
-    void updateRole(Long idEmployee, AuxiliaryRoles auxiliaryRole);
+    void updateContractType(String employeeCode, ContractType contractType);
 
-    void delete(Long idEmployee, String deleteBy, String reason);
+    void updateRole(String employeeCode, AuxiliaryRoles auxiliaryRole);
 
-    void suspended(Long idEmployee, String deleteBy, String reason);
+    void updateEmployeeStatus(String employeeCode, EmployeeStatus employeeStatus);
 
-    void updateEmployeeStatus(Long idEmployee, EmployeeStatus employeeStatus);
+    void suspended(String employeeCode, String deleteBy, String reason);
+    
+    void delete(String employeeCode, String deleteBy, String reason);
 
 }

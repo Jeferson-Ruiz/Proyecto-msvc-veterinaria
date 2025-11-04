@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.jeferson.msvc.workstaff.dto.AuxiliaryRequestDto;
 import com.jeferson.msvc.workstaff.dto.AuxiliaryResponseDto;
 import com.jeferson.msvc.workstaff.dto.EmailRequestDto;
@@ -25,7 +24,7 @@ import com.jeferson.msvc.workstaff.services.AuxiliaryService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("auxiliary")
+@RequestMapping("/auxiliary")
 public class AuxiliaryController {
 
     private final AuxiliaryService auxService;
@@ -52,57 +51,57 @@ public class AuxiliaryController {
         return ResponseEntity.ok(auxiliaries);
     }
 
-    @GetMapping("/id/{idEmployee}")
-    public ResponseEntity<?> getAuxiliaryById(@PathVariable Long idEmployee) {
-        AuxiliaryResponseDto auxiliaryDto = auxService.findById(idEmployee);
-        return ResponseEntity.ok(auxiliaryDto);
-    }
-
     @GetMapping("/document/{documentNumber}")
     public ResponseEntity<?> getAuxiliaryDocumentNumber(@PathVariable String documentNumber) {
         AuxiliaryResponseDto auxiliaryDto = auxService.findAdminByDocumentNumber(documentNumber);
         return ResponseEntity.ok(auxiliaryDto);
     }
 
-    @PatchMapping("/update-email/{idEmployee}")
-    public ResponseEntity<?> uptInfoEmail(@PathVariable Long idEmployee, @Valid @RequestBody EmailRequestDto request) {
-        auxService.updateEmail(idEmployee, request.getEmail());
+    @GetMapping("/code/{employeeCode}")
+    public ResponseEntity<?> getAuxiliaryByCode(@PathVariable String employeeCode) {
+        AuxiliaryResponseDto auxiliaryDto = auxService.findAdminByCode(employeeCode);
+        return ResponseEntity.ok(auxiliaryDto);
+    }
+
+    @PatchMapping("/update-email/{employeeCode}")
+    public ResponseEntity<?> uptInfoEmail(@PathVariable String employeeCode, @Valid @RequestBody EmailRequestDto request) {
+        auxService.updateEmail(employeeCode, request.getEmail());
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/update-number/{idEmployee}")
-    public ResponseEntity<?> uptInfoPhoneNumber(@PathVariable Long idEmployee, @Valid @RequestBody PhoneNumberRequestDto request) {
-        auxService.updatePhoneNumber(idEmployee, request.getPhoneNumber());
+    @PatchMapping("/update-number/{employeeCode}")
+    public ResponseEntity<?> uptInfoPhoneNumber(@PathVariable String employeeCode, @Valid @RequestBody PhoneNumberRequestDto request) {
+        auxService.updatePhoneNumber(employeeCode, request.getPhoneNumber());
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/update-contract/{idEmployee}")
-    public ResponseEntity<?> updInfoContractType(@PathVariable Long idEmployee,@RequestBody ContractType contractType) {
-        auxService.updateContractType(idEmployee, contractType);
+    @PatchMapping("/update-contract/{employeeCode}")
+    public ResponseEntity<?> updInfoContractType(@PathVariable String employeeCode,@RequestBody ContractType contractType) {
+        auxService.updateContractType(employeeCode, contractType);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/update-area/{idEmployee}")
-    public ResponseEntity<?> updWorkArea(@PathVariable Long idEmployee, @RequestBody AuxiliaryRoles auxiliaryRole) {
-        auxService.updateRole(idEmployee, auxiliaryRole);
+    @PatchMapping("/update-area/{employeeCode}")
+    public ResponseEntity<?> updWorkArea(@PathVariable String employeeCode, @RequestBody AuxiliaryRoles auxiliaryRole) {
+        auxService.updateRole(employeeCode, auxiliaryRole);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{idEmployee}")
-    public ResponseEntity<?> deleteAuxiliary(@PathVariable Long idEmployee, @Valid @RequestBody ActionInformationsRequestDto request ) {
-        auxService.delete(idEmployee, request.getDeletedBy(), request.getReason());
+    @PatchMapping("/update-status/{employeeCode}")
+    public ResponseEntity<?> updateStatus(@PathVariable String employeeCode, @Valid @RequestBody EmployeeStatus status ) {
+        auxService.updateEmployeeStatus(employeeCode, status);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/suspended/{idEmployee}")
-    public ResponseEntity<?> suspended(@PathVariable Long idEmployee, @Valid @RequestBody ActionInformationsRequestDto request ) {
-        auxService.suspended(idEmployee, request.getDeletedBy(), request.getReason());
+    @PatchMapping("/suspended/{employeeCode}")
+    public ResponseEntity<?> suspended(@PathVariable String employeeCode, @Valid @RequestBody ActionInformationsRequestDto request ) {
+        auxService.suspended(employeeCode, request.getDeletedBy(), request.getReason());
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/update-status/{idEmployee}")
-    public ResponseEntity<?> updateStatus(@PathVariable Long idEmployee, @Valid @RequestBody EmployeeStatus status ) {
-        auxService.updateEmployeeStatus(idEmployee, status);
+    @DeleteMapping("/{employeeCode}")
+    public ResponseEntity<?> deleteAuxiliary(@PathVariable String employeeCode, @Valid @RequestBody ActionInformationsRequestDto request ) {
+        auxService.delete(employeeCode, request.getDeletedBy(), request.getReason());
         return ResponseEntity.noContent().build();
-    }
+    }    
 }
