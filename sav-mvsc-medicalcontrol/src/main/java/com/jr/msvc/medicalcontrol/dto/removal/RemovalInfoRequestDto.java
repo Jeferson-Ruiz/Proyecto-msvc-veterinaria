@@ -10,7 +10,9 @@ import lombok.Setter;
 public class RemovalInfoRequestDto {
 
     @NotBlank(message =  "El numero de identificacion no puede ser vacio")
-    @Pattern(regexp = "^[0-9]+$", message = "El número de identificacion solo puede contener dígitos sin espacios")
+    @Pattern(
+        regexp = "^[A-Z0-9-]+$",
+        message = "El número de identificación solo puede contener letras mayúsculas, números y el símbolo '-' sin espacios")
     private String deletedBy;
 
     @NotBlank(message = "El motivo de eliminacion del paciente no puede ser nulo")
