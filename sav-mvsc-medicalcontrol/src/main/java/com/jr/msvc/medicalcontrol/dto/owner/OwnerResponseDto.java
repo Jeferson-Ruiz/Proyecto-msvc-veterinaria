@@ -8,7 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OwnerResponseDto {
-    private Long idOwner;
     private String fullName;
     private String documentType;
     private String documentNumber;

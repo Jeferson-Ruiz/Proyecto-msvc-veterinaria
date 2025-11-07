@@ -25,41 +25,6 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public List<OwnerResponseDto> findAllDisabeOwners(){
-        List<Owner> owners = ownerRepository.findAllDisableOwners();
-        if (owners.isEmpty()) {
-            throw new EntityNotFoundException("No se encuentran propietarios desahabilitados en el sistema");
-        }
-        return owners.stream()
-        .map(ownerMapper::toDto).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<OwnerResponseDto> findAllActiveOwners(){
-        List<Owner> owners =  ownerRepository.findAllActiveOwners();
-        if (owners.isEmpty()) {
-            throw new EntityNotFoundException("No se encuentran propietarios registrados en el sistema");            
-        }
-        return owners.stream()
-        .map(ownerMapper::toDto).collect(Collectors.toList());
-    }
-
-    @Override
-    public OwnerResponseDto findOwnerById(Long idOwner){
-        Owner owner = ownerRepository.findById(idOwner)
-            .orElseThrow(() -> new EntityNotFoundException("El propietario con ID " + idOwner + " no fue encontrado en el sistema"));
-        return ownerMapper.toDto(owner);
-    }
-
-    @Override
-    public OwnerResponseDto findOwnerByDocumentNumber(String documentNumber){
-        Owner owner = ownerRepository.findByDocumentNumber(documentNumber)
-            .orElseThrow(() -> new EntityNotFoundException("El propietario con el N° documento " + documentNumber + " no fue encontrado en el sistema"));
-        
-        return ownerMapper.toDto(owner);
-    }
-
-    @Override
     public OwnerResponseDto saveOwner(OwnerRequestDto ownerDto){
         boolean exists = ownerRepository.findByDocumentNumber(ownerDto.getDocumentNumber()).isPresent();
 
@@ -73,9 +38,32 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
+    public List<OwnerResponseDto> findAllByStatus(boolean status){
+
+        List<Owner> owners = ownerRepository.findAllOwnersByStatus(status);
+
+        if (status == false && owners.isEmpty()) {
+            throw new EntityNotFoundException("No se encuentran propietarios desahabilitados en el sistema");
+        } else if (status == true && owners.isEmpty()) {
+            throw new EntityNotFoundException("No se encuentran propietarios en el sistema");
+        }
+
+        return owners.stream()
+        .map(ownerMapper::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public OwnerResponseDto findOwnerByDocumentNumber(String documentNumber){
+        Owner owner = ownerRepository.findByDocumentNumber(documentNumber)
+            .orElseThrow(() -> new EntityNotFoundException("El propietario con el N° documento " + documentNumber + " no fue encontrado en el sistema"));
+        
+        return ownerMapper.toDto(owner);
+    }
+
+    @Override
     @Transactional
-    public void disableOwnerById(Long idOwner) throws IllegalAccessException{
-        Owner owner = validInfo(idOwner);
+    public void disableOwnerByDocument(String document) throws IllegalAccessException{
+        Owner owner = validInfo(document);
 
         owner.setActive(false);
         if (!owner.getPets().isEmpty()) {
@@ -88,29 +76,29 @@ public class OwnerServiceImpl implements OwnerService {
 
     @Override
     @Transactional
-    public void updatePhoneNumber(Long idOwner, String phoneNumber){
-        Owner owner = validInfo(idOwner);
+    public void updatePhoneNumber(String document, String phoneNumber){
+        Owner owner = validInfo(document);
         if (owner.getPhoneNumber().equals(phoneNumber)) {
-            throw new IllegalArgumentException("El numero "+ phoneNumber + " ya se encuentra asocioado al Id "+ idOwner);
+            throw new IllegalArgumentException("El numero "+ phoneNumber + " ya se encuentra asocioado al propietario "+ owner.getName() );
         }
-        ownerRepository.updatePhoneNumber(idOwner, phoneNumber);        
+        owner.setPhoneNumber(phoneNumber);
+        ownerRepository.save(owner);
     }
 
     @Override
     @Transactional
-    public void updateEmail(Long idOwner, String email){
-        Owner owner = validInfo(idOwner);
+    public void updateEmail(String document, String email){
+        Owner owner = validInfo(document);
         if (owner.getEmail().equals(email)) {
-            throw new IllegalArgumentException("El email "+ email + " ya se encuentra asocioado al Id "+ idOwner);
+            throw new IllegalArgumentException("El email "+ email + " ya se encuentra asocioado al propietario "+ owner.getName());
         }
-
-        ownerRepository.updateEmail(idOwner, email);
+        owner.setEmail(email);
+        ownerRepository.save(owner);
     }
 
-
-    private Owner validInfo(Long id){
-        Owner owner = ownerRepository.findById(id)
-            .orElseThrow( () -> new EntityNotFoundException("No se encuentran propietarios registrados en el sistema"));
+    private Owner validInfo(String document){
+        Owner owner = ownerRepository.findByDocumentNumber(document)
+            .orElseThrow( () -> new EntityNotFoundException("No se encontro propietarias asociado al documento "+ document + " en el sistema"));
 
         if (!owner.getActive()) {
             throw new IllegalArgumentException("El propietario se encuentra desahabilitado del sistema");

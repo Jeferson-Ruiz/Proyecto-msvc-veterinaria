@@ -19,7 +19,7 @@ import com.jr.msvc.medicalcontrol.services.OwnerService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("owner")
+@RequestMapping("/owner")
 public class OwnerController {
     
     private final OwnerService ownerService;
@@ -28,20 +28,15 @@ public class OwnerController {
         this.ownerService = ownerService;
     }
 
-    @GetMapping("/disable")
-    public ResponseEntity<List<OwnerResponseDto>> getAllDisableOwners() {
-        return ResponseEntity.ok(ownerService.findAllDisabeOwners());
+    @PostMapping
+    public ResponseEntity<?> saveInfoOwner(@Valid @RequestBody OwnerRequestDto owner) {
+        OwnerResponseDto ownerCreated = ownerService.saveOwner(owner);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ownerCreated);
     }
 
-    @GetMapping
-    public ResponseEntity<List<OwnerResponseDto>> getAllActiveOwners() {
-        return ResponseEntity.ok(ownerService.findAllActiveOwners());
-    }
-
-    @GetMapping("/id/{idOwner}")
-    public ResponseEntity<?> getOwnerById(@PathVariable Long idOwner) {
-        OwnerResponseDto owner = ownerService.findOwnerById(idOwner);
-        return ResponseEntity.ok(owner);
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<OwnerResponseDto>> getAllDisableOwners(@PathVariable boolean status) {
+        return ResponseEntity.ok(ownerService.findAllByStatus(status));
     }
 
     @GetMapping("/document/{documentNumber}")
@@ -50,27 +45,21 @@ public class OwnerController {
         return ResponseEntity.ok(owner);
     }
 
-    @PostMapping
-    public ResponseEntity<?> saveInfoOwner(@Valid @RequestBody OwnerRequestDto owner) {
-        OwnerResponseDto ownerCreated = ownerService.saveOwner(owner);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ownerCreated);
-    }
-
-    @DeleteMapping("/id/{idOwner}")
-    public ResponseEntity<?> deleteInfoOwner(@PathVariable Long idOwner) throws IllegalAccessException {
-        ownerService.disableOwnerById(idOwner);
+    @PatchMapping("/update-phone/{document}")
+    public ResponseEntity<?> updateIntoPhoneNumber(@PathVariable String document, @Valid @RequestBody PhoneNumberDto request) {
+        ownerService.updatePhoneNumber(document, request.getPhoneNumber());
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/updatePhone/{idOwner}")
-    public ResponseEntity<?> updateIntoPhoneNumber(@PathVariable Long idOwner, @Valid @RequestBody PhoneNumberDto request) {
-        ownerService.updatePhoneNumber(idOwner, request.getPhoneNumber());
+    @PatchMapping("/update-email/{document}")
+    public ResponseEntity<?> updateInfoEmail(@PathVariable String document, @Valid @RequestBody EmailDto request) {
+        ownerService.updateEmail(document, request.getEmail());
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/updateEmail/{idOwner}")
-    public ResponseEntity<?> updateInfoEmail(@PathVariable Long idOwner, @Valid @RequestBody EmailDto request) {
-        ownerService.updateEmail(idOwner, request.getEmail());
+    @DeleteMapping("/document/{document}")
+    public ResponseEntity<?> deleteInfoOwner(@PathVariable String document) throws IllegalAccessException {
+        ownerService.disableOwnerByDocument(document);
         return ResponseEntity.noContent().build();
     }
 }

@@ -6,20 +6,17 @@ import com.jr.msvc.medicalcontrol.dto.owner.OwnerResponseDto;
 
 public interface OwnerService {
 
-    List<OwnerResponseDto> findAllDisabeOwners();
+    OwnerResponseDto saveOwner(OwnerRequestDto ownerDto);
 
-    List<OwnerResponseDto> findAllActiveOwners();
+    List<OwnerResponseDto> findAllByStatus(boolean status);
 
-    OwnerResponseDto findOwnerById(Long idOwner);
+    void disableOwnerByDocument(String document) throws IllegalAccessException;
 
     OwnerResponseDto findOwnerByDocumentNumber(String documentNumber);
 
-    OwnerResponseDto saveOwner(OwnerRequestDto ownerDto);
+    void updatePhoneNumber(String document, String phoneNumber);
 
-    void disableOwnerById(Long idOwner) throws IllegalAccessException;
+    void updateEmail(String document, String email);
     
-    void updatePhoneNumber(Long idOwner, String phoneNumber);
-    
-    void updateEmail(Long idOwner, String email);
 
 }
