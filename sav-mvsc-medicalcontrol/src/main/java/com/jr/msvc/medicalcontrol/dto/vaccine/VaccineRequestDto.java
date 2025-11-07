@@ -5,14 +5,16 @@ import lombok.Setter;
 import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Getter
 @Setter
 public class VaccineRequestDto {
 
-    @NotNull
-    private Long idPet;
+    @NotBlank
+    private String petCode;
+
+    @NotBlank
+    private String vaccineCode;
 
     @NotBlank
     private String name;

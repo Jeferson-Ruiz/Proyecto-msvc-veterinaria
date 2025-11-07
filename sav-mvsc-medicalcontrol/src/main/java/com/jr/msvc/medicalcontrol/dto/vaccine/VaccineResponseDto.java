@@ -8,8 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class VaccineResponseDto {
-    private Long idPet;
-    private Long idVaccine;
+    private String petCode;
+    private String vaccineCode;
     private String name;
     
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")

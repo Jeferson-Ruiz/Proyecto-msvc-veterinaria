@@ -9,9 +9,9 @@ public interface VaccineService {
 
     VaccineResponseDto saveVaccine(VaccineRequestDto vaccineDto);
 
-    List<VaccineResponseDto> findVaccinesIdPet(Long idPet);
+    List<VaccineResponseDto> findVaccinesPetCode(String petCode);
 
-    void updateNextApplicationDate(Long idVaccine, LocalDate newDate);
+    void updateNextApplicationDate(String vaccineCode, LocalDate newDate);
     
-    void updateName(Long idVaccine, String name);
+    void updateName(String vaccineCode, String newName);
 }

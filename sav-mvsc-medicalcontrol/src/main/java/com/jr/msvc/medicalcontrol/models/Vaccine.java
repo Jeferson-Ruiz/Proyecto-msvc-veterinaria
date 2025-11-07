@@ -25,6 +25,9 @@ public class Vaccine {
     @Column(name = "id_vaccine", unique = true)
     private Long idVaccine;
 
+    @Column(name = "vaccince_code", nullable = false, unique = true)
+    private String vaccineCode;
+
     @Column(name = "vac_vaccine_name", nullable = false, length = 50)
     private String name;
 

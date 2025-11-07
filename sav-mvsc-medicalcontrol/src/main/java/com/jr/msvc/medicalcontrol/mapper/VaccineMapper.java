@@ -11,6 +11,6 @@ import com.jr.msvc.medicalcontrol.models.Vaccine;
 public interface VaccineMapper {
     Vaccine toEntity (VaccineRequestDto dto);
 
-    @Mapping(source = "pet.idPet", target = "idPet")
+    @Mapping(source = "pet.petCode", target = "petCode")
     VaccineResponseDto toDto(Vaccine toEntity);
 }

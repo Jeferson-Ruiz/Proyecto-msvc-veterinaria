@@ -14,11 +14,10 @@ import com.jr.msvc.medicalcontrol.dto.vaccine.VaccineDateUpdate;
 import com.jr.msvc.medicalcontrol.dto.vaccine.VaccineRequestDto;
 import com.jr.msvc.medicalcontrol.dto.vaccine.VaccineResponseDto;
 import com.jr.msvc.medicalcontrol.services.VaccineService;
-
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("vaccine")
+@RequestMapping("/vaccine")
 public class VaccineController {
 
     private final VaccineService vaccineService;
@@ -33,21 +32,21 @@ public class VaccineController {
         return ResponseEntity.status(HttpStatus.CREATED).body(vaccine);
     }
 
-    @GetMapping("all/idpet/{idPet}")
-    public ResponseEntity<?> getAllVaccinesIdPet(@PathVariable Long idPet) {
-        List<VaccineResponseDto> vaccine = vaccineService.findVaccinesIdPet(idPet);
+    @GetMapping("/all/{petCode}")
+    public ResponseEntity<?> getAllVaccinesIdPet(@PathVariable String petCode) {
+        List<VaccineResponseDto> vaccine = vaccineService.findVaccinesPetCode(petCode);
         return ResponseEntity.ok(vaccine);
     }
 
-    @PatchMapping("update/name/id/{idVaccine}")
-    public ResponseEntity<?> updateVaccineName(@PathVariable Long idVaccine, @RequestBody String newName) {
-        vaccineService.updateName(idVaccine, newName);
+    @PatchMapping("/update/name/{vaccineCode}")
+    public ResponseEntity<?> updateVaccineName(@PathVariable String vaccineCode, @RequestBody String newName) {
+        vaccineService.updateName(vaccineCode, newName);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("update/date/id/{idVaccine}")
-    public ResponseEntity<?> updateNexAppication(@PathVariable Long idVaccine, @Valid @RequestBody VaccineDateUpdate newDate) {
-        vaccineService.updateNextApplicationDate(idVaccine, newDate.getNewDate());
+    @PatchMapping("/update/date/{vaccineCode}")
+    public ResponseEntity<?> updateNexAppication(@PathVariable String vaccineCode, @Valid @RequestBody VaccineDateUpdate newDate) {
+        vaccineService.updateNextApplicationDate(vaccineCode, newDate.getNewDate());
         return ResponseEntity.noContent().build();
     }
 
