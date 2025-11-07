@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PetWithOwnerResponseDto {
-    private Long idPet;
+    private String petCode;
     private String name;
     private String specie;
     private String breed;

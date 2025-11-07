@@ -15,14 +15,14 @@ public interface PetService {
 
     List<PetWithOwnerResponseDto> findAllActivesPets();
 
-    PetResponseDto findPetById(Long idPet);
-
     PetWithOwnerResponseDto findByNameAndOwnerNumber(String name, String ownerNumber);
 
     List<PetResponseDto> findPetsByOwnerDocument(String documentNumber);
 
+    PetWithOwnerResponseDto findPetByCode(String petCode);
+
     List<PetWithOwnerResponseDto> findAllBySpecie(String specie);
 
-    void disablePetById(Long idPet, String deleteBy, String reason);
+    void disablePetByCode(String petCode, String deleteBy, String reason);
     
 }

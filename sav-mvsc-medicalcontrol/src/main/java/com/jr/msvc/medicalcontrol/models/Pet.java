@@ -28,6 +28,9 @@ public class Pet {
     @Column(name = "pet_id")
     private Long idPet;
 
+    @Column(name = "pet_code", nullable = false, unique = true)
+    private String petCode;
+
     @Column(name = "pet_name", length = 20, nullable = false)
     private String name;
 

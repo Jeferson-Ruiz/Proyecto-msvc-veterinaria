@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.jr.msvc.medicalcontrol.dto.pet.PetRequestDto;
 import com.jr.msvc.medicalcontrol.dto.pet.PetResponseDisableDto;
@@ -20,7 +19,7 @@ import com.jr.msvc.medicalcontrol.services.PetService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("pet")
+@RequestMapping("/pet")
 public class PetController {
     
     private final PetService petService;
@@ -41,21 +40,21 @@ public class PetController {
         return ResponseEntity.ok(petService.findAllDisablePets());
     }
 
-    @GetMapping("/info-owners")
+    @GetMapping("/active")
     public ResponseEntity<List<PetWithOwnerResponseDto>> getAllActivePets() {
         return ResponseEntity.ok(petService.findAllActivesPets());
     }
 
-    @GetMapping("/id/{idPet}")
-    public ResponseEntity<?> getPetById(@PathVariable Long idPet) {
-        PetResponseDto pet = petService.findPetById(idPet);
-        return ResponseEntity.ok(pet);
+    @GetMapping("/owner/{ownerNumber}/namepet/{name}")
+    public ResponseEntity<?> getPetAndOwnerByNameAndDocument(@PathVariable String ownerNumber,
+            @PathVariable String name) {
+        PetWithOwnerResponseDto petDto = petService.findByNameAndOwnerNumber(name, ownerNumber);
+        return ResponseEntity.ok(petDto);
     }
 
-    @GetMapping("/owner/{ownerNumber}")
-    public ResponseEntity<?> getPetAndOwnerByNameAndDocument(@PathVariable String ownerNumber,
-            @RequestParam String name) {
-        PetWithOwnerResponseDto petDto = petService.findByNameAndOwnerNumber(name, ownerNumber);
+    @GetMapping("/code/{petCode}")
+    public ResponseEntity<?> getPetByCode(@PathVariable String petCode){
+        PetWithOwnerResponseDto petDto = petService.findPetByCode(petCode);
         return ResponseEntity.ok(petDto);
     }
 
@@ -71,9 +70,9 @@ public class PetController {
         return ResponseEntity.ok(pets);
     }
 
-    @DeleteMapping("/{idPet}")
-    public ResponseEntity<?> deleteInfoPet(@PathVariable Long idPet, @Valid @RequestBody RemovalInfoRequestDto request) {
-        petService.disablePetById(idPet, request.getDeletedBy(), request.getReason());
+    @DeleteMapping("/{petCode}")
+    public ResponseEntity<?> deleteInfoPet(@PathVariable String petCode, @Valid @RequestBody RemovalInfoRequestDto request) {
+        petService.disablePetByCode(petCode, request.getDeletedBy(), request.getReason());
         return ResponseEntity.noContent().build();
     }
 

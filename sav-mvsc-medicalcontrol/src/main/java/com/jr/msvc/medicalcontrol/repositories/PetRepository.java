@@ -12,21 +12,27 @@ public interface PetRepository extends JpaRepository<Pet, Long>{
     @Query("SELECT p FROM Pet p WHERE p.name =:name AND p.owner.documentNumber =:documentNumber")
     Optional<Pet> findByNameAndOwnerNumber(@Param("name") String name, @Param("documentNumber") String documentNumber);
 
+    @Query("SELECT p FROM Pet p WHERE p.petCode=:petCode")
+    Optional<Pet> findByPetCode(@Param("petCode") String petCode);
+
     @Query("SELECT p FROM Pet p WHERE p.owner.documentNumber =:documentNumber")
     List<Pet> findPetsByOwnerDocument(@Param("documentNumber") String documentNumber);
 
-    @Query("SELECT p FROM Pet p WHERE p.active = true")
-    List<Pet> findAllActivePets();
+    @Query("SELECT p FROM Pet p WHERE p.active=true")
+    List<Pet> findAllPetsByActive();
 
-    @Query("SELECT p FROM Pet p WHERE p.active = false")
-    List<Pet> findAllDisablePets();
+    @Query("SELECT p FROM Pet p WHERE p.active=false")
+    List<Pet> findAllPetsByDisabled();
 
     @Query("SELECT p FROM Pet p WHERE p.specie =:specie")
     List<Pet> findBySpecie(@Param("specie") String specie);
 
+    @Query("SELECT COUNT(p) FROM Pet p WHERE p.owner.documentNumber=:documentNumber")
+    int countPetsByOwnerDocument(@Param("documentNumber") String documentNumber);
+
     @Query("""
     SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END
-    FROM Pet p WHERE p.name = :name AND p.owner.idOwner = :idOwner AND p.active = true""")
-    boolean existByNameAndOwnerId(@Param("name") String name, @Param("idOwner") Long idOwner);
+    FROM Pet p WHERE p.name =:name AND p.owner.documentNumber=:documentNumber AND p.active = true""")
+    boolean existByNameAndOwnerDocument(@Param("name") String name, @Param("documentNumber") String documentNumber);
 
 }
