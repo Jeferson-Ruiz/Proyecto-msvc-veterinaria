@@ -5,13 +5,13 @@ import com.jr.msvc.medicalcontrol.dto.treatment.TreatmentRequestDto;
 import com.jr.msvc.medicalcontrol.dto.treatment.TreatmentResponseDto;
 
 public interface TreatmentService {
-    List<TreatmentResponseDto> findAlltreatments();
-    
-    TreatmentResponseDto findTreatmentById(Long idTreatment);
-    
     TreatmentResponseDto saveTreatment(TreatmentRequestDto treatmentDto);
 
-    List<TreatmentResponseDto> findTreatmentByIdPet(Long idPet);
+    List<TreatmentResponseDto> findAlltreatments();
+    
+    TreatmentResponseDto findTreatmentByCode(String treatmentCode);
+    
+    List<TreatmentResponseDto> findTreatmentByPetCode(String petCode);
 
-    List<TreatmentResponseDto> findTreatmentByIdConsultation(Long idPet);
+    List<TreatmentResponseDto> findTreatmentByConsultationCode(String consultation);
 }

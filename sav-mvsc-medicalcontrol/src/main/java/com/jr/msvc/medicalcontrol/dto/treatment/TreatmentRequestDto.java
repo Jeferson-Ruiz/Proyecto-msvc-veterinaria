@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotNull;
 @Setter
 public class TreatmentRequestDto {
     @NotNull
-    private Long idConsultation;
+    private String consultationCode;
 
     @NotBlank
     private String nameTreatment;

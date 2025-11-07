@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TreatmentResponseDto {
-    private Long idTreatment;
+    private String treatmentCode;
     private String nameTreatment;
     private String petName;
     private String description;

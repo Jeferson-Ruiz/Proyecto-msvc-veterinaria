@@ -1,6 +1,8 @@
 package com.jr.msvc.medicalcontrol.models;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,6 +28,9 @@ public class Treatment {
     @Column(name = "id_treatment")
     private Long idTreatment;
 
+    @Column(name = "treatment_code", nullable = false, unique = true)
+    private String treatmentCode;
+
     @Column(name = "tre_name", nullable = false, length = 100)
     private String nameTreatment;
 
@@ -36,7 +41,7 @@ public class Treatment {
     private String description;
 
     @Column(name = "tre_registration_date", nullable = false)
-    private LocalDate registrationDate;
+    private LocalDateTime registrationDate;
 
     @Column(name = "tre_start_date", nullable = false)
     private LocalDate startDate;
