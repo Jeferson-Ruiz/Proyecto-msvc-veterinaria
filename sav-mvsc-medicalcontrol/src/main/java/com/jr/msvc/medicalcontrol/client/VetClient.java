@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.jr.msvc.medicalcontrol.dto.vet.VetResponseDto;
 
 
-@FeignClient(name = "msvc-sav-workstaff")
+@FeignClient(name = "msvc-workstaff")
 public interface VetClient {
 
-    @GetMapping("vet/id/{idEmployee}")
-    VetResponseDto getVetById(@PathVariable("idEmployee") Long idEmployee);
+    @GetMapping("vet/code/{employeeCode}")
+    VetResponseDto getVetByCode(@PathVariable("employeeCode") String employeeCode);
 
 }

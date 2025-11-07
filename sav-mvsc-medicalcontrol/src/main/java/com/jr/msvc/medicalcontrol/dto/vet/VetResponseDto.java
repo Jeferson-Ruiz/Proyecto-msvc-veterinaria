@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class VetResponseDto {
-    private Long employeeId;
+    private String employeeCode;
     private String fullName;
     private String status;
 }
