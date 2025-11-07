@@ -10,8 +10,8 @@ import lombok.Setter;
 @Setter
 public class ConsultationsWithVetDto {
     
-    private Long idConsultation;
-    private Long idPet;
+    private String consultationCode;
+    private String petCode;
     private String petName;
     private String reason;
 

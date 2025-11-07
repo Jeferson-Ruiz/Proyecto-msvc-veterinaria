@@ -13,11 +13,11 @@ public interface ConsultationMapper {
     
     Consultation toEntity(ConsultationRequestDto dto);
 
-    @Mapping(source = "pet.idPet", target = "idPet")
+    @Mapping(source = "pet.petCode", target = "petCode")
     @Mapping(target = "fullName", ignore = true)
     ConsultationReponseDto toDto(Consultation entity);
 
-    @Mapping(source = "pet.idPet", target = "idPet")
+    @Mapping(source = "pet.petCode", target = "petCode")
     ConsultationsWithVetDto toVetDto(Consultation entity);
 
 }

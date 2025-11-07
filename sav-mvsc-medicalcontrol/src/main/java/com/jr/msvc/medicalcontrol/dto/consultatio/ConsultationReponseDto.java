@@ -3,15 +3,14 @@ package com.jr.msvc.medicalcontrol.dto.consultatio;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jr.msvc.medicalcontrol.models.AttendanceStatus;
-
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
 public class ConsultationReponseDto {
-    private Long idConsultation; 
-    private Long idPet;
+    private String consultationCode; 
+    private String petCode;
     private String petName;
     private String reason;
 

@@ -9,21 +9,20 @@ import com.jr.msvc.medicalcontrol.dto.consultatio.ConsultationRequestDto;
 import com.jr.msvc.medicalcontrol.models.AttendanceStatus;
 
 public interface ConsultationService {
-
-    List<ConsultationReponseDto> findAllConsultations();
-
-    ConsultationReponseDto findConsultionById(Long idConsultation);
-
     ConsultationReponseDto saveConsultation(ConsultationRequestDto consultationDto);
+    
+    List<ConsultationReponseDto> findAllConsultations();
+    
+    ConsultationReponseDto findConsultionByCode(String consultationCode);
 
-    List<ConsultationReponseDto> findAllConsultationByIdPet(Long idPet);
+    List<ConsultationReponseDto> findAllConsultationByPetCode(String petCode);
 
     List<ConsultationReponseDto> findAllByStatus(AttendanceStatus status);
 
     List<ConsultationReponseDto> findByDate(LocalDate date);
 
-    VetWithConsultationsDto findConsultationsByIdVet(Long vetId);
+    VetWithConsultationsDto findConsultationsByVetCode(String vetCode);
 
-    void updateConsultationDate(Long idConsultation, LocalDateTime newDate);
+    void updateConsultationDate(String consultatioCode, LocalDateTime newDate);
 
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("consultation")
+@RequestMapping("/consultation")
 public class ConsultationController {
 
     private final ConsultationService consultationService;
@@ -23,26 +23,27 @@ public class ConsultationController {
         this.consultationService = consultationService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<ConsultationReponseDto>> getAllConsultation() {
-        return ResponseEntity.ok(consultationService.findAllConsultations());
-    }
-
-    @GetMapping("/id/{idConsultation}")
-    public ResponseEntity<?> getConsultationById(@PathVariable Long idConsultation) {
-        ConsultationReponseDto consultation = consultationService.findConsultionById(idConsultation);
-        return ResponseEntity.ok(consultation);
-    }
-    
     @PostMapping
     public ResponseEntity<?> saveInfoConsultation(@Valid @RequestBody ConsultationRequestDto consultationDto) {
         ConsultationReponseDto savedConsultation = consultationService.saveConsultation(consultationDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedConsultation);
     }
 
-    @GetMapping("/all/pet/{idPet}")
-    public ResponseEntity<?> getAllConsultationsByIdPet(@PathVariable Long idPet){
-        List<ConsultationReponseDto> consultations = consultationService.findAllConsultationByIdPet(idPet);
+    @GetMapping
+    public ResponseEntity<List<ConsultationReponseDto>> getAllConsultation() {
+        return ResponseEntity.ok(consultationService.findAllConsultations());
+    }
+
+    @GetMapping("/code/{consultationCode}")
+    public ResponseEntity<?> getConsultationByCode(@PathVariable String consultationCode) {
+        ConsultationReponseDto consultation = consultationService.findConsultionByCode(consultationCode);
+        return ResponseEntity.ok(consultation);
+    }
+    
+
+    @GetMapping("/all/pet/{petCode}")
+    public ResponseEntity<?> getAllConsultationsByIdPet(@PathVariable String petCode){
+        List<ConsultationReponseDto> consultations = consultationService.findAllConsultationByPetCode(petCode);
         return ResponseEntity.ok(consultations);
     }
 
@@ -58,15 +59,14 @@ public class ConsultationController {
         return ResponseEntity.ok(consultations);
     }
 
-    @GetMapping("/vet/{vetId}")
-    public ResponseEntity<VetWithConsultationsDto> getVetWithConsultations(@PathVariable Long vetId) {
-        return ResponseEntity.ok(consultationService.findConsultationsByIdVet(vetId));
+    @GetMapping("/vet/{vetCode}")
+    public ResponseEntity<VetWithConsultationsDto> getVetWithConsultations(@PathVariable String vetCode) {
+        return ResponseEntity.ok(consultationService.findConsultationsByVetCode(vetCode));
     }
 
-
-    @PatchMapping("update/date/{idConsultation}")
-    public ResponseEntity<?> updateConsultationDate(@PathVariable Long idConsultation, @Valid @RequestBody ConsultationDateUpdate newDate){
-        consultationService.updateConsultationDate(idConsultation, newDate.getNewDate());
+    @PatchMapping("update-date/{consultationCode}")
+    public ResponseEntity<?> updateConsultationDate(@PathVariable String consultationCode, @Valid @RequestBody ConsultationDateUpdate newDate){
+        consultationService.updateConsultationDate(consultationCode, newDate.getNewDate());
         return ResponseEntity.noContent().build();
     }
 }

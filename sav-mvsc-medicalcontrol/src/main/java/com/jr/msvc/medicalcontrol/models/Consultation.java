@@ -32,6 +32,9 @@ public class Consultation {
     @Column(name = "id_consultation", unique = true)
     private Long idConsultation;
 
+    @Column(name = "consultation_code", unique = true, nullable = false)
+    private String consultationCode;
+
     @Column(name = "con_name", nullable = false)
     private String petName;
 
@@ -47,8 +50,8 @@ public class Consultation {
     @Column(name = "con_observation", length = 255)
     private String observations;
 
-    @Column(name = "con_vet_id", nullable = false)
-    private Long vetId;
+    @Column(name = "con_vet_code", nullable = false)
+    private String vetCode;
 
     @Column(name = "con_status", nullable = false)
     @Enumerated(EnumType.STRING)

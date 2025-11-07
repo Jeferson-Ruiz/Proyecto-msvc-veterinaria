@@ -28,17 +28,50 @@ public class ConsultationServiceImpl implements ConsultationService {
     private final PetRepository petRepository;
     private final ConsultationRepository consultationRepository;
     private final ConsultationMapper consultationMapper;
+    private final CodeMedicalControlService codeMedical;
 
     // Horario laboral
     LocalTime startTime = LocalTime.of(8, 0); // 8:00 AM
     LocalTime endTime = LocalTime.of(17, 30); // 6:00 PM
 
     public ConsultationServiceImpl(PetRepository petRepository, ConsultationRepository consultationRepository,
-            ConsultationMapper consultationMapper, VetClient vetClient) {
+            ConsultationMapper consultationMapper, VetClient vetClient, CodeMedicalControlService codeMedical) {
         this.petRepository = petRepository;
         this.consultationRepository = consultationRepository;
         this.consultationMapper = consultationMapper;
         this.vetClient = vetClient;
+        this.codeMedical = codeMedical;
+    }
+
+    @Override
+    public ConsultationReponseDto saveConsultation(ConsultationRequestDto consultationDto) {
+        try{
+            Pet pet = validPet(consultationDto.getPetCode());
+            VetResponseDto vetDto = validVet(consultationDto.getVetCode());
+            
+            validDate(consultationDto.getCitationDate());
+            checkAvailability(consultationDto.getVetCode(), consultationDto.getCitationDate());
+        
+            //Agreganado la caonsulta a la mascota
+            Consultation consultation = consultationMapper.toEntity(consultationDto);
+            consultation.setPet(pet);
+            consultation.setPetName(pet.getName());
+
+            //Creacion de codigo dinamico
+            String petCode = consultation.getPet().getPetCode();
+            int count = consultationRepository.countCitaByPetCode(petCode);
+            String code = codeMedical.generateMedicalCode("CON", petCode, consultation.getCitationDate(), count);
+            consultation.setConsultationCode(code);
+
+            consultation.setStatus(AttendanceStatus.PENDING);
+            consultation.setRegistrationDate(LocalDateTime.now());
+
+            Consultation saved = consultationRepository.save(consultation);
+            return mapToDtoWithVetName(saved);
+
+        }catch(DataIntegrityViolationException e){
+            throw new IllegalArgumentException("El veterinario ya tiene una cita asignada en ese horario");
+        }
     }
 
     @Override
@@ -53,37 +86,16 @@ public class ConsultationServiceImpl implements ConsultationService {
     }
 
     @Override
-    public ConsultationReponseDto findConsultionById(Long idConsultation) {
-        Consultation consultation = findById(idConsultation);
+    public ConsultationReponseDto findConsultionByCode(String consultationCode) {
+        Consultation consultation = findByCode(consultationCode);
         return mapToDtoWithVetName(consultation);
     }
 
     @Override
-    public ConsultationReponseDto saveConsultation(ConsultationRequestDto consultationDto) {
-        try{
-        Pet pet = validPet(consultationDto.getIdPet());
-        VetResponseDto vetDto = validVet(consultationDto.getVetId());
-        
-        validDate(consultationDto.getCitationDate());
-        checkAvailability(consultationDto.getVetId(), consultationDto.getCitationDate());
-    
-        Consultation consultation = consultationMapper.toEntity(consultationDto);
-        consultation.setPet(pet);
-        consultation.setPetName(pet.getName());
-        consultation.setStatus(AttendanceStatus.PENDING);
-        consultation.setRegistrationDate(LocalDateTime.now());
-        Consultation saved = consultationRepository.save(consultation);
-        return mapToDtoWithVetName(saved);
-        }catch(DataIntegrityViolationException e){
-            throw new IllegalArgumentException("El veterinario ya tiene una cita asignada en ese horario");
-        }
-    }
-
-    @Override
-    public List<ConsultationReponseDto> findAllConsultationByIdPet(Long idPet) {
-        List<Consultation> consultations = consultationRepository.findAllByIdPet(idPet);
+    public List<ConsultationReponseDto> findAllConsultationByPetCode(String petCode) {
+        List<Consultation> consultations = consultationRepository.findAllByPetCode(petCode);
         if (consultations.isEmpty()) {
-            throw new EntityNotFoundException("No se encontraron consultas asociadas al paciente " + idPet);
+            throw new EntityNotFoundException("No se encontraron consultas asociadas al paciente "+ petCode);
         }
         return consultations.stream().map(this::mapToDtoWithVetName).toList();
     }
@@ -112,17 +124,16 @@ public class ConsultationServiceImpl implements ConsultationService {
         return consultations.stream().map(this::mapToDtoWithVetName).toList();
     }
 
-
     @Override
-    public VetWithConsultationsDto findConsultationsByIdVet(Long vetId){
+    public VetWithConsultationsDto findConsultationsByVetCode(String vetCode){
         VetResponseDto vet;
         try {
-            vet = vetClient.getVetById(vetId); 
+            vet = vetClient.getVetByCode(vetCode); 
         } catch (feign.FeignException.NotFound e) {
-            throw new EntityNotFoundException("No existe el veterinario " + vetId + " en el sistema");
+            throw new EntityNotFoundException("No existe el veterinario " + vetCode + " en el sistema");
         }
 
-        List<ConsultationsWithVetDto> consultations = consultationRepository.findByVetId(vetId) 
+        List<ConsultationsWithVetDto> consultations = consultationRepository.findByVetCode(vetCode) 
             .stream()
             .map(consultationMapper::toVetDto)
             .toList();
@@ -131,16 +142,22 @@ public class ConsultationServiceImpl implements ConsultationService {
 
     @Override
     @Transactional
-    public void updateConsultationDate(Long idConsultation, LocalDateTime newDate) {
-        Consultation consultation = findById(idConsultation);
+    public void updateConsultationDate(String consultatioCode, LocalDateTime newDate) {
+        Consultation consultation = findByCode(consultatioCode);
         validDate(newDate);
-        consultationRepository.updateCitationDate(idConsultation, newDate);
+
+        if (consultation.getCitationDate().equals(newDate)) {
+            throw new IllegalArgumentException("La consulta ya cuando con la fecha, ingresar una nueva");
+        }
+
+        consultation.setCitationDate(newDate);
+        consultationRepository.save(consultation);
     }    
 
     // helpers
-    private Consultation findById(Long id){
-        Consultation consultation = consultationRepository.findById(id).orElseThrow(
-            () -> new EntityNotFoundException("No se encontro consulta asociado al id "+ id + " en el sistema"));
+    private Consultation findByCode(String code){
+        Consultation consultation = consultationRepository.findByConsultationCode(code).orElseThrow(
+            () -> new EntityNotFoundException("No se encontro consulta asociado al codigo "+ code + " en el sistema"));
         return consultation;
     }
 
@@ -153,50 +170,50 @@ public class ConsultationServiceImpl implements ConsultationService {
 
     private void validDate(LocalDateTime date) {
         if (date.toLocalDate().isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("La fecha de la cita no puede ser menor a la actual");
+            throw new IllegalArgumentException("La fecha de la cita no puede ser menor a la fecha actual");
         }
         validHour(date.toLocalTime());
     }
 
-    private Pet validPet (Long idPet) {
-        Pet pet = petRepository.findById(idPet)
-            .orElseThrow(() -> new EntityNotFoundException("No existe la mascota " + idPet));
+    private Pet validPet (String petCode) {
+        Pet pet = petRepository.findByPetCode(petCode)
+            .orElseThrow(() -> new EntityNotFoundException("No existe la mascota con el codigo" + petCode));
         if (!pet.getActive()) {
-            throw new IllegalArgumentException("La mascota " + idPet + " está deshabilitada");
+            throw new IllegalArgumentException("La mascota " + pet.getName() + " está deshabilitada");
         }
         return pet;
     }
 
-    private VetResponseDto validVet(Long idVet) {
+    private VetResponseDto validVet(String vetCode) {
         try {
-            VetResponseDto vet = vetClient.getVetById(idVet);
+            VetResponseDto vet = vetClient.getVetByCode(vetCode);
             if (!"ACTIVE".equalsIgnoreCase(vet.getStatus())) {
-                throw new IllegalArgumentException("El veterinario " + idVet + " está deshabilitado del sistema");
+                throw new IllegalArgumentException("El veterinario " + vet.getFullName() + " está deshabilitado del sistema");
             }
             return vet;
         } catch (feign.FeignException.NotFound e) {
-            throw new EntityNotFoundException("No existe el veterinario " + idVet + " en el sistema");
+            throw new EntityNotFoundException("No se encontro registro del veterinario " + vetCode + " en el sistema");
         }
     }
 
 
     private ConsultationReponseDto mapToDtoWithVetName(Consultation consultation) {
-    ConsultationReponseDto dto = consultationMapper.toDto(consultation);
-    try {
-        VetResponseDto vet = vetClient.getVetById(consultation.getVetId());
-        dto.setFullName(vet.getFullName());
-    } catch (feign.FeignException.NotFound e) {
-        dto.setFullName("Veterinario no encontrado");
-    }
-    return dto;
+        ConsultationReponseDto dto = consultationMapper.toDto(consultation);
+        try {
+            VetResponseDto vet = vetClient.getVetByCode(consultation.getVetCode());
+            dto.setFullName(vet.getFullName());
+        } catch (feign.FeignException.NotFound e) {
+            dto.setFullName("Veterinario no encontrado");
+        }
+        return dto;
     }
 
-    private void checkAvailability(Long idVet, LocalDateTime appointmentDate){
+    private void checkAvailability(String vetCode, LocalDateTime appointmentDate){
         LocalDateTime start = appointmentDate.minusMinutes(30);
         LocalDateTime end = appointmentDate.plusMinutes(30);
 
-        if (consultationRepository.existsByVetAndTimeRange(idVet, start, end)) {
-            throw new IllegalArgumentException("El veterinario "+ idVet + " ya cuenta cita registrada para el dia " + appointmentDate);
+        if (consultationRepository.existsByVetAndTimeRange(vetCode, start, end)) {
+            throw new IllegalArgumentException("El veterinario ya cuenta cita registrada para el dia " + appointmentDate);
         }
     }
 

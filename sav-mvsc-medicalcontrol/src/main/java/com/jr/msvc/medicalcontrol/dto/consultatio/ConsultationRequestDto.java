@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotNull;
 @Setter
 public class ConsultationRequestDto {
     @NotNull
-    private Long idPet;
+    private String petCode;
 
     @NotBlank
     private String reason;
@@ -23,5 +23,5 @@ public class ConsultationRequestDto {
     private String observations;
 
     @NotNull
-    private Long vetId;
+    private String vetCode;
 }
