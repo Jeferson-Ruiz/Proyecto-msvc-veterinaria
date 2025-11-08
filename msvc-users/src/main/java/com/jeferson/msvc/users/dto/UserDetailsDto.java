@@ -13,7 +13,8 @@ public class UserDetailsDto {
     private String username;
     private String email;
     protected String password;
-    
+    private String userCode;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime registrationDate;
     

@@ -34,6 +34,7 @@ public class UserMapperImp implements UserMapper {
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
         dto.setPassword(user.getPassword());
+        dto.setUserCode(user.getUserCode());
         dto.setRegistrationDate(user.getRegistrationDate());
         dto.setStatus(user.getStatus());
 
@@ -59,6 +60,7 @@ public class UserMapperImp implements UserMapper {
         dto.setEmail(user.getEmail());
         dto.setRegistrationDate(user.getRegistrationDate());
         dto.setStatus(user.getStatus());
+        dto.setUserCode(user.getUserCode());
 
         dto.setRoles(
         user.getRoles().stream()
@@ -80,6 +82,7 @@ public class UserMapperImp implements UserMapper {
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
         dto.setStatus(user.getStatus());
+        dto.setUserCode(user.getUserCode());
         dto.setRegistrationDate(user.getRegistrationDate());
 
         String reason = user.getUserStatusReason().stream()

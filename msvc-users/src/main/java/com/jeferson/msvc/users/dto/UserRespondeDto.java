@@ -16,6 +16,7 @@ public class UserRespondeDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime registrationDate;  
 
+    private String userCode;
     private UserStatus status;
     private Set<RoleDto> roles;
 }
