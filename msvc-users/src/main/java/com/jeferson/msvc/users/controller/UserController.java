@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc.users.dto.EmailDto;
 import com.jeferson.msvc.users.dto.PasswordDto;
@@ -23,6 +24,7 @@ import com.jeferson.msvc.users.entities.UserStatus;
 import com.jeferson.msvc.users.services.UserService;
 import jakarta.validation.Valid;
 
+@RequestMapping("/user")
 @RestController
 public class UserController {
 
@@ -48,9 +50,9 @@ public class UserController {
         return ResponseEntity.ok(userService.findAllByStatus(status));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.findById(id));
+    @GetMapping("/{userCode}")
+    public ResponseEntity<?> getUserById(@PathVariable String userCode) {
+        return ResponseEntity.ok(userService.findByCode(userCode));
     }
 
     @GetMapping("/username/{username}")
@@ -59,40 +61,40 @@ public class UserController {
     }
 
 
-    @PatchMapping("/update/email/{id}")
-    public ResponseEntity<?> updateEmail(@PathVariable Long id, @Valid @RequestBody EmailDto request){
-        userService.updateEmail(id, request.getEmail());
+    @PatchMapping("/update/email/{userCode}")
+    public ResponseEntity<?> updateEmail(@PathVariable String userCode, @Valid @RequestBody EmailDto request){
+        userService.updateEmail(userCode, request.getEmail());
         return ResponseEntity.noContent().build();
     }
 
 
-    @PatchMapping("/update/password/{id}")
-    public ResponseEntity<?> updatePassword(@PathVariable Long id, @Valid @RequestBody PasswordDto request ){
-        userService.updatePassword(id, request.getOldPassword(), request.getNewPasswor());
+    @PatchMapping("/update/password/{userCode}")
+    public ResponseEntity<?> updatePassword(@PathVariable String userCode, @Valid @RequestBody PasswordDto request ){
+        userService.updatePassword(userCode, request.getOldPassword(), request.getNewPasswor());
         return ResponseEntity.noContent().build();
     }
 
 
-    @PatchMapping("/update/roles/{id}")
-    public ResponseEntity<?> updateRoles(@PathVariable Long id, @RequestBody UpdateRolesDto request){
+    @PatchMapping("/update/roles/{userCode}")
+    public ResponseEntity<?> updateRoles(@PathVariable String userCode, @RequestBody UpdateRolesDto request){
         Set<Roles> roles = request.getRoles()
                               .stream()
                               .map(Roles::valueOf)
                               .collect(Collectors.toSet());
-        userService.updateRoles(id, roles);
+        userService.updateRoles(userCode, roles);
         return ResponseEntity.noContent().build();
     }
 
 
-    @PatchMapping("/update/status/{id}")
-    public ResponseEntity<?> updateStatus(@PathVariable Long id, @Valid @RequestBody UpdateStatusDto request){
-        userService.updateStatus(id, request.getStatus(), request.getReason());
+    @PatchMapping("/update/status/{userCode}")
+    public ResponseEntity<?> updateStatus(@PathVariable String userCode, @Valid @RequestBody UpdateStatusDto request){
+        userService.updateStatus(userCode, request.getStatus(), request.getReason());
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id, @Valid @RequestBody UserDeleteRequestDto request) {
-        userService.delete(id, request.getReason());
+    @DeleteMapping("/{userCode}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String userCode, @Valid @RequestBody UserDeleteRequestDto request) {
+        userService.delete(userCode, request.getReason());
         return ResponseEntity.noContent().build();
     }
 
