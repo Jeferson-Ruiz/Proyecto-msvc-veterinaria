@@ -22,7 +22,9 @@ public interface UserService {
     
     void updateEmail(String userCode, String email);
 
-    void updatePassword(String userCode, String oldPassword ,String newpassword);
+    void updatePasswordByUserCode(String userCode, String oldPassword ,String newpassword);
+
+    void updatePasswordByEmail(String email, String newPassword);
 
     void updateRoles(String userCode, Set<Roles> newRoles);
 

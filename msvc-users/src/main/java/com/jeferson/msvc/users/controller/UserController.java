@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc.users.dto.EmailDto;
 import com.jeferson.msvc.users.dto.PasswordDto;
+import com.jeferson.msvc.users.dto.PasswordUpdateRequest;
 import com.jeferson.msvc.users.dto.UpdateStatusDto;
 import com.jeferson.msvc.users.dto.UserDeleteRequestDto;
 import com.jeferson.msvc.users.dto.UpdateRolesDto;
@@ -69,8 +70,15 @@ public class UserController {
 
 
     @PatchMapping("/update/password/{userCode}")
-    public ResponseEntity<?> updatePassword(@PathVariable String userCode, @Valid @RequestBody PasswordDto request ){
-        userService.updatePassword(userCode, request.getOldPassword(), request.getNewPasswor());
+    public ResponseEntity<?> updatePasswordByCode(@PathVariable String userCode, @Valid @RequestBody PasswordDto request ){
+        userService.updatePasswordByUserCode(userCode, request.getOldPassword(), request.getNewPasswor());
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @PatchMapping("/update-password")
+    public ResponseEntity<?> updatePasswordByEmail(@PathVariable String userCode, @Valid @RequestBody PasswordUpdateRequest request ){
+        userService.updatePasswordByEmail(request.getEmail(), request.getNewPassword());
         return ResponseEntity.noContent().build();
     }
 

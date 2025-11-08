@@ -112,11 +112,21 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-    public void updatePassword(String userCode, String oldPassword ,String newpassword){
+    public void updatePasswordByUserCode(String userCode, String oldPassword ,String newpassword){
         User user = findUserByCode(userCode);
         validStatus(user);
         validPassword(user, oldPassword, newpassword);
         user.setPassword(passwordEncoder.encode(newpassword));
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void updatePasswordByEmail(String email, String newPassword){
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new EntityNotFoundException("usuario no encontrado con el correo "+ email));
+        
+        user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
 
