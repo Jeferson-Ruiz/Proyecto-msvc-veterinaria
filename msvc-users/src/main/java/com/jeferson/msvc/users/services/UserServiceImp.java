@@ -26,15 +26,19 @@ public class UserServiceImp implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final UserCodeGenerator userCode;
+
 
     public UserServiceImp(UserRepository userRepository, 
         UserMapper userMapper, 
         PasswordEncoder passwordEncoder,
-        RoleRepository roleRepository) {
+        RoleRepository roleRepository,
+        UserCodeGenerator userCode) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.userCode = userCode;
     }
  
     @Override
@@ -43,10 +47,16 @@ public class UserServiceImp implements UserService {
         existUsername(userDto.getUsername());
         existEmail(userDto.getEmail());
         
+        //validar roles
         Set<Role> roles = getValidRoles(userDto.getRoles());
         User user = userMapper.toEntity(userDto);
 
+        //crear el codigo
+        user.setUserCode(userCode.generateUserCode());
+
+        //encriptar la contraseña
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        
         user.setStatus(UserStatus.ACTIVE);
         user.setRoles(roles);
         user.setRegistrationDate(LocalDateTime.now());
@@ -73,9 +83,10 @@ public class UserServiceImp implements UserService {
         };  
     }
 
-    @Override
-    public UserRespondeDto findById(Long id){
-        User user = findUserById(id);
+    public UserRespondeDto findByCode(String code){
+        User user = userRepository.findByUserCode(code)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro usuario en el sistema"));
+        
         return mapperByStatus(user);
     }
 
@@ -88,8 +99,8 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-    public void updateEmail(Long id, String email){
-        User user = findUserById(id);
+    public void updateEmail(String code, String email){
+        User user = findUserByCode(code);
         validStatus(user);
         if (email == user.getEmail()) {
             throw new IllegalArgumentException("El usuario ya tiene asociado el correo "+ email);
@@ -101,8 +112,8 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-    public void updatePassword(Long id, String oldPassword ,String newpassword){
-        User user = findUserById(id);
+    public void updatePassword(String userCode, String oldPassword ,String newpassword){
+        User user = findUserByCode(userCode);
         validStatus(user);
         validPassword(user, oldPassword, newpassword);
         user.setPassword(passwordEncoder.encode(newpassword));
@@ -111,8 +122,8 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-    public void updateRoles(Long id, Set<Roles> newRoles) {
-        User user = findUserById(id);
+    public void updateRoles(String userCode, Set<Roles> newRoles) {
+        User user = findUserByCode(userCode);
         validStatus(user);
         Set<Role> validRoles = getValidRoles(newRoles);
         Set<Role> currentRoles = new HashSet<>(user.getRoles());
@@ -125,8 +136,8 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-    public void updateStatus(Long id, UserStatus status, String reason){
-        User user = findUserById(id);
+    public void updateStatus(String userCode, UserStatus status, String reason){
+        User user = findUserByCode(userCode);
         validateRepeatInfo(user, status);
 
         user.setStatus(status);
@@ -139,8 +150,8 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-    public void delete(Long id, String reason){
-        User user = findUserById(id);
+    public void delete(String userCode, String reason){
+        User user = findUserByCode(userCode);
         if (user.getStatus() == UserStatus.DELETED) {
             throw new IllegalArgumentException("El usuario ya se encuentra eliminado definitivamente del sistema");
         }
@@ -155,11 +166,10 @@ public class UserServiceImp implements UserService {
     }
 
     
-
     //helpers
-    private User findUserById(Long id){
-        User user = userRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("No se encontro el usuario asociado al id "+ id));
+    private User findUserByCode(String code){
+        User user = userRepository.findByUserCode(code)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro el usuario asociado al codigo "+ code));
         return user;
     }
 
@@ -230,12 +240,14 @@ public class UserServiceImp implements UserService {
 
     private Set<Role> getValidRoles(Set<Roles> rolesFromDto) {
         Set<Role> roles = new HashSet<>();
+
         if (rolesFromDto == null || rolesFromDto.isEmpty()) {
-            Role roleDefault = roleRepository.findByName(Roles.ROLE_USER)
-                .orElseThrow(() -> new EntityNotFoundException("El rol ROLE_USER no existe en el sistema"));
-            roles.add(roleDefault);
+            Role defaultRole = new Role();
+            defaultRole.setName(Roles.ROLE_USER);
+            roles.add(defaultRole);
             return roles;
         }
+
         for (Roles roleEnum : rolesFromDto) {
             Role role = roleRepository.findByName(roleEnum)
                 .orElseThrow(() -> new EntityNotFoundException("El rol " + roleEnum + " no existe en el sistema"));

@@ -37,11 +37,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "user_code", nullable = false, unique = true)
+    private String userCode;
+
     @NotBlank
     @Column(name = "user_name", unique = true, length = 100)
     private String username;
 
-    @Column(name = "user_password", length = 100)
+    @NotBlank
+    @Column(name = "user_password", length = 100, nullable = false)
     private String password;
 
     @Email

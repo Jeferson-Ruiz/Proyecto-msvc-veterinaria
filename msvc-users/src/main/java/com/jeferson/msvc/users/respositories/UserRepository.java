@@ -9,6 +9,8 @@ import com.jeferson.msvc.users.entities.UserStatus;
 public interface UserRepository extends JpaRepository<User, Long>{
     Optional<User> findByUsername(String name);
 
+    Optional<User> findByUserCode(String userCode);
+
     Boolean existsByUsername(String username);
 
     Boolean existsByEmail(String email);

@@ -12,7 +12,7 @@ public interface UserService {
 
     UserRespondeDto save(UserRequestDto userDto);
 
-    UserRespondeDto findById(Long id);
+    UserRespondeDto findByCode(String code);
 
     UserDetailsDto findByUsername(String userName);
 
@@ -20,13 +20,13 @@ public interface UserService {
 
     List<UserRespondeDto> findAllByStatus(UserStatus status);
     
-    void updateEmail(Long id, String email);
+    void updateEmail(String userCode, String email);
 
-    void updatePassword(Long id, String oldPassword ,String newpassword);
+    void updatePassword(String userCode, String oldPassword ,String newpassword);
 
-    void updateRoles(Long id, Set<Roles> newRoles);
+    void updateRoles(String userCode, Set<Roles> newRoles);
 
-    void updateStatus(Long id, UserStatus status, String reason);
+    void updateStatus(String userCode, UserStatus status, String reason);
 
-    void delete(Long id, String reason);
+    void delete(String userCode, String reason);
 }
