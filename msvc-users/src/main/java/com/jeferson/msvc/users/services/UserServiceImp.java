@@ -98,6 +98,14 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    public UserDetailsDto findByEmail(String email){
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontro el email "+ email));
+        return userMapper.toDto(user);
+    }
+
+
+    @Override
     @Transactional
     public void updateEmail(String code, String email){
         User user = findUserByCode(code);

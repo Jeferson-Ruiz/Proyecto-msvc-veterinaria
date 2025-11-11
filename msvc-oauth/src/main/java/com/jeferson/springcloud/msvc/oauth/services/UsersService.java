@@ -23,7 +23,6 @@ import jakarta.ws.rs.NotFoundException;
 public class UsersService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
-
     private final WebClient.Builder client;
 
     public UsersService(Builder client, PasswordEncoder passwordEncoder) {
@@ -32,13 +31,13 @@ public class UsersService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
         Map<String, String> params = new HashMap<>();
-        params.put("username", username);
+        params.put("email", email);
 
         try {
-            User user = client.build().get().uri("/username/{username}", params)
+            User user = client.build().get().uri("user/email/{email}", params)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(User.class)
@@ -52,7 +51,7 @@ public class UsersService implements UserDetailsService {
             boolean enabled = user.getStatus() == UserStatus.ACTIVE;
 
             System.out.println("Informacion que llega");
-            System.out.println(username);
+            System.out.println(email);
             System.out.println(roles);
             System.out.println(passwordEncoder);
             
@@ -65,7 +64,7 @@ public class UsersService implements UserDetailsService {
                                                                     roles);
 
         } catch (WebClientRequestException e) {
-            throw new NotFoundException("Error de login, username "+ username +" no existe");
+            throw new NotFoundException("Error de login, email "+ email +" no existe");
         }
     }
 

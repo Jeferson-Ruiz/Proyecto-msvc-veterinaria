@@ -16,6 +16,8 @@ public interface UserService {
 
     UserDetailsDto findByUsername(String userName);
 
+    UserDetailsDto findByEmail(String email);
+
     List<UserRespondeDto> findAll();
 
     List<UserRespondeDto> findAllByStatus(UserStatus status);
