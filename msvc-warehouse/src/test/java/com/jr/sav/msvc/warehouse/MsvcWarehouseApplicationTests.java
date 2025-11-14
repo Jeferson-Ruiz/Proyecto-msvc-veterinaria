@@ -1,4 +1,4 @@
-package com.jr.sav.msvc.warehouse.msvc_warehouse;
+package com.jr.sav.msvc.warehouse;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
