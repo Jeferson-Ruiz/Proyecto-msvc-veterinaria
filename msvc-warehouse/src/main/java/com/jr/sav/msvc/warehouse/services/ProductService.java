@@ -1,22 +1,29 @@
 package com.jr.sav.msvc.warehouse.services;
 
 import java.util.List;
-import java.util.Optional;
-import com.jr.sav.msvc.warehouse.dto.ProductDto;
+import com.jr.sav.msvc.warehouse.dto.ProductRequestDto;
+import com.jr.sav.msvc.warehouse.dto.ProductResponseDto;
+import com.jr.sav.msvc.warehouse.entities.Comparison;
+import com.jr.sav.msvc.warehouse.entities.ProductStatus;
 
 public interface ProductService {
-    List<ProductDto> getAllProducts();
+    ProductResponseDto saveProduct(ProductRequestDto productDto);
 
-    Optional<ProductDto> findById(Long id);
+    List<ProductResponseDto> findAllByStatus(ProductStatus status);
 
-    Optional<ProductDto> saveProduct(ProductDto productDto);
+    List<ProductResponseDto> findByStock(int stock, Comparison comparison);
+    ProductResponseDto findByCode(String code);
 
-    void delete(Long id);
+    List<ProductResponseDto> findByName(String name);
 
-    void updateQuantityStock(Long id, Long quantityStock);
+    List<ProductResponseDto> findByCategory(String categoryName);
 
-    void updatePurchasePrice(Long id, Double purchasePrice);
+    void updatePrice(String codeProduct, Double newPrice);
 
-    void updateSalesPrice(long id, Double salesPrice);
-    
+    void updateStock(String codeProduct, int newStock);
+
+    void updateStatus(String productCode, ProductStatus stados);
+
+    void removeProduct(String codeProducto);
+
 }
