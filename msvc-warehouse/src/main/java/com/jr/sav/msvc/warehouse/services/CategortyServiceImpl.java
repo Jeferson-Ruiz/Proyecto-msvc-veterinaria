@@ -26,12 +26,13 @@ public class CategortyServiceImpl implements CategoryService {
 
     @Override    
     public CategoryResponseDto saveCtegory(CategoryRequestDto category){
-
-        String prefix = category.getCategoryName().substring(0,2).toUpperCase();
-        validateInfo(category.getCategoryName(), prefix);
+        validateInfo(category.getCategoryName());
         validateLength(category.getDescription());
 
         Category entity = categoryMapper.toEntity(category);
+        entity.setCategoryName(category.getCategoryName().toLowerCase().strip());
+
+        String prefix = createPrefix(category.getCategoryName());
         entity.setCategoryPrefix(prefix);
         entity.setCategoryCode(codeGenerator.generateCategoryCode(entity));
         
@@ -74,12 +75,9 @@ public class CategortyServiceImpl implements CategoryService {
         categoryRepository.save(category);
     }
 
-    private void validateInfo(String name, String prefix){
+    private void validateInfo(String name){
         if (categoryRepository.existCategoryByName(name)) {
-            throw new IllegalArgumentException("La categoria "+ name + " ya se encuentra en el sitema");
-        }else if (categoryRepository.existCategoryByPrefix(prefix)) {
-            throw new IllegalArgumentException("El prefijo "+ prefix + " ya se encuentra en el sitema");
-        }
+            throw new IllegalArgumentException("La categoria "+ name + " ya se encuentra en el sitema");}
     }
 
     private Category findCategoryByCode(String code){
@@ -89,9 +87,15 @@ public class CategortyServiceImpl implements CategoryService {
     }
 
     private void validateLength(String description){
+        description = description.toLowerCase().strip();
         if (description.length() > 255) {
             throw new IllegalArgumentException("La descripcion de la categoria debe ser más corta");
         }
+    }
+
+    private String createPrefix(String getCategoryName){
+        String prefix = codeGenerator.generarPrefijo(getCategoryName, categoryRepository);
+        return prefix;
     }
 
 }
