@@ -1,6 +1,5 @@
 package com.jr.sav.msvc.warehouse.services;
 
-
 import java.security.SecureRandom;
 import org.springframework.stereotype.Service;
 import com.jr.sav.msvc.warehouse.entities.Category;
@@ -61,7 +60,53 @@ public class CodeGeneratorImpl implements CodeGenerator {
         
         return code;
     }
+    
+    @Override
+    public String generarPrefijo(String texto, CategoryRepository categoryRepository) {
+        String prefijoBase = generarPrefijoBase(texto);
+        return generarPrefijoUnico(prefijoBase, categoryRepository);
+    }
+
+    private String generarPrefijoBase(String texto) {
+        texto = texto.strip().replaceAll("\\s+", " ").toUpperCase();
+
+        String[] palabras = texto.split(" ");
+        StringBuilder prefijo = new StringBuilder();
+
+        for (String p : palabras) {
+            if (p.length() >= 2) {
+                prefijo.append(p.substring(0, 2));
+            } else {
+                prefijo.append(p);
+            }
+        }
+        // Limitar a 6 el prefijo
+        if (prefijo.length() >= 6) {
+            return prefijo.substring(0, 6);
+        }
+
+        return prefijo.toString();
+    }
 
 
-
+    private String generarPrefijoUnico(String prefijoBase, CategoryRepository categoryRepository) {
+        String prefijo = prefijoBase;
+        int contador = 1;
+        
+        while (categoryRepository.existCategoryByPrefix(prefijo)) {
+            String sufijo = String.valueOf(contador);
+            int longitudMaxima = 6 - sufijo.length();
+            
+            if (longitudMaxima <= 0) {
+                prefijo = sufijo.substring(0, 6);
+            } else {
+                // Asegurar que no exceda la longitud del prefijoBase
+                int longitudRecortar = Math.min(prefijoBase.length(), longitudMaxima);
+                prefijo = prefijoBase.substring(0, longitudRecortar) + sufijo;
+            }
+            contador++;
+        }
+        
+        return prefijo;
+    }
 }
