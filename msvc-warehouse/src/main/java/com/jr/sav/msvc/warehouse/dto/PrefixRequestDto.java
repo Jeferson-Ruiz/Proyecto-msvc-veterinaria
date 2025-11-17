@@ -7,17 +7,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CategoryRequestDto {
-
-    @NotBlank
-    @Pattern(
-    regexp = "^(?=.*[\\p{L}])[\\p{L},\\sáéíóúÁÉÍÓÚñÑ]+$",
-        message = "el nombre de la categoria no pude ser nulo ni conetener numeros")
-    private String categoryName;
+public class PrefixRequestDto {
 
     @NotBlank
     @Pattern(
     regexp = "^(?=.*[\\p{L}])[\\p{L},\\sáéíóúÁÉÍÓÚñÑ]+$",
         message = "la descripcion no puede ser nula ni contener numeos")
-    private String description;
+    private String prefix;
+
 }

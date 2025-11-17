@@ -27,13 +27,13 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "cat_code", nullable = false, unique = true, length = 7)
+    @Column(name = "cat_code", nullable = false, unique = true)
     private String categoryCode;
 
     @Column(name = "cat_name", nullable = false, unique = true)
     private String categoryName;
 
-    @Column(name = "cat_prefix", nullable = false, unique = true, length = 3)
+    @Column(name = "cat_prefix", nullable = false, unique = true, length = 6)
     private String categoryPrefix;
 
     @Column(name = "cat_descrip", nullable = false, length = 255)

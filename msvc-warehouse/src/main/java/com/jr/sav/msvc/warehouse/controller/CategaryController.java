@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.jr.sav.msvc.warehouse.dto.CategoryRequestDto;
 import com.jr.sav.msvc.warehouse.dto.CategoryResponseDto;
+import com.jr.sav.msvc.warehouse.dto.PrefixRequestDto;
 import com.jr.sav.msvc.warehouse.services.CategoryService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/category")
@@ -23,7 +26,7 @@ public class CategaryController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveCategory(@RequestBody CategoryRequestDto category){
+    public ResponseEntity<?> saveCategory(@RequestBody @Valid CategoryRequestDto category){
         CategoryResponseDto categoryDto = categoryService.saveCtegory(category);
         return ResponseEntity.ok(categoryDto);
     }
@@ -52,8 +55,8 @@ public class CategaryController {
     }
 
     @PatchMapping("/update-description/{code}")
-    public ResponseEntity<?> updateDescription(@PathVariable String code, @RequestBody String prefix){
-        categoryService.updateDescription(code, prefix);
+    public ResponseEntity<?> updateDescription(@PathVariable String code, @RequestBody @Valid PrefixRequestDto prefix){
+        categoryService.updateDescription(code, prefix.getPrefix());
         return ResponseEntity.noContent().build();
     }
 }
