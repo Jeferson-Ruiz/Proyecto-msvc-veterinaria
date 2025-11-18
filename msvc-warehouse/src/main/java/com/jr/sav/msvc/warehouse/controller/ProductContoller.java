@@ -9,11 +9,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.jr.sav.msvc.warehouse.dto.PriceRequestDto;
 import com.jr.sav.msvc.warehouse.dto.ProductRequestDto;
 import com.jr.sav.msvc.warehouse.dto.ProductResponseDto;
+import com.jr.sav.msvc.warehouse.dto.StatusRequestDto;
 import com.jr.sav.msvc.warehouse.dto.StockRequestDto;
+import com.jr.sav.msvc.warehouse.dto.UpdStockRequestDto;
 import com.jr.sav.msvc.warehouse.entities.ProductStatus;
 import com.jr.sav.msvc.warehouse.services.ProductService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/product")
@@ -26,7 +31,7 @@ public class ProductContoller {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveProducto(@RequestBody ProductRequestDto productDto){
+    public ResponseEntity<?> saveProducto(@RequestBody @Valid ProductRequestDto productDto){
         ProductResponseDto product = productService.saveProduct(productDto);
         return ResponseEntity.ok(product);
     }
@@ -37,8 +42,8 @@ public class ProductContoller {
     }
 
     @GetMapping("/stock")
-    public ResponseEntity<?> getAllByStock(@RequestBody StockRequestDto request){
-        return ResponseEntity.ok(productService.findByStock(request.getStock(),request.getComparison() ));
+    public ResponseEntity<?> getAllByStock(@RequestBody @Valid StockRequestDto request){
+        return ResponseEntity.ok(productService.findByStock(request.getQuantityStock(),request.getComparison() ));
     }
 
     @GetMapping("/code/{code}")
@@ -47,8 +52,8 @@ public class ProductContoller {
         return ResponseEntity.ok(product);
     }
 
-    @GetMapping("/name/{name}")
-    public ResponseEntity<?> getByName(@PathVariable String name){
+    @GetMapping("/name")
+    public ResponseEntity<?> getByName(@RequestBody String name){
         return ResponseEntity.ok(productService.findByName(name));
     }
 
@@ -58,20 +63,20 @@ public class ProductContoller {
     }
 
     @PatchMapping("/update-price/{code}")
-    public ResponseEntity<?> updatePriceByCode(@PathVariable String code, @RequestBody Double newPrice){
-        productService.updatePrice(code, newPrice);
+    public ResponseEntity<?> updatePriceByCode(@PathVariable String code, @RequestBody @Valid PriceRequestDto request){
+        productService.updatePrice(code, request.getSalesPrice());
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/update-stock/{code}")
-    public ResponseEntity<?> updateStockByCode(@PathVariable String code, @RequestBody int stock){
-        productService.updateStock(code, stock);
+    public ResponseEntity<?> updateStockByCode(@PathVariable String code ,@RequestBody @Valid UpdStockRequestDto request){
+        productService.updateStock(code, request.getStock());
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/update-statuc/{code}")
-    public ResponseEntity<?> updateStatusByCode(@PathVariable String code, @RequestBody ProductStatus status){
-        productService.updateStatus(code, status);
+    public ResponseEntity<?> updateStatusByCode(@PathVariable String code ,@RequestBody @Valid StatusRequestDto request){
+        productService.updateStatus(code, request.getProductStatus());
         return ResponseEntity.noContent().build();
     }
 

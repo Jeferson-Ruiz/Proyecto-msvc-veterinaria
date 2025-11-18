@@ -95,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductResponseDto> findByCategory(String categoryName){
         List<Product> products = productRepository.findAllByCategoryName(categoryName);
         if (products.isEmpty()) {
-            throw new EntityNotFoundException("No se encuentran productos en la categoria" + categoryName);
+            throw new EntityNotFoundException("No se encuentran productos en la categoria " + categoryName);
         }
         return returnToDtoList(products);
     }
@@ -134,7 +134,9 @@ public class ProductServiceImpl implements ProductService {
         Product product = findProductByCode(productCode);
 
         if (product.getStatus().equals(ProductStatus.DELETED)) {
-            throw new IllegalArgumentException("No se puede eliminar actualizar un producto eliminado del sistema");
+            throw new IllegalArgumentException("No se puede actualizar un producto eliminado del sistema");
+        }else if(product.getStatus().equals(status)){
+            throw new IllegalArgumentException("El producto ya cuenta con ese status en el sistema");
         }
         else if(product.getQuantityStock() < 1) {
             product.setStatus(ProductStatus.SOLD_OUT);
@@ -171,7 +173,7 @@ public class ProductServiceImpl implements ProductService {
     } 
 
     private void validateQuality (Double cantidad){
-        if (cantidad < 1) {
+        if (cantidad > 0) {
             throw new IllegalArgumentException("La cantidad debe ser mayor que cero");
         }
     }
