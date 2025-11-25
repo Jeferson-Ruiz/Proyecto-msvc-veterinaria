@@ -1,6 +1,5 @@
 package com.msvc.invoice.entities;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import jakarta.persistence.CollectionTable;
@@ -29,36 +28,37 @@ public class Invoice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "inv_code", unique = true)
+    @Column(name = "inv_id", unique = true)
     private Long id;
 
     @Column(name = "inv_code", nullable = false, unique =  true)
     private String invoiceCode;
 
-    @Column(name = "inv_date", nullable = false)
-    private LocalDate date;
+    @Column(name = "inv_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private InvoiceType invoiceType;
+
+    @Column(name = "inv_consultation_code")
+    private String consultationCode; //Opcional
+
+    @Column(name = "inv_customer_name", nullable = false)
+    private String customerName;
 
     @Column(name = "inv_document_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private DocumentType documentType;
 
-    @Column(name = "inv_customer_name", nullable = false)
-    private String customerName;
-
-    @Column(name = "inv_customer_name", nullable = false)
+    @Column(name = "inv_customer_document", nullable = false)
     private String customerDocument;
 
-    @Column(name = "inv_consultation_code")
-    private String consultationCode; //Opcional
-    
     @ElementCollection    
     @CollectionTable(name = "invoice_items", joinColumns = @JoinColumn(name = "invoice_id"))    
     private List<InvoiceItem> items;
 
     @Column(name = "inv_invoice_total", nullable = false)
-    private BigDecimal total;
+    private Double total;
 
-    @Column(name = "inv_type", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private InvoiceType invoiceType;
+    @Column(name = "inv_date", nullable = false)
+    private LocalDate date;
+
 }
