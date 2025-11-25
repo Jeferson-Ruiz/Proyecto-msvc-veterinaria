@@ -116,9 +116,9 @@ public class ProductServiceImpl implements ProductService {
         validateQuality((double) newStock);
 
         Product product = findProductByCode(codeProduct);
-
         if (newStock == product.getQuantityStock()) {
-            throw new IllegalArgumentException("Error, el producto ya cuanta con esa cantidad en stock");}
+            throw new IllegalArgumentException("Error, el producto ya cuanta con esa cantidad en stock");
+        }
 
         product.setQuantityStock(newStock);
         productRepository.save(product);
@@ -173,7 +173,7 @@ public class ProductServiceImpl implements ProductService {
     } 
 
     private void validateQuality (Double cantidad){
-        if (cantidad > 0) {
+        if (cantidad < 0) {
             throw new IllegalArgumentException("La cantidad debe ser mayor que cero");
         }
     }

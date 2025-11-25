@@ -12,6 +12,7 @@ public interface ProductService {
     List<ProductResponseDto> findAllByStatus(ProductStatus status);
 
     List<ProductResponseDto> findByStock(int stock, Comparison comparison);
+    
     ProductResponseDto findByCode(String code);
 
     List<ProductResponseDto> findByName(String name);
