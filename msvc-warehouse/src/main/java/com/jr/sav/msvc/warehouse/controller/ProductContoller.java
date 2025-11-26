@@ -6,15 +6,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.jr.sav.msvc.warehouse.dto.PriceRequestDto;
 import com.jr.sav.msvc.warehouse.dto.ProductRequestDto;
 import com.jr.sav.msvc.warehouse.dto.ProductResponseDto;
 import com.jr.sav.msvc.warehouse.dto.StatusRequestDto;
 import com.jr.sav.msvc.warehouse.dto.StockRequestDto;
-import com.jr.sav.msvc.warehouse.dto.UpdStockRequestDto;
 import com.jr.sav.msvc.warehouse.entities.ProductStatus;
 import com.jr.sav.msvc.warehouse.services.ProductService;
 
@@ -52,8 +53,8 @@ public class ProductContoller {
         return ResponseEntity.ok(product);
     }
 
-    @GetMapping("/name")
-    public ResponseEntity<?> getByName(@RequestBody String name){
+    @GetMapping("name/name")
+    public ResponseEntity<?> getByName(@RequestParam String name){
         return ResponseEntity.ok(productService.findByName(name));
     }
 
@@ -68,9 +69,9 @@ public class ProductContoller {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/update-stock/{code}")
-    public ResponseEntity<?> updateStockByCode(@PathVariable String code ,@RequestBody @Valid UpdStockRequestDto request){
-        productService.updateStock(code, request.getStock());
+    @PutMapping("/update-stock/{code}")
+    public ResponseEntity<?> updateStockByCode(@PathVariable String code ,@RequestParam int stock){
+        productService.updateStock(code, stock);
         return ResponseEntity.noContent().build();
     }
 
