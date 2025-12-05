@@ -1,59 +1,71 @@
 package com.jeferson.msvc.workstaff.services;
 
+import com.jeferson.msvc.workstaff.dto.EmployeeRequestDto;
 import com.jeferson.msvc.workstaff.dto.EmployeeResponseDto;
 import com.jeferson.msvc.workstaff.mapper.EmployeeMapper;
-import com.jeferson.msvc.workstaff.models.Administrative;
-import com.jeferson.msvc.workstaff.models.Auxiliary;
 import com.jeferson.msvc.workstaff.models.Employee;
+import com.jeferson.msvc.workstaff.models.Role;
 import com.jeferson.msvc.workstaff.models.EmployeeStatus;
-import com.jeferson.msvc.workstaff.models.Intern;
 import com.jeferson.msvc.workstaff.models.ActionInformation;
-import com.jeferson.msvc.workstaff.models.Vet;
+import com.jeferson.msvc.workstaff.models.ContractType;
 import com.jeferson.msvc.workstaff.models.WorkArea;
 import com.jeferson.msvc.workstaff.repositories.EmployeeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.beans.Transient;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
+    private final CodeService codeService;
+    private final RoleValidation roleValidation;
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRespository, EmployeeMapper employeeMapper) {
+    public EmployeeServiceImpl(
+        EmployeeRepository employeeRespository,
+        EmployeeMapper employeeMapper,
+        CodeService codeService,
+        RoleValidation roleValidation) {
         this.employeeRepository = employeeRespository;
         this.employeeMapper = employeeMapper;
+        this.codeService = codeService;
+        this.roleValidation = roleValidation;
     }
 
     @Override
-    public List<EmployeeResponseDto> findAllByStatus(EmployeeStatus status) {
-        List<Employee> employees = employeeRepository.findAllByStatus(status);
-        if (employees.isEmpty()) {
-            throw new EntityNotFoundException("No se encuetran empleados registrados en el sistema");
-        }
-        return employees.stream()
-                .map(employeeMapper::toDto)
-                .toList();
+    public EmployeeResponseDto save(EmployeeRequestDto employeeDto){
+        
+        //Validacion informacion repetida
+        validateEmployeeInfo(employeeDto.getDocumentNumber(), employeeDto.getPhoneNumber(), employeeDto.getEmail());
+
+        Employee employee = employeeMapper.toEntity(employeeDto);
+        //Generacion de codigo
+        employee.setEmployeeCode(codeService.generateEmployeeCode(employee));
+
+        //validacion de roles en Area
+        roleValidation.roleValidation(employee.getWorkArea(), employeeDto.getRole());
+
+        //mapeo
+        employee.setName(employeeDto.getName().toLowerCase());
+        employee.setStatus(EmployeeStatus.PROCESS);
+        employee.setRegistrationDate(LocalDate.now());
+        employeeRepository.save(employee);
+        return employeeMapper.toDto(employee);
     }
 
     @Override
-    public List<EmployeeResponseDto> getEmployeesByType(WorkArea workArea, EmployeeStatus status) {
-        validateStatus(status);
-
-        Class<? extends Employee> clazz = switch (workArea) {
-            case ADMINISTRATIVE -> Administrative.class;
-            case AUXILIARY -> Auxiliary.class;
-            case INTERN -> Intern.class;
-            case VET -> Vet.class;
-        };
-
-        return employeeRepository.findByType(clazz, status)
-                .stream()
-                .map(employeeMapper::toDto)
-                .toList();
+    public EmployeeResponseDto findByDocumentNumber(String documentNumber) {
+        Employee employee = employeeRepository.findByDocumentNumber(documentNumber)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "No se encontro empleado asociado al N° identificacion " + documentNumber));
+        return employeeMapper.toDto(employee);
     }
 
     @Override
@@ -64,11 +76,59 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeResponseDto findByDocumentNumber(String documentNumber) {
-        Employee employee = employeeRepository.findByDocumentNumber(documentNumber)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "No se encontro empleado asociado al N° identificacion " + documentNumber));
-        return employeeMapper.toDto(employee);
+    public List<EmployeeResponseDto> findAllByAreaRolAndStatus(WorkArea area, String role, EmployeeStatus status) {
+        List<Employee> employees = employeeRepository.findByAreaRoleAndStatus(area, role, status);
+        if (employees.isEmpty()) throw new EntityNotFoundException("No se encontro empleados asociados a los parametos de busqueda");
+        return employees.stream()
+            .map(employeeMapper::toDto)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transient
+    public void updateEmail(String employeeCode, String newEmail){
+        Employee employee = findEmployeeCode(employeeCode);
+        validateStatus(employee.getStatus());
+        employeeRepository.existsByEmail(newEmail);
+        employee.setEmail(newEmail);
+        employeeRepository.save(employee);
+    }
+
+    @Override
+    @Transient
+    public void updatePhone(String employeeCode, String newPhone){
+        Employee employee = findEmployeeCode(employeeCode);
+        validateStatus(employee.getStatus());
+        employeeRepository.existsByPhone(newPhone);
+        employee.setPhoneNumber(newPhone);
+        employeeRepository.save(employee);
+    }
+
+    @Override
+    @Transient
+    public void updateRole(String employeeCode, Set<Role> role){
+        Employee employee = findEmployeeCode(employeeCode);
+        validateStatus(employee.getStatus());
+        roleValidation.roleValidation(employee.getWorkArea(), role);
+        employee.setRoles(role);
+        employeeRepository.save(employee);
+    }
+
+    @Override
+    @Transient
+    public void updateContractType(String employeeCode ,ContractType newContract){
+        Employee employee = findEmployeeCode(employeeCode);
+        employee.setContractType(newContract);
+        employeeRepository.save(employee);
+    }
+
+    @Override
+    @Transient
+    public void updateEmployeeStatus(String employeeCode, EmployeeStatus employeeStatus){
+        Employee employee = findEmployeeCode(employeeCode);
+        validateUpdateStatus(employeeStatus, employee);
+        employee.setStatus(employeeStatus);
+        employeeRepository.save(employee);
     }
 
     @Override
@@ -92,18 +152,23 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.save(employee);
     }
 
-    @Override
-    public void updateEmployeeStatus(String employeeCode, EmployeeStatus employeeStatus){
-        Employee employee = findEmployeeCode(employeeCode);
-        validateUpdateStatus(employeeStatus, employee);
-        employee.setStatus(employeeStatus);
-        employeeRepository.save(employee);
+    //helpers
+    private void validateEmployeeInfo(String documentNumber, String phoneNumber, String email){
+
+        if (employeeRepository.existsByDocument(documentNumber)) {
+         throw new IllegalArgumentException("Error, documento ya registrado");
+        } else if (employeeRepository.existsByPhone(phoneNumber)) {
+            throw new IllegalArgumentException("El numero de telefono ya se encuentra resgistrado en el sistema");
+        }else if(employeeRepository.existsByEmail(email)){
+            throw new IllegalArgumentException("El email ya se encuentra registrado en el sistema");
+        }
     }
 
-    private EmployeeStatus validateStatus(EmployeeStatus status){
-        return status != null ? status : EmployeeStatus.ACTIVE;
+    private void validateStatus(EmployeeStatus status){
+        if (status.equals(EmployeeStatus.DELETED)) {
+            throw new IllegalArgumentException("El empleado se encientra eliminado, no se puede actualizar");
+        }
     }
-
 
     private Employee findEmployeeCode(String code){
         Employee employee = employeeRepository.findByEmployeeCode(code)
