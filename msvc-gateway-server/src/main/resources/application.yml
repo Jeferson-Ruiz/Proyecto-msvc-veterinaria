@@ -46,3 +46,15 @@ spring:
         - Path=/api/sav/medical/**
         filters:
         - StripPrefix=3
+      - id: msvc-warehouse
+        uri: lb//msvc-warehouse
+        predicates:
+        - Path=/api/sav/warehouse/**
+        filters:
+        - StripPrefix=3
+      - id: msvc-invoice
+        uri: lb//msvc-invoice
+        predicates:
+        - Path =/api/sav/invoice
+        filters:
+        - StripPrefix=3
