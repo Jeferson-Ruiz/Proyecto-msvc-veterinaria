@@ -4,21 +4,28 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import com.jeferson.msvc.workstaff.models.Employee;
 import com.jeferson.msvc.workstaff.models.EmployeeStatus;
+import com.jeferson.msvc.workstaff.models.WorkArea;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
-    @Query("SELECT e FROM Employee e WHERE e.status =:status")
-    List<Employee> findAllByStatus(@Param("status") EmployeeStatus status);
-
     Optional<Employee> findByDocumentNumber(String documentNumber);
-
-    @Query("SELECT e FROM Employee e WHERE TYPE(e) = :clazz AND e.status =:status")
-    List<Employee> findByType(Class<? extends Employee> clazz, @Param("status") EmployeeStatus status);
 
     @Query("SELECT e FROM Employee e WHERE e.employeeCode=:employeeCode")
     Optional<Employee> findByEmployeeCode(@Param("employeeCode") String employeeCode);
+
+    @Query("SELECT e FROM Employee e JOIN e.roles r WHERE e.workArea = :workArea AND r.roleName = :roleName AND e.status = :status")
+    List<Employee> findByAreaRoleAndStatus(@Param("workArea") WorkArea workArea, @Param("roleName") String roleName, @Param("status") EmployeeStatus status);
+
+    @Query("SELECT COUNT(e) > 0 FROM Employee e WHERE e.email =:email")
+    boolean existsByEmail(@Param("email") String email);
+
+    @Query("SELECT COUNT(e) > 0 FROM Employee e WHERE e.phoneNumber =:phoneNumber")
+    boolean existsByPhone(@Param("phoneNumber") String phoneNumber);
+
+    @Query("SELECT COUNT(e) > 0 FROM Employee e WHERE e.documentNumber =:documentNumber")
+    boolean existsByDocument(@Param("documentNumber") String documentNumber);
 
 }
