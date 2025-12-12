@@ -5,7 +5,6 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jeferson.msvc.workstaff.models.ContractType;
 import com.jeferson.msvc.workstaff.models.DocumentType;
-import com.jeferson.msvc.workstaff.models.Role;
 import com.jeferson.msvc.workstaff.models.WorkArea;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -46,7 +45,7 @@ public class EmployeeRequestDto {
     private WorkArea workArea;
 
     @NotNull
-    private Set<Role> role;
+    private Set<String> roleName;
 
     @NotNull
     private ContractType contractType;
