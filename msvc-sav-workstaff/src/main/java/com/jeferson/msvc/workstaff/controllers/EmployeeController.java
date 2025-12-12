@@ -15,10 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc.workstaff.dto.EmailRequestDto;
 import com.jeferson.msvc.workstaff.dto.EmployeeRequestDto;
 import com.jeferson.msvc.workstaff.dto.EmployeeResponseDto;
-import com.jeferson.msvc.workstaff.dto.NumberRequestDto;
 import com.jeferson.msvc.workstaff.dto.PhoneNumberRequestDto;
 import com.jeferson.msvc.workstaff.models.ContractType;
-import com.jeferson.msvc.workstaff.models.Role;
 import com.jeferson.msvc.workstaff.models.EmployeeStatus;
 import com.jeferson.msvc.workstaff.models.WorkArea;
 import com.jeferson.msvc.workstaff.services.EmployeeService;
@@ -40,9 +38,9 @@ public class EmployeeController {
         return ResponseEntity.ok(employee);
     }
 
-    @GetMapping("/document/{documentNumber}")
-    public ResponseEntity<?> getEmployeeByDocumentNumber(@PathVariable NumberRequestDto request) {
-        EmployeeResponseDto employeeDto = employeeService.findByDocumentNumber(request.getDocumentNumber());
+    @GetMapping("/document/{document}")
+    public ResponseEntity<?> getEmployeeByDocumentNumber(@PathVariable String document) {
+        EmployeeResponseDto employeeDto = employeeService.findByDocumentNumber(document);
         return ResponseEntity.ok(employeeDto);
     }
 
@@ -70,7 +68,7 @@ public class EmployeeController {
     }    
 
     @PatchMapping("/update-role/{code}")
-    public ResponseEntity<?> updateRole(@PathVariable String code, @RequestBody Set<Role> role){
+    public ResponseEntity<?> updateRole(@PathVariable String code, @RequestBody Set<String> role){
         employeeService.updateRole(code, role);
         return ResponseEntity.ok().build();
     }   
