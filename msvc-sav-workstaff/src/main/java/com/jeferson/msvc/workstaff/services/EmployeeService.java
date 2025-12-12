@@ -5,7 +5,6 @@ import java.util.Set;
 import com.jeferson.msvc.workstaff.dto.EmployeeRequestDto;
 import com.jeferson.msvc.workstaff.dto.EmployeeResponseDto;
 import com.jeferson.msvc.workstaff.models.ContractType;
-import com.jeferson.msvc.workstaff.models.Role;
 import com.jeferson.msvc.workstaff.models.EmployeeStatus;
 import com.jeferson.msvc.workstaff.models.WorkArea;
 
@@ -23,7 +22,7 @@ public interface EmployeeService {
 
     void updatePhone(String employeeCode, String newPhone);
 
-    void updateRole(String employeeCode, Set<Role> role);
+    void updateRole(String employeeCode, Set<String> role);
 
     void updateContractType(String employeeCode ,ContractType newContract);
 

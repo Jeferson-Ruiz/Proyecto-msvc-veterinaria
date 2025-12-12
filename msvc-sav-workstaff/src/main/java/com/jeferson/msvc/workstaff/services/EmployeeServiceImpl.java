@@ -10,6 +10,7 @@ import com.jeferson.msvc.workstaff.models.ActionInformation;
 import com.jeferson.msvc.workstaff.models.ContractType;
 import com.jeferson.msvc.workstaff.models.WorkArea;
 import com.jeferson.msvc.workstaff.repositories.EmployeeRepository;
+import com.jeferson.msvc.workstaff.repositories.RoleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         EmployeeRepository employeeRespository,
         EmployeeMapper employeeMapper,
         CodeService codeService,
+        RoleRepository roleRepository,
         RoleValidation roleValidation) {
         this.employeeRepository = employeeRespository;
         this.employeeMapper = employeeMapper;
@@ -46,16 +48,22 @@ public class EmployeeServiceImpl implements EmployeeService {
         validateEmployeeInfo(employeeDto.getDocumentNumber(), employeeDto.getPhoneNumber(), employeeDto.getEmail());
 
         Employee employee = employeeMapper.toEntity(employeeDto);
+        
         //Generacion de codigo
         employee.setEmployeeCode(codeService.generateEmployeeCode(employee));
 
         //validacion de roles en Area
-        roleValidation.roleValidation(employee.getWorkArea(), employeeDto.getRole());
+        Set<Role> roles = roleValidation.roleValidation(employee.getWorkArea(), employeeDto.getRoleName());
 
         //mapeo
         employee.setName(employeeDto.getName().toLowerCase());
         employee.setStatus(EmployeeStatus.PROCESS);
         employee.setRegistrationDate(LocalDate.now());
+
+        //Relacionar los roles con empleados
+        employee.setRoles(roles);
+
+        //guardar entidad
         employeeRepository.save(employee);
         return employeeMapper.toDto(employee);
     }
@@ -106,11 +114,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transient
-    public void updateRole(String employeeCode, Set<Role> role){
+    public void updateRole(String employeeCode, Set<String> newRole){
         Employee employee = findEmployeeCode(employeeCode);
         validateStatus(employee.getStatus());
-        roleValidation.roleValidation(employee.getWorkArea(), role);
-        employee.setRoles(role);
+        roleValidation.roleValidation(employee.getWorkArea(), newRole);
+
+        Set<Role> roles = roleValidation.roleValidation(employee.getWorkArea(), newRole);
+        employee.setRoles(roles);
         employeeRepository.save(employee);
     }
 
