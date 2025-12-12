@@ -20,12 +20,13 @@ public class CodeServiceImpl implements CodeService{
     @Override
     public String generateEmployeeCode(Employee employee) {
 
-        String prefix = employee.getWorkArea().toString().substring(3).toLowerCase();
+        String prefix = employee.getWorkArea().toString().substring(0,3).toUpperCase();
+        
         String lastDigits = employee.getDocumentNumber()
                 .substring(employee.getDocumentNumber().length() - 4);
         Long count = employeeRepo.count() + 1;
 
-        return String.format("%s%s-%02d", prefix, lastDigits, count);
+        return prefix + "-" + lastDigits + String.format("%03d", count);
     }
 
     @Override
