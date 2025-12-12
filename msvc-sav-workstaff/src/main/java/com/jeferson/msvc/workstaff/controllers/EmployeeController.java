@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc.workstaff.dto.EmailRequestDto;
 import com.jeferson.msvc.workstaff.dto.EmployeeRequestDto;
@@ -80,7 +79,7 @@ public class EmployeeController {
     }  
    
     @PatchMapping("/update-status/{employeeCode}")
-    public ResponseEntity<?> updateStatus(@RequestParam String employeeCode, @Valid @RequestBody EmployeeStatus status ) {
+    public ResponseEntity<?> updateStatus(@PathVariable String employeeCode, @RequestBody EmployeeStatus status ) {
         employeeService.updateEmployeeStatus(employeeCode, status);
         return ResponseEntity.noContent().build();
     }
