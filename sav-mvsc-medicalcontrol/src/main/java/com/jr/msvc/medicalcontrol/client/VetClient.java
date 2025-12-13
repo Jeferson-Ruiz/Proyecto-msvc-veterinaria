@@ -9,7 +9,7 @@ import com.jr.msvc.medicalcontrol.dto.vet.VetResponseDto;
 @FeignClient(name = "msvc-workstaff")
 public interface VetClient {
 
-    @GetMapping("vet/code/{employeeCode}")
-    VetResponseDto getVetByCode(@PathVariable("employeeCode") String employeeCode);
+    @GetMapping("employee/code/{code}")
+    VetResponseDto getEmployeeByCode(@PathVariable("code") String code);
 
 }

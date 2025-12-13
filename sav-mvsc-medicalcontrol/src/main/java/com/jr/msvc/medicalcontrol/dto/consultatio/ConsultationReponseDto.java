@@ -21,6 +21,7 @@ public class ConsultationReponseDto {
     private LocalDateTime citationDate;
 
     private String observations;
+    
     //private Long vetId;
     private String fullName;
 

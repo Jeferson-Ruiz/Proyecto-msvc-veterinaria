@@ -43,11 +43,15 @@ public class ConsultationServiceImpl implements ConsultationService {
         this.codeMedical = codeMedical;
     }
 
+    /*-------------------------------
+    Crear consulta
+    ------------------------------ */
     @Override
     public ConsultationReponseDto saveConsultation(ConsultationRequestDto consultationDto) {
         try{
             Pet pet = validPet(consultationDto.getPetCode());
             VetResponseDto vetDto = validVet(consultationDto.getVetCode());
+            
             
             validDate(consultationDto.getCitationDate());
             checkAvailability(consultationDto.getVetCode(), consultationDto.getCitationDate());
@@ -56,6 +60,7 @@ public class ConsultationServiceImpl implements ConsultationService {
             Consultation consultation = consultationMapper.toEntity(consultationDto);
             consultation.setPet(pet);
             consultation.setPetName(pet.getName());
+            
 
             //Creacion de codigo dinamico
             String petCode = consultation.getPet().getPetCode();
@@ -74,6 +79,10 @@ public class ConsultationServiceImpl implements ConsultationService {
         }
     }
 
+
+    /*-------------------------------
+    Listar Consultas
+    ------------------------------ */
     @Override
     public List<ConsultationReponseDto> findAllConsultations() {
         List<Consultation> consultations = consultationRepository.findAll();
@@ -85,12 +94,20 @@ public class ConsultationServiceImpl implements ConsultationService {
             .toList();
     }
 
+
+    /*-------------------------------
+    Buscar Consulta Por Codigo
+    ------------------------------ */
     @Override
     public ConsultationReponseDto findConsultionByCode(String consultationCode) {
         Consultation consultation = findByCode(consultationCode);
         return mapToDtoWithVetName(consultation);
     }
 
+
+    /*-------------------------------
+    Listar las consultas de una mascota
+    ------------------------------ */
     @Override
     public List<ConsultationReponseDto> findAllConsultationByPetCode(String petCode) {
         List<Consultation> consultations = consultationRepository.findAllByPetCode(petCode);
@@ -100,6 +117,10 @@ public class ConsultationServiceImpl implements ConsultationService {
         return consultations.stream().map(this::mapToDtoWithVetName).toList();
     }
 
+
+    /*-------------------------------
+    Listar Consultas por estado
+    ------------------------------ */    
     @Override
     public List<ConsultationReponseDto> findAllByStatus(AttendanceStatus status){
         List<Consultation> consultations = consultationRepository.findAllByStatus(status);
@@ -109,6 +130,10 @@ public class ConsultationServiceImpl implements ConsultationService {
         return consultations.stream().map(this::mapToDtoWithVetName).toList();
     }
 
+    
+    /*-------------------------------
+    Listar Consultas Por Fecha
+    ------------------------------ */   
     @Override
     public List<ConsultationReponseDto> findByDate(LocalDate date){
         if (date == null) {
@@ -124,11 +149,16 @@ public class ConsultationServiceImpl implements ConsultationService {
         return consultations.stream().map(this::mapToDtoWithVetName).toList();
     }
 
+
+    /*-------------------------------
+    Listar Consultas Asociadas Al VET
+    ------------------------------ */   
     @Override
     public VetWithConsultationsDto findConsultationsByVetCode(String vetCode){
         VetResponseDto vet;
         try {
-            vet = vetClient.getVetByCode(vetCode); 
+            vet = vetClient.getEmployeeByCode(vetCode); 
+
         } catch (feign.FeignException.NotFound e) {
             throw new EntityNotFoundException("No existe el veterinario " + vetCode + " en el sistema");
         }
@@ -140,6 +170,9 @@ public class ConsultationServiceImpl implements ConsultationService {
         return new VetWithConsultationsDto(vet, consultations);
     }
 
+    /*-------------------------------
+    Actualizar fecha de consulta
+    ------------------------------ */       
     @Override
     @Transactional
     public void updateConsultationDate(String consultatioCode, LocalDateTime newDate) {
@@ -155,6 +188,7 @@ public class ConsultationServiceImpl implements ConsultationService {
     }    
 
     // helpers
+
     private Consultation findByCode(String code){
         Consultation consultation = consultationRepository.findByConsultationCode(code).orElseThrow(
             () -> new EntityNotFoundException("No se encontro consulta asociado al codigo "+ code + " en el sistema"));
@@ -186,8 +220,10 @@ public class ConsultationServiceImpl implements ConsultationService {
 
     private VetResponseDto validVet(String vetCode) {
         try {
-            VetResponseDto vet = vetClient.getVetByCode(vetCode);
-            if (!"ACTIVE".equalsIgnoreCase(vet.getStatus())) {
+            VetResponseDto vet = vetClient.getEmployeeByCode(vetCode);
+            if (!vet.getWorkArea().equals("HEALTH")) {
+                throw new IllegalArgumentException("El empleado no esta vinculado al area de la salud");
+            }else if (!"ACTIVE".equalsIgnoreCase(vet.getStatus())) {
                 throw new IllegalArgumentException("El veterinario " + vet.getFullName() + " está deshabilitado del sistema");
             }
             return vet;
@@ -200,7 +236,7 @@ public class ConsultationServiceImpl implements ConsultationService {
     private ConsultationReponseDto mapToDtoWithVetName(Consultation consultation) {
         ConsultationReponseDto dto = consultationMapper.toDto(consultation);
         try {
-            VetResponseDto vet = vetClient.getVetByCode(consultation.getVetCode());
+            VetResponseDto vet = vetClient.getEmployeeByCode(consultation.getVetCode());
             dto.setFullName(vet.getFullName());
         } catch (feign.FeignException.NotFound e) {
             dto.setFullName("Veterinario no encontrado");
