@@ -22,7 +22,7 @@ import com.jeferson.msvc.workstaff.services.EmployeeService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/employee")
+@RequestMapping("employee")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
