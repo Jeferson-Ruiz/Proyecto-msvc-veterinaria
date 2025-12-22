@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Tabla de Empleados</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+  <main id="main" class="main">
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Información Empleados</h5>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <p class="mb-0">Panel de información vinculado con los datos de los trabajadores</p>
+                <button class="btn btn-primary" onclick="window.location.href='form-employee.html'">
+                  <i class="bi bi-plus-circle"></i> Crear Empleado
+                </button>
+              </div>
+              
+              <table class="table" id="employeeTable">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Documento</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Área</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Los datos se cargarán aquí con JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal de Edición -->
+  <div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Empleado: <span id="employeeCode"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editEmployeeForm">
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label">Email</label>
+              <div class="col-sm-9">
+                <input type="email" class="form-control" id="editEmail">
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label">Teléfono</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="editPhone">
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label">Área</label>
+              <div class="col-sm-9">
+                <select class="form-select" id="editArea">
+                  <option value="SALUD">Salud</option>
+                  <option value="ADMINISTRACION">Administración</option>
+                  <option value="OPERACIONES">Operaciones</option>
+                  <option value="LOGISTICA">Logística</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label">Tipo Contrato</label>
+              <div class="col-sm-9">
+                <select class="form-select" id="editContract">
+                  <option value="TEMPORAL">Temporal</option>
+                  <option value="INDEFINIDO">Indefinido</option>
+                  <option value="SERVICIO">Servicio</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label">Estado</label>
+              <div class="col-sm-9">
+                <select class="form-select" id="editStatus">
+                  <option value="ACTIVE">Activo</option>
+                  <option value="INACTIVE">Inactivo</option>
+                  <option value="SUSPENDED">Suspendido</option>
+                </select>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" onclick="saveEmployeeChanges()">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Eliminación -->
+  <div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger">
+            <i class="bi bi-exclamation-triangle"></i> Confirmar Eliminación
+          </h5>
+        </div>
+        <div class="modal-body">
+          <p>¿Está seguro de eliminar a <strong id="deleteEmployeeName"></strong>?</p>
+          
+          <div class="mb-3">
+            <label class="form-label">Razón de eliminación</label>
+            <textarea class="form-control" id="deleteReason" rows="3" required></textarea>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Eliminado por</label>
+            <input type="text" class="form-control" id="deletedBy" value="Administrador" readonly>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" onclick="confirmDelete()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Tus archivos JavaScript -->
+  <script src="assets/js/edit-employee.js"></script>
+  <script src="assets/js/delete-employee.js"></script>
+  <script src="assets/js/table-employee.js"></script>
+
+</body>
+</html>
