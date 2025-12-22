@@ -12,6 +12,8 @@ public interface EmployeeService {
 
     EmployeeResponseDto save(EmployeeRequestDto employeeDto);
 
+    List<EmployeeResponseDto> findAllEmployee();
+
     EmployeeResponseDto findByEmployeeCode(String code);
 
     EmployeeResponseDto findByDocumentNumber(String documentNumber);

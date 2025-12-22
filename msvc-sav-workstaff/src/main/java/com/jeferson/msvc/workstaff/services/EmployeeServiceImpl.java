@@ -69,6 +69,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public List<EmployeeResponseDto> findAllEmployee(){
+        List<Employee> employees = employeeRepository.findAllActiveEmployee();
+        return employees.stream().map(employeeMapper::toDto).toList();
+    }
+
+    @Override
     public EmployeeResponseDto findByDocumentNumber(String documentNumber) {
         Employee employee = employeeRepository.findByDocumentNumber(documentNumber)
                 .orElseThrow(() -> new EntityNotFoundException(

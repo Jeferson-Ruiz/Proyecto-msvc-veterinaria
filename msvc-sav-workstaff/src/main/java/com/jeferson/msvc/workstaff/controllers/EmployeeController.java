@@ -37,6 +37,12 @@ public class EmployeeController {
         return ResponseEntity.ok(employee);
     }
 
+    @GetMapping
+    public ResponseEntity<?> getAllEmployee(){
+        List<EmployeeResponseDto> employess = employeeService.findAllEmployee();
+        return ResponseEntity.ok(employess);
+    }
+
     @GetMapping("/document/{document}")
     public ResponseEntity<?> getEmployeeByDocumentNumber(@PathVariable String document) {
         EmployeeResponseDto employeeDto = employeeService.findByDocumentNumber(document);

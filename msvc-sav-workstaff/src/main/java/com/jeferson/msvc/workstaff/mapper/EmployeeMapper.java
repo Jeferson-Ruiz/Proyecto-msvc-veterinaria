@@ -19,7 +19,6 @@ public interface EmployeeMapper {
     Employee toEntity(EmployeeRequestDto employee);
 
     @Mapping(target = "fullName", expression = "java(employee.getName() + \" \" + employee.getLastName())")
-    @Mapping(target = "roles", source = "employee.roles", qualifiedByName = "mapRolesToCodes")
     EmployeeResponseDto toDto(Employee employee);
 
     @Named("mapRolesToCodes")
