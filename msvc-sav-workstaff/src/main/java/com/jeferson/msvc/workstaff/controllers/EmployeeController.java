@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.jeferson.msvc.workstaff.dto.EmailRequestDto;
 import com.jeferson.msvc.workstaff.dto.EmployeeRequestDto;
@@ -32,13 +33,13 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveEmployee(@RequestBody @Valid EmployeeRequestDto employeeDto){
+    public ResponseEntity<?> saveEmployee(@RequestBody @Valid EmployeeRequestDto employeeDto) {
         EmployeeResponseDto employee = employeeService.save(employeeDto);
         return ResponseEntity.ok(employee);
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllEmployee(){
+    public ResponseEntity<?> getAllEmployee() {
         List<EmployeeResponseDto> employess = employeeService.findAllEmployee();
         return ResponseEntity.ok(employess);
     }
@@ -50,49 +51,54 @@ public class EmployeeController {
     }
 
     @GetMapping("/code/{code}")
-    public ResponseEntity<?> getEmployeeByCode(@PathVariable String code){
+    public ResponseEntity<?> getEmployeeByCode(@PathVariable String code) {
         EmployeeResponseDto employeeDto = employeeService.findByEmployeeCode(code);
         return ResponseEntity.ok(employeeDto);
     }
 
-    @GetMapping("area/{area}/role/{role}/status/{status}")
-    public ResponseEntity<List<EmployeeResponseDto>> getAllEmployee(@PathVariable WorkArea area, @PathVariable String role, @PathVariable EmployeeStatus status) {
-        return ResponseEntity.ok(employeeService.findAllByAreaRolAndStatus(area, role, status));
+    @GetMapping("/filter")
+    public ResponseEntity<List<EmployeeResponseDto>> filterEmployees(
+            @RequestParam(required = false) WorkArea workArea,
+            @RequestParam(required = false) String role,
+            @RequestParam(required = false) EmployeeStatus status) {
+        List<EmployeeResponseDto> employees = employeeService.findAllByAreaRolAndStatus(workArea, role, status);
+        return ResponseEntity.ok(employees);
     }
 
     @PatchMapping("/update-email/{code}")
-    public ResponseEntity<?> updateEmail(@PathVariable String code, @RequestBody EmailRequestDto request){
+    public ResponseEntity<?> updateEmail(@PathVariable String code, @RequestBody EmailRequestDto request) {
         employeeService.updateEmail(code, request.getEmail());
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/update-phone/{code}")
-    public ResponseEntity<?> updatePhone(@PathVariable String code, @RequestBody PhoneNumberRequestDto request){
+    public ResponseEntity<?> updatePhone(@PathVariable String code, @RequestBody PhoneNumberRequestDto request) {
         employeeService.updatePhone(code, request.getPhoneNumber());
         return ResponseEntity.ok().build();
-    }    
+    }
 
     @PatchMapping("/update-role/{code}")
-    public ResponseEntity<?> updateRole(@PathVariable String code, @RequestBody Set<String> role){
+    public ResponseEntity<?> updateRole(@PathVariable String code, @RequestBody Set<String> role) {
         employeeService.updateRole(code, role);
         return ResponseEntity.ok().build();
-    }   
+    }
 
     @PatchMapping("/update-contract/{code}")
-    public ResponseEntity<?> updateContract(@PathVariable String code, @RequestBody ContractType contract){
+    public ResponseEntity<?> updateContract(@PathVariable String code, @RequestBody ContractType contract) {
         employeeService.updateContractType(code, contract);
         return ResponseEntity.ok().build();
-    }  
-   
-    @PatchMapping("/update-status/{employeeCode}")
-    public ResponseEntity<?> updateStatus(@PathVariable String employeeCode, @RequestBody EmployeeStatus status ) {
-        employeeService.updateEmployeeStatus(employeeCode, status);
+    }
+
+    @PatchMapping("/update-status/{code}")
+    public ResponseEntity<?> updateStatus(@PathVariable String code, @RequestBody EmployeeStatus status) {
+        employeeService.updateEmployeeStatus(code, status);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{employeeCode}")
-    public ResponseEntity<?> deleteInfoEmployee(@PathVariable String employeeCode, @RequestBody String deleteBy, String reason) {
-        employeeService.delete(employeeCode, deleteBy, reason);
+    @DeleteMapping("/{code}")
+    public ResponseEntity<?> deleteInfoEmployee(@PathVariable String code, @RequestBody String deleteBy,
+            String reason) {
+        employeeService.delete(code, deleteBy, reason);
         return ResponseEntity.noContent().build();
     }
 }

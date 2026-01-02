@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -30,11 +29,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final RoleValidation roleValidation;
 
     public EmployeeServiceImpl(
-        EmployeeRepository employeeRespository,
-        EmployeeMapper employeeMapper,
-        CodeService codeService,
-        RoleRepository roleRepository,
-        RoleValidation roleValidation) {
+            EmployeeRepository employeeRespository,
+            EmployeeMapper employeeMapper,
+            CodeService codeService,
+            RoleRepository roleRepository,
+            RoleValidation roleValidation) {
         this.employeeRepository = employeeRespository;
         this.employeeMapper = employeeMapper;
         this.codeService = codeService;
@@ -42,34 +41,34 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeResponseDto save(EmployeeRequestDto employeeDto){
-        
-        //Validacion informacion repetida
+    public EmployeeResponseDto save(EmployeeRequestDto employeeDto) {
+
+        // Validacion informacion repetida
         validateEmployeeInfo(employeeDto.getDocumentNumber(), employeeDto.getPhoneNumber(), employeeDto.getEmail());
 
         Employee employee = employeeMapper.toEntity(employeeDto);
-        
-        //Generacion de codigo
+
+        // Generacion de codigo
         employee.setEmployeeCode(codeService.generateEmployeeCode(employee));
 
-        //validacion de roles en Area
+        // validacion de roles en Area
         Set<Role> roles = roleValidation.roleValidation(employee.getWorkArea(), employeeDto.getRoleName());
 
-        //mapeo
+        // mapeo
         employee.setName(employeeDto.getName().toLowerCase());
         employee.setStatus(EmployeeStatus.PROCESS);
         employee.setRegistrationDate(LocalDate.now());
 
-        //Relacionar los roles con empleados
+        // Relacionar los roles con empleados
         employee.setRoles(roles);
 
-        //guardar entidad
+        // guardar entidad
         employeeRepository.save(employee);
         return employeeMapper.toDto(employee);
     }
 
     @Override
-    public List<EmployeeResponseDto> findAllEmployee(){
+    public List<EmployeeResponseDto> findAllEmployee() {
         List<Employee> employees = employeeRepository.findAllActiveEmployee();
         return employees.stream().map(employeeMapper::toDto).toList();
     }
@@ -83,24 +82,41 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeResponseDto findByEmployeeCode(String code){
-        Employee employee = employeeRepository.findByEmployeeCode(code).
-            orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al codigo "+ code));
-            return employeeMapper.toDto(employee);
+    public EmployeeResponseDto findByEmployeeCode(String code) {
+        Employee employee = employeeRepository.findByEmployeeCode(code)
+                .orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al codigo " + code));
+        return employeeMapper.toDto(employee);
     }
 
     @Override
     public List<EmployeeResponseDto> findAllByAreaRolAndStatus(WorkArea area, String role, EmployeeStatus status) {
-        List<Employee> employees = employeeRepository.findByAreaRoleAndStatus(area, role, status);
-        if (employees.isEmpty()) throw new EntityNotFoundException("No se encontro empleados asociados a los parametos de busqueda");
+        List<Employee> employees;
+
+        if (area != null && role != null && status != null) {
+            employees = employeeRepository.findByAreaRoleAndStatus(area, role, status);
+        } else if (area != null && role != null) {
+            employees = employeeRepository.findByAreaAndRole(area, role);
+        } else if (area != null && status != null) {
+            employees = employeeRepository.findByWorkAreaAndStatus(area, status);
+        } else if (role != null && status != null) {
+            employees = employeeRepository.findByRoleAndStatus(role, status);
+        } else if (area != null) {
+            employees = employeeRepository.findByWorkArea(area);
+        } else if (role != null) {
+            employees = employeeRepository.findByRoleName(role);
+        } else if (status != null) {
+            employees = employeeRepository.findByStatus(status);
+        } else {
+            employees = employeeRepository.findAll();
+        }
         return employees.stream()
-            .map(employeeMapper::toDto)
-            .collect(Collectors.toList());
+                .map(employeeMapper::toDto)
+                .toList();
     }
 
     @Override
     @Transient
-    public void updateEmail(String employeeCode, String newEmail){
+    public void updateEmail(String employeeCode, String newEmail) {
         Employee employee = findEmployeeCode(employeeCode);
         validateStatus(employee.getStatus());
         employeeRepository.existsByEmail(newEmail);
@@ -110,7 +126,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transient
-    public void updatePhone(String employeeCode, String newPhone){
+    public void updatePhone(String employeeCode, String newPhone) {
         Employee employee = findEmployeeCode(employeeCode);
         validateStatus(employee.getStatus());
         employeeRepository.existsByPhone(newPhone);
@@ -120,7 +136,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transient
-    public void updateRole(String employeeCode, Set<String> newRole){
+    public void updateRole(String employeeCode, Set<String> newRole) {
         Employee employee = findEmployeeCode(employeeCode);
         validateStatus(employee.getStatus());
         roleValidation.roleValidation(employee.getWorkArea(), newRole);
@@ -132,7 +148,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transient
-    public void updateContractType(String employeeCode ,ContractType newContract){
+    public void updateContractType(String employeeCode, ContractType newContract) {
         Employee employee = findEmployeeCode(employeeCode);
         employee.setContractType(newContract);
         employeeRepository.save(employee);
@@ -140,7 +156,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transient
-    public void updateEmployeeStatus(String employeeCode, EmployeeStatus employeeStatus){
+    public void updateEmployeeStatus(String employeeCode, EmployeeStatus employeeStatus) {
         Employee employee = findEmployeeCode(employeeCode);
         validateUpdateStatus(employeeStatus, employee);
         employee.setStatus(employeeStatus);
@@ -150,8 +166,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void delete(String employeeCode, String deleteBy, String reason) {
-        Employee employee = employeeRepository.findByEmployeeCode(employeeCode).orElseThrow(() -> 
-            new EntityNotFoundException("No se encontro empleado asociado al Id"));
+        Employee employee = employeeRepository.findByEmployeeCode(employeeCode)
+                .orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al Id"));
 
         if (employee.getStatus() == EmployeeStatus.DELETED) {
             throw new IllegalArgumentException(
@@ -168,35 +184,38 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.save(employee);
     }
 
-    //helpers
-    private void validateEmployeeInfo(String documentNumber, String phoneNumber, String email){
+    // helpers
+    private void validateEmployeeInfo(String documentNumber, String phoneNumber, String email) {
 
         if (employeeRepository.existsByDocument(documentNumber)) {
-         throw new IllegalArgumentException("Error, documento ya registrado");
+            throw new IllegalArgumentException("Error, documento ya registrado");
         } else if (employeeRepository.existsByPhone(phoneNumber)) {
             throw new IllegalArgumentException("El numero de telefono ya se encuentra resgistrado en el sistema");
-        }else if(employeeRepository.existsByEmail(email)){
+        } else if (employeeRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("El email ya se encuentra registrado en el sistema");
         }
     }
 
-    private void validateStatus(EmployeeStatus status){
+    private void validateStatus(EmployeeStatus status) {
         if (status.equals(EmployeeStatus.DELETED)) {
             throw new IllegalArgumentException("El empleado se encientra eliminado, no se puede actualizar");
         }
     }
 
-    private Employee findEmployeeCode(String code){
+    private Employee findEmployeeCode(String code) {
         Employee employee = employeeRepository.findByEmployeeCode(code)
-            .orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al codigo "+ code));
+                .orElseThrow(() -> new EntityNotFoundException("No se encontro empleado asociado al codigo " + code));
         return employee;
     }
 
-    private void validateUpdateStatus(EmployeeStatus status, Employee employee){
+    private void validateUpdateStatus(EmployeeStatus status, Employee employee) {
         if (status == EmployeeStatus.DELETED) {
-            throw new IllegalArgumentException("No se puede eliminar un usuario desde el panel de actualizacion de estado");}
+            throw new IllegalArgumentException(
+                    "No se puede eliminar un usuario desde el panel de actualizacion de estado");
+        }
         if (status == employee.getStatus()) {
-            throw new IllegalArgumentException("El empleado ya se encuentra vinculado al estado de "+ status);}
+            throw new IllegalArgumentException("El empleado ya se encuentra vinculado al estado de " + status);
+        }
     }
 
 }

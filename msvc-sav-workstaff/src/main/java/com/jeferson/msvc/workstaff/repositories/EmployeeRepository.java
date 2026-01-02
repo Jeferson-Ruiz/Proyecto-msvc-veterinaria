@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    
+
     @Query("SELECT e FROM Employee e WHERE e.status = 'ACTIVE'")
     List<Employee> findAllActiveEmployee();
 
@@ -18,9 +18,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Query("SELECT e FROM Employee e WHERE e.employeeCode=:employeeCode")
     Optional<Employee> findByEmployeeCode(@Param("employeeCode") String employeeCode);
-
-    @Query("SELECT e FROM Employee e JOIN e.roles r WHERE e.workArea = :workArea AND r.roleName = :roleName AND e.status = :status")
-    List<Employee> findByAreaRoleAndStatus(@Param("workArea") WorkArea workArea, @Param("roleName") String roleName, @Param("status") EmployeeStatus status);
 
     @Query("SELECT COUNT(e) > 0 FROM Employee e WHERE e.email =:email")
     boolean existsByEmail(@Param("email") String email);
@@ -31,4 +28,32 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query("SELECT COUNT(e) > 0 FROM Employee e WHERE e.documentNumber =:documentNumber")
     boolean existsByDocument(@Param("documentNumber") String documentNumber);
 
+    /********************************
+     * Metodos para el filtro
+     ********************************/
+
+    @Query("SELECT DISTINCT e FROM Employee e JOIN e.roles r WHERE e.workArea = :workArea AND r.roleName = :roleName AND e.status = :status")
+    List<Employee> findByAreaRoleAndStatus(
+            @Param("workArea") WorkArea workArea,
+            @Param("roleName") String roleName,
+            @Param("status") EmployeeStatus status);
+
+    List<Employee> findByWorkArea(WorkArea workArea);
+
+    @Query("SELECT DISTINCT e FROM Employee e JOIN e.roles r WHERE r.roleName = :roleName")
+    List<Employee> findByRoleName(@Param("roleName") String roleName);
+
+    List<Employee> findByStatus(EmployeeStatus status);
+
+    @Query("SELECT DISTINCT e FROM Employee e JOIN e.roles r WHERE e.workArea = :workArea AND r.roleName = :roleName")
+    List<Employee> findByAreaAndRole(
+            @Param("workArea") WorkArea workArea,
+            @Param("roleName") String roleName);
+
+    List<Employee> findByWorkAreaAndStatus(WorkArea workArea, EmployeeStatus status);
+
+    @Query("SELECT DISTINCT e FROM Employee e JOIN e.roles r WHERE r.roleName = :roleName AND e.status = :status")
+    List<Employee> findByRoleAndStatus(
+            @Param("roleName") String roleName,
+            @Param("status") EmployeeStatus status);
 }
