@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Forms / Elements - NiceAdmin Bootstrap Template</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Registrar Empleado</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <!-- El que me sirve -->
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-9">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Formulario</h5>
+
+              <!-- General Form Elements -->
+              <form id="employeeForm">
+                <div class="row mb-3">
+                  <label for="firstName" class="col-sm-2 col-form-label">Nombre</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="firstName">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="lastName" class="col-sm-2 col-form-label">Apellido</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="lastName">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="documentType" class="col-sm-2 col-form-label">Tipo Documento</label>
+                  <div class="col-sm-10">
+                    <select class="form-select" id="documentType">
+                      <option value="">Seleccionar</option>
+                      <option value="CC">CC</option>
+                      <option value="PP">PP</option>
+                      <option value="PASAPORTE">Pasaporte</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="documentNumber" class="col-sm-2 col-form-label">Número Documento</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" id="documentNumber">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="email" class="col-sm-2 col-form-label">Email</label>
+                  <div class="col-sm-10">
+                    <input type="email" class="form-control" id="email">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="phone" class="col-sm-2 col-form-label">Teléfono</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="phone">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="birthDate" class="col-sm-2 col-form-label">Fecha Nacimiento</label>
+                  <div class="col-sm-10">
+                    <input type="date" class="form-control" id="birthDate">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="workArea" class="col-sm-2 col-form-label">Área Trabajo</label>
+                  <div class="col-sm-10">
+                    <select class="form-select" id="workArea">
+                      <option value="">Seleccionar</option>
+                      <option value="SALUD">Salud</option>
+                      <option value="ADMINISTRATIVE">Administración</option>
+                      <option value="HEALTH">Salud</option>
+                      <option value="LOGISTICA">Soporte</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="contractType" class="col-sm-2 col-form-label">Tipo Contrato</label>
+                  <div class="col-sm-10">
+                    <select class="form-select" id="contractType">
+                      <option value="">Seleccionar</option>
+                      <option value="TEMPORAL">Temporal</option>
+                      <option value="INDEFINIDO">Indefinido</option>
+                      <option value="SERVICIO">Servicio</option>
+                      <option value="PRESTACION_SERVICIOS">Prestación servicios</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="roles" class="col-sm-2 col-form-label">Roles</label>
+                  <div class="col-sm-10">
+                    <select class="form-select" id="roles" multiple size="4">
+                      <option value="VET-001">Veterinario</option>
+                      <option value="ASIS-002">Asistente</option>
+                      <option value="SUP-003">Supervisor</option>
+                      <option value="ADM-004">Administrativo</option>
+                      <option value="MED-005">Médico</option>
+                      <option value="ENF-006">Enfermero</option>
+                    </select>
+                    <small class="text-muted">Mantén Ctrl (Cmd en Mac) para seleccionar múltiples opciones</small>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-sm-10 offset-sm-2">
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main><!-- End #main -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- FORMULARIO -->
+  <script src="assets/js/form-employee.js"></script>
+
+</body>
+
+</html>
