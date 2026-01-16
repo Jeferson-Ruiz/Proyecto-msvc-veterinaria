@@ -30,31 +30,127 @@
         <div class="col-lg-12">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Información Empleados</h5>
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <p class="mb-0">Panel de información vinculado con los datos de los trabajadores</p>
-                <button class="btn btn-primary" onclick="window.location.href='form-employee.html'">
-                  <i class="bi bi-plus-circle"></i> Crear Empleado
+              
+              <!-- HEADER CON TÍTULO Y BOTÓN CREAR -->
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                  <h5 class="card-title mb-0">Gestión de Empleados</h5>
+                  <p class="text-muted mb-0">Administra la información de los trabajadores</p>
+                </div>
+                <button class="btn btn-primary" id="btnCreateEmployee">
+                  <i class="bi bi-plus-circle me-1"></i> Nuevo Empleado
                 </button>
               </div>
               
-              <table class="table" id="employeeTable">
-                <thead>
-                  <tr>
-                    <th>Código</th>
-                    <th>Nombre</th>
-                    <th>Documento</th>
-                    <th>Email</th>
-                    <th>Teléfono</th>
-                    <th>Área</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- Los datos se cargarán aquí con JavaScript -->
-                </tbody>
-              </table>
+              <!-- PANEL DE FILTROS COMPACTO -->
+              <div class="card border mb-4">
+                <div class="card-body p-3">
+                  <div class="row g-3 align-items-end">
+                    
+                    <!-- Filtro de Área -->
+                    <div class="col-md-4">
+                      <label class="form-label small text-muted mb-1">Área</label>
+                      <select class="form-select" id="filterArea">
+                        <option value="">Todas las áreas</option>
+                        <option value="SALUD">Salud</option>
+                        <option value="ADMINISTRACION">Administración</option>
+                        <option value="OPERACIONES">Operaciones</option>
+                        <option value="LOGISTICA">Logística</option>
+                      </select>
+                    </div>
+                    
+                    <!-- Filtro de Estado -->
+                    <div class="col-md-3">
+                      <label class="form-label small text-muted mb-1">Estado</label>
+                      <select class="form-select" id="filterStatus">
+                        <option value="">Todos</option>
+                        <option value="ACTIVE">Activo</option>
+                        <option value="SUSPENDED">Suspendido</option>
+                        <option value="PROCESS">En Proceso</option>
+                      </select>
+                    </div>
+                    
+                    <!-- Filtro de Rol -->
+                    <div class="col-md-5">
+                      <label class="form-label small text-muted mb-1">Rol</label>
+                      <input type="text" 
+                             class="form-control" 
+                             id="filterRole" 
+                             placeholder="Ej: MEDICO, ENFERMERO">
+                    </div>
+          
+                    
+                    <!-- Botones de Acción -->
+                    <div class="col-md-12 mt-2">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div id="filterInfo" class="text-muted small">
+                          <!-- Contador se actualizará aquí -->
+                        </div>
+                        <div class="d-flex gap-2">
+                          <button class="btn btn-outline-secondary btn-sm" id="btnClearFilters">
+                            <i class="bi bi-arrow-clockwise me-1"></i> Restablecer
+                          </button>
+                          <button class="btn btn-primary btn-sm" id="btnApplyFilters">
+                            <i class="bi bi-funnel me-1"></i> Aplicar Filtros
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- Búsqueda Rápida -->
+              <div>
+                  <div class="col-md-4">
+                    <label class="form-label small text-muted mb-1">Búsqueda rápida</label>
+                    <div class="input-group">
+                      <input type="text" 
+                            class="form-control" 
+                            id="searchInput" 
+                            placeholder="Nombre, documento o email">
+                      <button class="btn btn-outline-primary" type="button" id="btnSearch">
+                        <i class="bi bi-search"></i>
+                      </button>
+                    </div>
+                  </div>
+              </div>
+
+                    <!-- TABLA DE EMPLEADOS -->
+              <div class="table-responsive">
+                <table class="table table-hover" id="employeeTable">
+                  <thead class="table-light">
+                    <tr>
+                      <th width="100">Código</th>
+                      <th>Nombre Completo</th>
+                      <th width="120">Documento</th>
+                      <th>Email</th>
+                      <th width="120">Teléfono</th>
+                      <th width="100">Área</th>
+                      <th width="100">Estado</th>
+                      <th width="100" class="text-center">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Los datos se cargarán aquí con JavaScript -->
+                  </tbody>
+                </table>
+              </div>
+              
+              <!-- PAGINACIÓN (Opcional) -->
+              <div class="d-flex justify-content-between align-items-center mt-3" id="paginationContainer">
+                <div class="text-muted small" id="paginationInfo">
+                  Mostrando <span id="currentCount">0</span> de <span id="totalCount">0</span> empleados
+                </div>
+                <nav aria-label="Page navigation">
+                  <ul class="pagination pagination-sm mb-0" id="pagination">
+                    <!-- La paginación se generará con JavaScript -->
+                  </ul>
+                </nav>
+              </div>
+              
             </div>
           </div>
         </div>
@@ -102,9 +198,11 @@
               <label class="col-sm-3 col-form-label">Tipo Contrato</label>
               <div class="col-sm-9">
                 <select class="form-select" id="editContract">
-                  <option value="TEMPORAL">Temporal</option>
-                  <option value="INDEFINIDO">Indefinido</option>
-                  <option value="SERVICIO">Servicio</option>
+                  <option value="INDEFINITE_TERM">Término Indefinido</option>
+                  <option value="FIXED_TERM">Término Fijo</option>
+                  <option value="WORK_LABOR">Obra o Labor</option>
+                  <option value="TEMPORATY">Temporal</option>
+                  <option value="APPRENTICESHIP">Aprendizaje</option>
                 </select>
               </div>
             </div>
@@ -114,16 +212,16 @@
               <div class="col-sm-9">
                 <select class="form-select" id="editStatus">
                   <option value="ACTIVE">Activo</option>
-                  <option value="INACTIVE">Inactivo</option>
                   <option value="SUSPENDED">Suspendido</option>
+                  <option value="PROCESS">En Proceso</option>
                 </select>
               </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary" onclick="saveEmployeeChanges()">Guardar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCancelEdit">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="btnSaveChanges">Guardar Cambios</button>
         </div>
       </div>
     </div>
@@ -152,8 +250,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-danger" onclick="confirmDelete()">Eliminar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCancelDelete">Cancelar</button>
+          <button type="button" class="btn btn-danger" id="btnConfirmDelete">Confirmar Eliminación</button>
         </div>
       </div>
     </div>
